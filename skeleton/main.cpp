@@ -92,6 +92,8 @@ void cleanupPhysics(bool interactive)
 	transport->release();
 	
 	gFoundation->release();
+
+	delete particula;
 	}
 
 // Function called when a key is pressed
