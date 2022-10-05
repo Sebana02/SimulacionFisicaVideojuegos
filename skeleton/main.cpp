@@ -12,26 +12,26 @@
 
 #include "Particle.h"
 
-
-
 using namespace physx;
+using namespace std;
 
 PxDefaultAllocator		gAllocator;
 PxDefaultErrorCallback	gErrorCallback;
 
-PxFoundation*			gFoundation = NULL;
-PxPhysics*				gPhysics	= NULL;
+PxFoundation* gFoundation = NULL;
+PxPhysics* gPhysics = NULL;
 
 
-PxMaterial*				gMaterial	= NULL;
+PxMaterial* gMaterial = NULL;
 
-PxPvd*                  gPvd        = NULL;
+PxPvd* gPvd = NULL;
 
-PxDefaultCpuDispatcher*	gDispatcher = NULL;
-PxScene*				gScene      = NULL;
+PxDefaultCpuDispatcher* gDispatcher = NULL;
+PxScene* gScene = NULL;
 ContactReportCallback gContactReportCallback;
 
-Particle* particula;
+vector<Proyectile*> shot;
+Particle* suelo;
 
 
 // Initialize physics engine
@@ -43,9 +43,9 @@ void initPhysics(bool interactive)
 
 	gPvd = PxCreatePvd(*gFoundation);
 	PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
-	gPvd->connect(*transport,PxPvdInstrumentationFlag::eALL);
+	gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 
-	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(),true,gPvd);
+	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
 
 	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
 
@@ -58,9 +58,11 @@ void initPhysics(bool interactive)
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
 
-	particula = new Particle({ 0,0,0 }, { 5,0,-5 });
-
-	}
+	suelo = new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0, 0);
+	RenderItem* renderItem = suelo->getRenderItem();
+	renderItem->shape = CreateShape(physx::PxBoxGeometry(100.0f, 1.0f, 100.0f));
+	renderItem->color = { 1.0,0.0,0.0,1.0 };
+}
 
 
 // Function to configure what happens in each step of physics
@@ -73,7 +75,17 @@ void stepPhysics(bool interactive, double t)
 	gScene->simulate(t);
 	gScene->fetchResults(true);
 
-	particula->integrate(t);
+	for (size_t i = 0; i < shot.size(); i++) {
+		if (shot[i]->getTr().p.y <= 0) {
+			Proyectile* p = shot[i];
+			delete p;
+			shot.erase(shot.begin() + i);
+			i--;
+		}
+		else {
+			shot[i]->integrate(t);
+		}
+	}
 }
 
 // Function to clean data
@@ -86,27 +98,46 @@ void cleanupPhysics(bool interactive)
 	gScene->release();
 	gDispatcher->release();
 	// -----------------------------------------------------
-	gPhysics->release();	
+	gPhysics->release();
 	PxPvdTransport* transport = gPvd->getTransport();
 	gPvd->release();
 	transport->release();
-	
+
 	gFoundation->release();
 
-	delete particula;
-	}
+	for (auto e : shot)
+		delete e;
+
+	delete suelo;
+}
 
 // Function called when a key is pressed
 void keyPress(unsigned char key, const PxTransform& camera)
 {
 	PX_UNUSED(camera);
 
-	switch(toupper(key))
+	switch (toupper(key))
 	{
-	//case 'B': break;
-	//case ' ':	break;
-	case ' ':
+		//case 'B': break;
+		//case ' ':	break;
+	case '1':
 	{
+		shot.push_back(new Proyectile(Proyectile::PISTOL, GetCamera()->getTransform().p, GetCamera()->getDir()));
+		break;
+	}
+	case '2':
+	{
+		shot.push_back(new Proyectile(Proyectile::ARTILLERY, GetCamera()->getTransform().p, GetCamera()->getDir()));
+		break;
+	}
+	case '3':
+	{
+		shot.push_back(new Proyectile(Proyectile::FIREBALL, GetCamera()->getTransform().p, GetCamera()->getDir()));
+		break;
+	}
+	case '4':
+	{
+		shot.push_back(new Proyectile(Proyectile::LASER, GetCamera()->getTransform().p, GetCamera()->getDir()));
 		break;
 	}
 	default:
@@ -121,7 +152,7 @@ void onCollision(physx::PxActor* actor1, physx::PxActor* actor2)
 }
 
 
-int main(int, const char*const*)
+int main(int, const char* const*)
 {
 #ifndef OFFLINE_EXECUTION 
 	extern void renderLoop();
@@ -129,7 +160,7 @@ int main(int, const char*const*)
 #else
 	static const PxU32 frameCount = 100;
 	initPhysics(false);
-	for(PxU32 i=0; i<frameCount; i++)
+	for (PxU32 i = 0; i < frameCount; i++)
 		stepPhysics(false);
 	cleanupPhysics(false);
 #endif
