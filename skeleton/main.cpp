@@ -76,11 +76,14 @@ void stepPhysics(bool interactive, double t)
 	gScene->fetchResults(true);
 
 	for (size_t i = 0; i < shot.size(); i++) {
-		if (shot[i]->getTr().p.y <= 0) {
+		if (shot[i]->getTr().p.y <= 0 ||
+			shot[i]->getStartTime() + 5000 < glutGet(GLUT_ELAPSED_TIME) ||
+			abs(shot[i]->getTr().p.z) > 200.0f|| abs(shot[i]->getTr().p.x > 200.0f)) {
 			Proyectile* p = shot[i];
 			delete p;
 			shot.erase(shot.begin() + i);
 			i--;
+			
 		}
 		else {
 			shot[i]->integrate(t);

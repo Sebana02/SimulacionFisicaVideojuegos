@@ -10,6 +10,8 @@ Particle::Particle(Vector3 position, Vector3 velocity, Vector3 accceleration, do
 
 	tr = PxTransform(position.x, position.y, position.z);
 	renderItem = new RenderItem(CreateShape(physx::PxSphereGeometry(1.0)), &tr, { 0.5, 0, 0.5, 1 });
+
+	startTime = glutGet(GLUT_ELAPSED_TIME);
 }
 
 Particle::~Particle()

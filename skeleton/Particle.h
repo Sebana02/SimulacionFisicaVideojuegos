@@ -29,6 +29,7 @@ public:
 
 	RenderItem* getRenderItem() { return renderItem; }
 
+	int getStartTime() { return startTime; }
 
 protected:
 	RenderItem* renderItem;
@@ -37,6 +38,8 @@ protected:
 	Vector3 accel;
 	double damping;
 	double inverse_mass;
+
+	int startTime;
 };
 
 class Proyectile : public Particle {
