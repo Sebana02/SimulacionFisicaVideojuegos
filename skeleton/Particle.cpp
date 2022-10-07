@@ -23,11 +23,12 @@ void Particle::integrate(double t)
 {
 	if (inverse_mass <= 0.0f) return;
 
-	tr = PxTransform(tr.p.x + vel.x * t, tr.p.y + vel.y * t, tr.p.z + vel.z * t);
-
 	vel += accel * t;
 
 	vel *= powf(damping, t);
+
+	tr = PxTransform(tr.p.x + vel.x * t, tr.p.y + vel.y * t, tr.p.z + vel.z * t);
+
 }
 
 //___________________________________________
