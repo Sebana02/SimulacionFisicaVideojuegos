@@ -58,10 +58,9 @@ void initPhysics(bool interactive)
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
 
-	suelo = new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0, 0);
+	suelo = new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0, 0, { 1.0,0.0,0.0,1.0 }, 1.0, 0, 0);
 	RenderItem* renderItem = suelo->getRenderItem();
 	renderItem->shape = CreateShape(physx::PxBoxGeometry(100.0f, 1.0f, 100.0f));
-	renderItem->color = { 1.0,0.0,0.0,1.0 };
 }
 
 
@@ -76,17 +75,14 @@ void stepPhysics(bool interactive, double t)
 	gScene->fetchResults(true);
 
 	for (size_t i = 0; i < shot.size(); i++) {
-		if (shot[i]->getTr().p.y <= 0 ||
-			shot[i]->getStartTime() + 5000 < glutGet(GLUT_ELAPSED_TIME) ||
-			abs(shot[i]->getTr().p.z) > 200.0f|| abs(shot[i]->getTr().p.x > 200.0f)) {
-			Proyectile* p = shot[i];
-			delete p;
+
+		if (shot[i]->isAlive())
+			shot[i]->integrate(t);
+
+		else {
+			delete shot[i];
 			shot.erase(shot.begin() + i);
 			i--;
-			
-		}
-		else {
-			shot[i]->integrate(t);
 		}
 	}
 }
@@ -125,22 +121,22 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		//case ' ':	break;
 	case '1':
 	{
-		shot.push_back(new Proyectile(Proyectile::PISTOL, GetCamera()->getTransform().p, GetCamera()->getDir()));
+		shot.push_back(new Proyectile(Proyectile::PISTOL, GetCamera()->getTransform().p, GetCamera()->getDir(), 5000, 200.0));
 		break;
 	}
 	case '2':
 	{
-		shot.push_back(new Proyectile(Proyectile::ARTILLERY, GetCamera()->getTransform().p, GetCamera()->getDir()));
+		shot.push_back(new Proyectile(Proyectile::ARTILLERY, GetCamera()->getTransform().p, GetCamera()->getDir(), 5000, 200.0));
 		break;
 	}
 	case '3':
 	{
-		shot.push_back(new Proyectile(Proyectile::FIREBALL, GetCamera()->getTransform().p, GetCamera()->getDir()));
+		shot.push_back(new Proyectile(Proyectile::FIREBALL, GetCamera()->getTransform().p, GetCamera()->getDir(), 5000, 200.0));
 		break;
 	}
 	case '4':
 	{
-		shot.push_back(new Proyectile(Proyectile::LASER, GetCamera()->getTransform().p, GetCamera()->getDir()));
+		shot.push_back(new Proyectile(Proyectile::LASER, GetCamera()->getTransform().p, GetCamera()->getDir(), 5000, 200.0));
 		break;
 	}
 	default:

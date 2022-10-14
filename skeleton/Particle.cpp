@@ -1,78 +1,83 @@
 #include "Particle.h"
 
 
-Particle::Particle(Vector3 position, Vector3 velocity, Vector3 accceleration, double damp, double mass)
+Particle::Particle(Vector3 position, Vector3 velocity, Vector3 accceleration, double damp, double mass,
+	Vector4 color, double scale, int lifeTime, double posDes)
 {
-	vel = velocity;
-	accel = accceleration;
-	damping = damp;
-	inverse_mass = 1.0 / mass;
+	_vel = velocity;
+	_accel = accceleration;
+	_damping = damp;
+	_inverse_mass = 1.0 / mass;
 
-	tr = PxTransform(position.x, position.y, position.z);
-	renderItem = new RenderItem(CreateShape(physx::PxSphereGeometry(1.0)), &tr, { 0.5, 0, 0.5, 1 });
+	_tr = PxTransform(position.x, position.y, position.z);
+	_renderItem = new RenderItem(CreateShape(physx::PxSphereGeometry(scale)), &_tr, color);
 
-	startTime = glutGet(GLUT_ELAPSED_TIME);
+	_lifeTime = glutGet(GLUT_ELAPSED_TIME) + lifeTime;
+	_lifePos = posDes;
+
+	_alive = true;
 }
 
 Particle::~Particle()
 {
-	DeregisterRenderItem(renderItem);
+	DeregisterRenderItem(_renderItem);
 }
 
 void Particle::integrate(double t)
 {
-	if (inverse_mass <= 0.0f) return;
 
-	vel += accel * t;
+	if (_inverse_mass <= 0.0f) return;
 
-	vel *= powf(damping, t);
+	_vel += _accel * t;
 
-	tr = PxTransform(tr.p.x + vel.x * t, tr.p.y + vel.y * t, tr.p.z + vel.z * t);
+	_vel *= powf(_damping, t);
 
+	_tr = PxTransform(_tr.p.x + _vel.x * t, _tr.p.y + _vel.y * t, _tr.p.z + _vel.z * t);
+
+
+	if (glutGet(GLUT_ELAPSED_TIME) >= _lifeTime ||
+		abs(_tr.p.magnitude()) > _lifePos || _tr.p.y < 0)
+		_alive = false;
 }
 
 //___________________________________________
-Proyectile::Proyectile(TYPE tipo, Vector3 pos, Vector3 dir) : 
-			Particle(pos, { 0,0,0 }, { 0,0,0 }, 0, 0) {
+Proyectile::Proyectile(TYPE tipo, Vector3 pos, Vector3 dir, int lifeTime, double posDes) :
+	Particle(pos, { 0,0,0 }, { 0,0,0 }, 0, 0, {1.0,1.0,1.0,1.0}, 1.0, lifeTime, posDes) {
 
-	type = tipo;
+	_type = tipo;
 
-	switch (type) {
+	switch (_type) {
 	case PISTOL:
-		inverse_mass = 1.0 / 2.0f;
-		//vel = { 0.0f,0.0f,35.0f };
-		vel = dir * 35.0f;
-		accel = { 0.0f,-1.0f,0.0f };
-		damping = 0.99f;
-		renderItem->shape = CreateShape(physx::PxSphereGeometry(2.0));
-		renderItem->color = { 1.0,1.0,0.0,1.0 };
+		_inverse_mass = 1.0 / 2.0f;
+		_vel = dir * 35.0f;
+		_accel = { 0.0f,-1.0f,0.0f };
+		_damping = 0.99f;
+		_renderItem->shape = CreateShape(physx::PxSphereGeometry(2.0));
+		_renderItem->color = { 1.0,1.0,0.0,1.0 };
 		break;
 	case ARTILLERY:
-		inverse_mass = 1.0 / 200.0f;
-		//vel = { 0.0f,30.0f,40.0f };
-		vel = dir * 40.0f;
-		accel = { 0.0f,-20.0f,0.0f };
-		damping = 0.99f;
-		renderItem->shape = CreateShape(physx::PxSphereGeometry(5.0));
-		renderItem->color = { 1.0,0.5,0.5,1.0 };
+		_inverse_mass = 1.0 / 200.0f;
+		_vel = dir * 40.0f;
+		_accel = { 0.0f,-20.0f,0.0f };
+		_damping = 0.99f;
+		_renderItem->shape = CreateShape(physx::PxSphereGeometry(5.0));
+		_renderItem->color = { 1.0,0.5,0.5,1.0 };
 		break;
 	case FIREBALL:
-		inverse_mass = 1.0 / 1.0f;
-		//vel = { 0.0f,0.0f,10.0f };
-		vel = dir * 10.0f;
-		accel = { 0.0f,6.0f,0.0f };
-		damping = 0.9f;
-		renderItem->shape = CreateShape(physx::PxSphereGeometry(1.0));
-		renderItem->color = { 1.0,0.0,1.0,1.0 };
+		_inverse_mass = 1.0 / 1.0f;
+		_vel = dir * 10.0f;
+		_accel = { 0.0f,6.0f,0.0f };
+		_damping = 0.9f;
+		_renderItem->shape = CreateShape(physx::PxSphereGeometry(1.0));
+		_renderItem->color = { 1.0,0.0,1.0,1.0 };
 		break;
 	case LASER:
-		inverse_mass = 1.0 / 0.1f;
-		//vel = { 0.0f,0.0f,100.0f };
-		vel = dir * 100.0f;
-		accel = { 0.0f,0.0f,0.0f };
-		damping = 0.99f;
-		renderItem->shape = CreateShape(physx::PxSphereGeometry(0.5));
-		renderItem->color = {0.0,1.0,0.0,1.0 };
+		_inverse_mass = 1.0 / 0.1f;
+		_vel = dir * 100.0f;
+		_accel = { 0.0f,0.0f,0.0f };
+		_damping = 0.99f;
+		_renderItem->shape = CreateShape(physx::PxSphereGeometry(0.5));
+		_renderItem->color = { 0.0,1.0,0.0,1.0 };
 		break;
 	default:
 		break;
