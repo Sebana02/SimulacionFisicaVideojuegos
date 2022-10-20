@@ -3,6 +3,7 @@
 #include <PxPhysicsAPI.h>
 
 #include <vector>
+#include <list>
 
 #include "core.hpp"
 #include "RenderUtils.hpp"
@@ -11,6 +12,7 @@
 #include <iostream>
 
 #include "Particle.h"
+#include "ParticleGenerator.h"
 
 using namespace physx;
 using namespace std;
@@ -32,6 +34,8 @@ ContactReportCallback gContactReportCallback;
 
 vector<Proyectile*> shot;
 Particle* suelo;
+GaussianParticleGenerator* generador;
+list<Particle*> particulas;
 
 
 // Initialize physics engine
@@ -58,9 +62,14 @@ void initPhysics(bool interactive)
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
 
+	//suelo
 	suelo = new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0, 0, { 1.0,0.0,0.0,1.0 }, 1.0, 0, 0);
 	RenderItem* renderItem = suelo->getRenderItem();
 	renderItem->shape = CreateShape(physx::PxBoxGeometry(100.0f, 1.0f, 100.0f));
+
+	//generador
+	generador = new GaussianParticleGenerator({ 0.0,0.0,0.0 }, { 1.0,5.0,1.0 }, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, 10, 2);
+	generador->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, 1.0, { 1.0,1.0,0.0,1.0 }, 1.0, 5000, 500.0));
 }
 
 
@@ -74,6 +83,7 @@ void stepPhysics(bool interactive, double t)
 	gScene->simulate(t);
 	gScene->fetchResults(true);
 
+	//proyectiles
 	for (size_t i = 0; i < shot.size(); i++) {
 
 		if (shot[i]->isAlive())
@@ -83,6 +93,27 @@ void stepPhysics(bool interactive, double t)
 			delete shot[i];
 			shot.erase(shot.begin() + i);
 			i--;
+		}
+	}
+
+	//añadir particulas
+	list<Particle*> add_particles = generador->generateParticles();
+	for (auto par : add_particles)
+		particulas.push_back(par);
+	add_particles.clear();
+
+
+	//update de las particulas
+	std::list<Particle*>::iterator it = particulas.begin();
+	while (it != particulas.end()) {
+		Particle* p = *it;
+		if (p->isAlive()) {
+			p->integrate(t);
+			++it;
+		}
+		else {
+			it = particulas.erase(it);
+			delete p;
 		}
 	}
 }
@@ -108,6 +139,12 @@ void cleanupPhysics(bool interactive)
 		delete e;
 
 	delete suelo;
+
+	for (auto particle : particulas)
+		delete particle;
+	particulas.clear();
+
+	delete generador;
 }
 
 // Function called when a key is pressed
@@ -117,8 +154,6 @@ void keyPress(unsigned char key, const PxTransform& camera)
 
 	switch (toupper(key))
 	{
-		//case 'B': break;
-		//case ' ':	break;
 	case '1':
 	{
 		shot.push_back(new Proyectile(Proyectile::PISTOL, GetCamera()->getTransform().p, GetCamera()->getDir(), 5000, 200.0));

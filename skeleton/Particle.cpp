@@ -13,9 +13,12 @@ Particle::Particle(Vector3 position, Vector3 velocity, Vector3 accceleration, do
 	_renderItem = new RenderItem(CreateShape(physx::PxSphereGeometry(scale)), &_tr, color);
 
 	_lifeTime = glutGet(GLUT_ELAPSED_TIME) + lifeTime;
-	_lifePos = posDes;
+	_lifePos = abs(_tr.p.magnitude()) + posDes;
 
 	_alive = true;
+
+	_color = color;
+	_scale = scale;
 }
 
 Particle::~Particle()

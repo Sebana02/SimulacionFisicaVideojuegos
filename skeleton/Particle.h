@@ -15,12 +15,6 @@ public:
 
 	void integrate(double t);
 
-	void setVelocity(Vector3 velocity) { _vel = velocity; }
-	void setAcceleration(Vector3 acceleration) { _accel = acceleration; }
-	void setDamping(double damp) { _damping = damp; }
-	void setMass(double mass) { _inverse_mass = 1.0/mass; }
-	void setPos(Vector3 pos) { _tr.p = pos; }
-
 	Vector3 getVel() { return _vel; }
 	PxTransform& getTr() { return _tr; }
 	Vector3 getAccel() { return _accel; }
@@ -28,9 +22,17 @@ public:
 	double getInverseMass() { return _inverse_mass; }
 	double getDamping() { return _damping; }
 
+	int getLifeTime() { return _lifeTime; }
+	double getLifePos() { return _lifePos; }
+
+	Vector4 getColor() { return _color; }
+	double getScale() { return _scale; }
+
 	RenderItem* getRenderItem() { return _renderItem; }
 
 	bool isAlive() { return _alive; }
+
+	
 
 protected:
 	RenderItem* _renderItem;
@@ -44,6 +46,9 @@ protected:
 	double _lifePos;
 
 	bool _alive;
+
+	Vector4 _color;
+	double _scale;
 };
 
 class Proyectile : public Particle {

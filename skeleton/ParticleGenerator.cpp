@@ -1,6 +1,5 @@
 #include "ParticleGenerator.h"
 
-
 void ParticleGenerator::setParticle(Particle* model)
 {
 	delete _model;
@@ -8,7 +7,7 @@ void ParticleGenerator::setParticle(Particle* model)
 }
 
 GaussianParticleGenerator::GaussianParticleGenerator(Vector3 mean_pos, Vector3 mean_vel,
-	Vector3 dev_pos, Vector3 dev_vel, int num_particles = 10, double prob = 0.8) 
+	Vector3 dev_pos, Vector3 dev_vel, int num_particles, double prob) 
 {
 	name_ = "GaussianParticleGenerator";
 	_mean_pos = mean_pos;
@@ -29,7 +28,7 @@ std::list<Particle*> GaussianParticleGenerator::generateParticles()
 	for (int i = 0; i < _num_particles; i++) {
 		auto p = _model;
 
-		if (d(_gen) <= _generation_probability) {
+		if (d(_gen) > _generation_probability) {
 			
 			Vector3 newPos = _mean_pos;
 			newPos.x += (d(_gen) * std_dev_pos.x);
@@ -41,7 +40,7 @@ std::list<Particle*> GaussianParticleGenerator::generateParticles()
 			newVel.y += (d(_gen) * std_dev_vel.y);
 			newVel.z += (d(_gen) * std_dev_vel.z);
 
-			lista.push_back(new Particle(newPos, newVel, 0.0, 0.99, 1.0, { 1.0,1.0,1.0,1.0 }, 1.0, 5000, 200.0));
+			lista.push_back(new Particle(newPos, newVel, { 0.0,0.0,0.0 }, p->getDamping(),p->getMass(), p->getColor(), p->getScale(), p->getLifeTime(), p->getLifePos()));
 		}
 	}
 
