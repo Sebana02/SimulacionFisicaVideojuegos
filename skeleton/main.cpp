@@ -34,8 +34,9 @@ ContactReportCallback gContactReportCallback;
 
 vector<Proyectile*> shot;
 Particle* suelo;
-GaussianParticleGenerator* generador;
-list<Particle*> particulas;
+GaussianParticleGenerator* gaussian_generator;
+UniformParticleGenerator* uniform_generator;
+list<Particle*> particles_list;
 
 
 // Initialize physics engine
@@ -68,8 +69,12 @@ void initPhysics(bool interactive)
 	renderItem->shape = CreateShape(physx::PxBoxGeometry(100.0f, 1.0f, 100.0f));
 
 	//generador
-	generador = new GaussianParticleGenerator({ 0.0,0.0,0.0 }, { 1.0,5.0,1.0 }, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, 10, 2);
-	generador->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, 1.0, { 1.0,1.0,0.0,1.0 }, 1.0, 5000, 500.0));
+	gaussian_generator = new GaussianParticleGenerator({ 0.0,0.0,0.0 }, { 1.0,5.0,1.0 }, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, 10, 2);
+	gaussian_generator->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, 1.0, { 1.0,1.0,0.0,1.0 }, 1.0, 5000, 500.0));
+
+	uniform_generator = new UniformParticleGenerator({ 0,0,0 }, { 5,5,5 }, -10, 10);
+	uniform_generator->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, 1.0, { 1.0,1.0,0.0,1.0 }, 1.0, 5000, 500.0));
+
 }
 
 
@@ -97,22 +102,22 @@ void stepPhysics(bool interactive, double t)
 	}
 
 	//añadir particulas
-	list<Particle*> add_particles = generador->generateParticles();
+	list<Particle*> add_particles = uniform_generator->generateParticles();//change generator method here
 	for (auto par : add_particles)
-		particulas.push_back(par);
+		particles_list.push_back(par);
 	add_particles.clear();
 
 
 	//update de las particulas
-	std::list<Particle*>::iterator it = particulas.begin();
-	while (it != particulas.end()) {
+	std::list<Particle*>::iterator it = particles_list.begin();
+	while (it != particles_list.end()) {
 		Particle* p = *it;
 		if (p->isAlive()) {
 			p->integrate(t);
 			++it;
 		}
 		else {
-			it = particulas.erase(it);
+			it = particles_list.erase(it);
 			delete p;
 		}
 	}
@@ -140,11 +145,12 @@ void cleanupPhysics(bool interactive)
 
 	delete suelo;
 
-	for (auto particle : particulas)
+	for (auto particle : particles_list)
 		delete particle;
-	particulas.clear();
+	particles_list.clear();
 
-	delete generador;
+	delete gaussian_generator;
+	delete uniform_generator;
 }
 
 // Function called when a key is pressed

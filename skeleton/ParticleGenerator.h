@@ -27,9 +27,9 @@ protected:
 class GaussianParticleGenerator : public ParticleGenerator {
 public:
 	GaussianParticleGenerator(Vector3 mean_pos, Vector3 mean_vel, Vector3 dev_pos, Vector3 dev_vel, 
-		int num_particles = 10, double prob = 0.8);
+		int num_particles = 10, double prob = 1);
 	~GaussianParticleGenerator() { if(_model != nullptr) delete _model; }
-	virtual std::list<Particle*> generateParticles();
+	virtual std::list<Particle*> generateParticles() override;
 
 protected:
 	Vector3 std_dev_pos, std_dev_vel;
@@ -37,6 +37,21 @@ protected:
 
 	std::default_random_engine _gen;
 	std::normal_distribution<double> d{ 0,1 };
+};
+
+
+class UniformParticleGenerator : public ParticleGenerator {
+public:
+	UniformParticleGenerator(Vector3 mean_pos, Vector3 mean_vel, double a, double b,
+		int num_particles = 10, double prob = 1);
+	~UniformParticleGenerator() { if (_model != nullptr) delete _model; }
+	virtual std::list<Particle*> generateParticles() override;
+
+protected:
+	double _a = -20, _b = 20;
+
+	std::default_random_engine _gen;
+	std::uniform_real_distribution<double> d{ _a,_b };
 };
 #endif __PARTICLE__GENERATOR__
 
