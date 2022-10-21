@@ -69,8 +69,8 @@ void initPhysics(bool interactive)
 	renderItem->shape = CreateShape(physx::PxBoxGeometry(100.0f, 1.0f, 100.0f));
 
 	//generador
-	gaussian_generator = new GaussianParticleGenerator({ 0.0,0.0,0.0 }, { 1.0,5.0,1.0 }, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, 10, 2);
-	gaussian_generator->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, 1.0, { 1.0,1.0,0.0,1.0 }, 1.0, 5000, 500.0));
+	gaussian_generator = new GaussianParticleGenerator({ 0.0,0.0,0.0 }, { 1.0,15.0,1.0 }, { 1.0,1.0,1.0 }, { 2.0,1.0,2.0 }, 1000, 2);
+	gaussian_generator->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, 1.0, { 1.0,1.0,0.0,1.0 }, 0.25, 10000, 500.0));
 
 	uniform_generator = new UniformParticleGenerator({ 0,0,0 }, { 5,5,5 }, -10, 10);
 	uniform_generator->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, 1.0, { 1.0,1.0,0.0,1.0 }, 1.0, 5000, 500.0));
@@ -102,7 +102,7 @@ void stepPhysics(bool interactive, double t)
 	}
 
 	//añadir particulas
-	list<Particle*> add_particles = uniform_generator->generateParticles();//change generator method here
+	list<Particle*> add_particles = gaussian_generator->generateParticles();//change generator method here
 	for (auto par : add_particles)
 		particles_list.push_back(par);
 	add_particles.clear();

@@ -16,6 +16,7 @@ public:
 	~ParticleGenerator() {};
 	void setParticle(Particle* model);
 	virtual list<Particle*>generateParticles() = 0;
+	void setOrigin(Vector3 pos) { _mean_pos = pos; }
 protected:
 	string name_;
 	Vector3 _mean_pos, _mean_vel;

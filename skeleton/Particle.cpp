@@ -13,7 +13,8 @@ Particle::Particle(Vector3 position, Vector3 velocity, Vector3 accceleration, do
 	_renderItem = new RenderItem(CreateShape(physx::PxSphereGeometry(scale)), &_tr, color);
 
 	_lifeTime = glutGet(GLUT_ELAPSED_TIME) + lifeTime;
-	_lifePos = abs(_tr.p.magnitude()) + posDes;
+
+	(posDes > 0 ? _lifePos = abs(_tr.p.magnitude()) + posDes : _lifePos = -1);
 
 	_alive = true;
 
@@ -39,13 +40,13 @@ void Particle::integrate(double t)
 
 
 	if (glutGet(GLUT_ELAPSED_TIME) >= _lifeTime ||
-		abs(_tr.p.magnitude()) > _lifePos || _tr.p.y < 0)
+		(_lifePos > 0 && (abs(_tr.p.magnitude()) > _lifePos || _tr.p.y < 0)))
 		_alive = false;
 }
 
 //___________________________________________
 Proyectile::Proyectile(TYPE tipo, Vector3 pos, Vector3 dir, int lifeTime, double posDes) :
-	Particle(pos, { 0,0,0 }, { 0,0,0 }, 0, 0, {1.0,1.0,1.0,1.0}, 1.0, lifeTime, posDes) {
+	Particle(pos, { 0,0,0 }, { 0,0,0 }, 0, 0, { 1.0,1.0,1.0,1.0 }, 1.0, lifeTime, posDes) {
 
 	_type = tipo;
 
@@ -85,4 +86,40 @@ Proyectile::Proyectile(TYPE tipo, Vector3 pos, Vector3 dir, int lifeTime, double
 	default:
 		break;
 	}
+}
+
+
+Firework::Firework(Vector3 pos, Vector3 vel, Vector3 accel, std::list<std::shared_ptr<ParticleGenerator>> gens,
+	double damp, double duration, unsigned type) :Particle(pos, vel, accel, damp, 1.0, { 1,1,1,1 }, 1.0, duration + glutGet(GLUT_ELAPSED_TIME), -1)
+{
+	_gens = gens;
+	Particle::_type = FIREWORK;
+	_type = type;
+}
+
+void Firework::integrate(double t)
+{
+	Particle::integrate(t);
+}
+
+Particle* Firework::clone() const
+{
+	return new Particle(_tr.p, _vel, _accel, _damping, _inverse_mass / 1.0, _color, _scale, _lifeTime, _lifePos);
+}
+
+std::list<Particle*> Firework::explode()
+{
+	std::list<Particle*> ret_val;
+
+	for (auto& gen : _gens) {
+		gen->setOrigin(_tr.p);
+		auto n_p = gen->generateParticles();
+
+		for (Particle* p : n_p) {
+			p->setVel(p->getVel() + _vel);
+			ret_val.push_back(p);
+		}
+	}
+
+	return ret_val;
 }

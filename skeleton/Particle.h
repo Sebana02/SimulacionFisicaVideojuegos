@@ -3,6 +3,9 @@
 
 #include "core.hpp"
 #include "RenderUtils.hpp"
+#include "ParticleGenerator.h"
+#include <memory>
+#include <list>
 
 using namespace physx;
 
@@ -10,7 +13,7 @@ class Particle {
 
 public:
 	Particle(Vector3 position, Vector3 velocity, Vector3 accceleration, double damp, double mass,
-				Vector4 color, double scale, int lifeTime, double posDes);
+		Vector4 color, double scale, int lifeTime, double posDes);
 	~Particle();
 
 	void integrate(double t);
@@ -32,7 +35,14 @@ public:
 
 	bool isAlive() { return _alive; }
 
-	
+	void setVel(Vector3 vel) { _vel = vel; }
+
+	enum TYPE {
+		FIREWORK = 0,
+		NORMAL
+	}_type;
+
+	//virtual Particle* clone() const;
 
 protected:
 	RenderItem* _renderItem;
@@ -61,6 +71,19 @@ public:
 	}_type;
 
 	Proyectile(TYPE tipo, Vector3 pos, Vector3 dir, int lifeTime, double posDes);
+};
 
+class Firework : public Particle {
+public:
+	Firework(Vector3 pos, Vector3 vel, Vector3 accel, std::list<std::shared_ptr<ParticleGenerator>> gens, double damp, double duration, unsigned type);
+	~Firework() {};
+
+	void integrate(double t);
+	virtual Particle* clone()const;
+	std::list<std::shared_ptr <ParticleGenerator>> _gens;
+	std::list<Particle*> explode();
+
+protected:
+	unsigned _type;
 };
 #endif // !

@@ -28,7 +28,7 @@ std::list<Particle*> GaussianParticleGenerator::generateParticles()
 	for (int i = 0; i < _num_particles; i++) {
 		auto p = _model;
 
-		if (d(_gen) > _generation_probability) {//preguntar
+		if (d(_gen) > _generation_probability) {
 
 			Vector3 newPos = _mean_pos;
 			newPos.x += (d(_gen) * std_dev_pos.x);
@@ -72,7 +72,7 @@ std::list<Particle*> UniformParticleGenerator::generateParticles()
 	for (int i = 0; i < _num_particles; i++) {
 		auto p = _model;
 
-		if (d(_gen) > _generation_probability) {//preguntar
+		if (d(_gen) > _generation_probability) {
 
 			Vector3 newPos = _mean_pos;
 			newPos.x += d(_gen);
