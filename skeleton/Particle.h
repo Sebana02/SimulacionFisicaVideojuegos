@@ -3,11 +3,12 @@
 
 #include "core.hpp"
 #include "RenderUtils.hpp"
-#include "ParticleGenerator.h"
 #include <memory>
 #include <list>
 
 using namespace physx;
+using namespace std;
+
 
 class Particle {
 
@@ -72,6 +73,8 @@ public:
 
 	Proyectile(TYPE tipo, Vector3 pos, Vector3 dir, int lifeTime, double posDes);
 };
+
+class ParticleGenerator;//forward declaration
 
 class Firework : public Particle {
 public:

@@ -1,5 +1,5 @@
 #include "Particle.h"
-
+#include "ParticleGenerator.h"
 
 Particle::Particle(Vector3 position, Vector3 velocity, Vector3 accceleration, double damp, double mass,
 	Vector4 color, double scale, int lifeTime, double posDes)
@@ -113,7 +113,7 @@ std::list<Particle*> Firework::explode()
 
 	for (auto& gen : _gens) {
 		gen->setOrigin(_tr.p);
-		auto n_p = gen->generateParticles();
+		std::list<Particle*> n_p = gen->generateParticles();
 
 		for (Particle* p : n_p) {
 			p->setVel(p->getVel() + _vel);
