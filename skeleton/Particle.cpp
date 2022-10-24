@@ -12,7 +12,7 @@ Particle::Particle(Vector3 position, Vector3 velocity, Vector3 accceleration, do
 	_tr = PxTransform(position.x, position.y, position.z);
 	_renderItem = new RenderItem(CreateShape(physx::PxSphereGeometry(scale)), &_tr, color);
 
-	_lifeTime = glutGet(GLUT_ELAPSED_TIME) + lifeTime;
+	(lifeTime > 0 ? _lifeTime = glutGet(GLUT_ELAPSED_TIME) + lifeTime : _lifeTime = -1);
 
 	(posDes > 0 ? _lifePos = abs(_tr.p.magnitude()) + posDes : _lifePos = -1);
 
@@ -39,8 +39,8 @@ void Particle::integrate(double t)
 	_tr = PxTransform(_tr.p.x + _vel.x * t, _tr.p.y + _vel.y * t, _tr.p.z + _vel.z * t);
 
 
-	if (glutGet(GLUT_ELAPSED_TIME) >= _lifeTime ||
-		(_lifePos > 0 && (abs(_tr.p.magnitude()) > _lifePos || _tr.p.y < 0)))
+	if ((_lifeTime > 0 && glutGet(GLUT_ELAPSED_TIME) >= _lifeTime) ||
+		(_lifePos > 0 && (abs(_tr.p.magnitude()) > _lifePos)))
 		_alive = false;
 }
 

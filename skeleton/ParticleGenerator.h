@@ -17,6 +17,7 @@ public:
 	void setParticle(Particle* model);
 	virtual list<Particle*>generateParticles() = 0;
 	void setOrigin(Vector3 pos) { _mean_pos = pos; }
+	string getName() { return name_; }
 protected:
 	string name_;
 	Vector3 _mean_pos, _mean_vel;
@@ -34,7 +35,6 @@ public:
 
 protected:
 	Vector3 std_dev_pos, std_dev_vel;
-	//double std_dev_t;
 
 	std::default_random_engine _gen;
 	std::normal_distribution<double> d{ 0,1 };

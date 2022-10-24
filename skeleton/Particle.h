@@ -13,6 +13,11 @@ using namespace std;
 class Particle {
 
 public:
+	enum TYPE {
+		NORMAL = 0,
+		FIREWORK
+	}_type = NORMAL;
+
 	Particle(Vector3 position, Vector3 velocity, Vector3 accceleration, double damp, double mass,
 		Vector4 color, double scale, int lifeTime, double posDes);
 	~Particle();
@@ -38,10 +43,6 @@ public:
 
 	void setVel(Vector3 vel) { _vel = vel; }
 
-	enum TYPE {
-		FIREWORK = 0,
-		NORMAL
-	}_type;
 
 	//virtual Particle* clone() const;
 
