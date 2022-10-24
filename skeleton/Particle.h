@@ -24,27 +24,15 @@ public:
 
 	void integrate(double t);
 
-	Vector3 getVel() { return _vel; }
-	PxTransform& getTr() { return _tr; }
-	Vector3 getAccel() { return _accel; }
-	double getMass() { return 1.0 / _inverse_mass; }
-	double getInverseMass() { return _inverse_mass; }
-	double getDamping() { return _damping; }
-
-	int getLifeTime() { return _lifeTime; }
-	double getLifePos() { return _lifePos; }
-
-	Vector4 getColor() { return _color; }
-	double getScale() { return _scale; }
-
 	RenderItem* getRenderItem() { return _renderItem; }
 
 	bool isAlive() { return _alive; }
 
+	Vector3 getVel() { return _vel; }
 	void setVel(Vector3 vel) { _vel = vel; }
+	void setPos(Vector3 pos) { _tr.p = pos; }
 
-
-	//virtual Particle* clone() const;
+	virtual Particle* clone() const;
 
 protected:
 	RenderItem* _renderItem;
@@ -55,7 +43,7 @@ protected:
 	double _inverse_mass;
 
 	int _lifeTime;
-	double _lifePos;
+	double _lifePos, _duration;
 
 	bool _alive;
 
@@ -79,11 +67,10 @@ class ParticleGenerator;//forward declaration
 
 class Firework : public Particle {
 public:
-	Firework(Vector3 pos, Vector3 vel, Vector3 accel, std::list<std::shared_ptr<ParticleGenerator>> gens, double damp, double duration, unsigned type);
+	Firework(Vector3 pos, Vector3 vel, Vector3 accel, std::list<std::shared_ptr<ParticleGenerator>> gens, double damp, Vector4 color, double scale, double duration, unsigned type);
 	~Firework() {};
 
-	void integrate(double t);
-	virtual Particle* clone()const;
+	virtual Particle* clone()const override;
 	std::list<std::shared_ptr <ParticleGenerator>> _gens;
 	std::list<Particle*> explode();
 

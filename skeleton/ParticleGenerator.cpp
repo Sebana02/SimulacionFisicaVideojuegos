@@ -26,7 +26,7 @@ std::list<Particle*> GaussianParticleGenerator::generateParticles()
 		return lista;
 
 	for (int i = 0; i < _num_particles; i++) {
-		auto p = _model;
+		auto p = _model->clone();
 
 		if (d(_gen) > _generation_probability) {
 
@@ -40,7 +40,9 @@ std::list<Particle*> GaussianParticleGenerator::generateParticles()
 			newVel.y += (d(_gen) * std_dev_vel.y);
 			newVel.z += (d(_gen) * std_dev_vel.z);
 
-			lista.push_back(new Particle(newPos, newVel, p->getAccel(), p->getDamping(), p->getMass(), p->getColor(), p->getScale(), p->getLifeTime(), p->getLifePos()));
+			p->setVel(newVel);
+			p->setPos(newPos);
+			lista.push_back(p);
 		}
 	}
 
@@ -70,7 +72,7 @@ std::list<Particle*> UniformParticleGenerator::generateParticles()
 		return lista;
 
 	for (int i = 0; i < _num_particles; i++) {
-		auto p = _model;
+		auto p = _model->clone();
 
 		if (d(_gen) > _generation_probability) {
 
@@ -84,8 +86,9 @@ std::list<Particle*> UniformParticleGenerator::generateParticles()
 			newVel.y += d(_gen);
 			newVel.z += d(_gen);
 
-			lista.push_back(new Particle(newPos, newVel, p->getAccel(), p->getDamping(), p->getMass(), p->getColor(), p->getScale(), p->getLifeTime(), p->getLifePos()));
-		}
+			p->setVel(newVel);
+			p->setPos(newPos);
+			lista.push_back(p);
 	}
 
 	return lista;

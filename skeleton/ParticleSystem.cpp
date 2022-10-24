@@ -80,8 +80,8 @@ void ParticleSystem::generateFireworkSystem() {
 }
 void ParticleSystem::onParticleDeath(Particle* p) {
 	if (p->_type == Particle::TYPE::FIREWORK) {
-		Firework* f = (Firework*)p;
-		if (f)
-			_particles.push_back(*f->explode().begin());
+		Firework* firework = dynamic_cast<Firework*>(p);
+		if (firework != nullptr)
+			_particles.push_back(*firework->explode().begin());
 	}
 }

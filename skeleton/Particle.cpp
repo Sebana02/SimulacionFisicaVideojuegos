@@ -12,7 +12,8 @@ Particle::Particle(Vector3 position, Vector3 velocity, Vector3 accceleration, do
 	_tr = PxTransform(position.x, position.y, position.z);
 	_renderItem = new RenderItem(CreateShape(physx::PxSphereGeometry(scale)), &_tr, color);
 
-	(lifeTime > 0 ? _lifeTime = glutGet(GLUT_ELAPSED_TIME) + lifeTime : _lifeTime = -1);
+	_duration = lifeTime;
+	(lifeTime > 0 ? _lifeTime = glutGet(GLUT_ELAPSED_TIME) + _duration : _lifeTime = -1);
 
 	(posDes > 0 ? _lifePos = abs(_tr.p.magnitude()) + posDes : _lifePos = -1);
 
@@ -38,7 +39,6 @@ void Particle::integrate(double t)
 
 	_tr = PxTransform(_tr.p.x + _vel.x * t, _tr.p.y + _vel.y * t, _tr.p.z + _vel.z * t);
 
-
 	if ((_lifeTime > 0 && glutGet(GLUT_ELAPSED_TIME) >= _lifeTime) ||
 		(_lifePos > 0 && (abs(_tr.p.magnitude()) > _lifePos)))
 		_alive = false;
@@ -56,7 +56,8 @@ Proyectile::Proyectile(TYPE tipo, Vector3 pos, Vector3 dir, int lifeTime, double
 		_vel = dir * 35.0f;
 		_accel = { 0.0f,-1.0f,0.0f };
 		_damping = 0.99f;
-		_renderItem->shape = CreateShape(physx::PxSphereGeometry(2.0));
+		_scale = 2.0;
+		_renderItem->shape = CreateShape(physx::PxSphereGeometry(_scale));
 		_renderItem->color = { 1.0,1.0,0.0,1.0 };
 		break;
 	case ARTILLERY:
@@ -64,7 +65,8 @@ Proyectile::Proyectile(TYPE tipo, Vector3 pos, Vector3 dir, int lifeTime, double
 		_vel = dir * 40.0f;
 		_accel = { 0.0f,-20.0f,0.0f };
 		_damping = 0.99f;
-		_renderItem->shape = CreateShape(physx::PxSphereGeometry(5.0));
+		_scale = 5.0;
+		_renderItem->shape = CreateShape(physx::PxSphereGeometry(_scale));
 		_renderItem->color = { 1.0,0.5,0.5,1.0 };
 		break;
 	case FIREBALL:
@@ -72,7 +74,8 @@ Proyectile::Proyectile(TYPE tipo, Vector3 pos, Vector3 dir, int lifeTime, double
 		_vel = dir * 10.0f;
 		_accel = { 0.0f,6.0f,0.0f };
 		_damping = 0.9f;
-		_renderItem->shape = CreateShape(physx::PxSphereGeometry(1.0));
+		_scale = 1.0;
+		_renderItem->shape = CreateShape(physx::PxSphereGeometry(_scale));
 		_renderItem->color = { 1.0,0.0,1.0,1.0 };
 		break;
 	case LASER:
@@ -80,7 +83,8 @@ Proyectile::Proyectile(TYPE tipo, Vector3 pos, Vector3 dir, int lifeTime, double
 		_vel = dir * 100.0f;
 		_accel = { 0.0f,0.0f,0.0f };
 		_damping = 0.99f;
-		_renderItem->shape = CreateShape(physx::PxSphereGeometry(0.5));
+		_scale = 0.5;
+		_renderItem->shape = CreateShape(physx::PxSphereGeometry(_scale));
 		_renderItem->color = { 0.0,1.0,0.0,1.0 };
 		break;
 	default:
@@ -90,21 +94,21 @@ Proyectile::Proyectile(TYPE tipo, Vector3 pos, Vector3 dir, int lifeTime, double
 
 
 Firework::Firework(Vector3 pos, Vector3 vel, Vector3 accel, std::list<std::shared_ptr<ParticleGenerator>> gens,
-	double damp, double duration, unsigned type) :Particle(pos, vel, accel, damp, 1.0, { 1,1,1,1 }, 1.0, duration + glutGet(GLUT_ELAPSED_TIME), -1)
+	double damp, Vector4 color, double scale, double duration, unsigned type) :Particle(pos, vel, accel, damp, 1.0, color, scale, duration, -1)
 {
 	_gens = gens;
 	Particle::_type = FIREWORK;
 	_type = type;
 }
 
-void Firework::integrate(double t)
-{
-	Particle::integrate(t);
-}
-
 Particle* Firework::clone() const
 {
-	return new Particle(_tr.p, _vel, _accel, _damping, _inverse_mass / 1.0, _color, _scale, _lifeTime, _lifePos);
+	return new Firework(_tr.p, _vel, _accel, _gens, _damping, _color, _scale, _duration, _type);
+}
+
+Particle* Particle::clone() const
+{
+	return new Particle(_tr.p, _vel, _accel, _damping, _inverse_mass / 1.0, _color, _scale, _duration, _lifePos);
 }
 
 std::list<Particle*> Firework::explode()
