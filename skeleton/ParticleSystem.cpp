@@ -25,6 +25,12 @@ ParticleSystem::~ParticleSystem() {
 	for (auto particle : _particles)
 		delete particle;
 	_particles.clear();
+
+	delete _firework_gen;
+
+	for (auto firework : _fireworks_pool)
+		delete firework;
+	_fireworks_pool.clear();
 }
 void ParticleSystem::update(double t) {
 
@@ -60,27 +66,15 @@ ParticleGenerator* ParticleSystem::getParticleGenerator(string name) {
 	return nullptr;
 }
 
-void ParticleSystem::createFireworkRules() {
-	_firework_rules = std::vector<FireworkRules>(8);
-
-	_firework_rules[0].set(0, 0, 2, { -1,-2,-1 }, { 1,5,1 }, 0.999, {});
-	_firework_rules[1].set(1, 1, 3, { -3,0,3 }, { 3,0,3 }, 0.999, { {0,5} });
-	_firework_rules[2].set(2, 2, 4, { -7,0,-10 }, { 7,5,10 }, 0.999, { {1,5},{0,3} });
-	_firework_rules[3].set(3, 3, 4, { -5,-2,-5 }, { 5,3,5 }, 0.999, { {2,5},{1,3},{0,2} });
-	_firework_rules[4].set(4, 0, 2, { -5,3,0 }, { 5,5,0 }, 0.999, { {2,5},{1,3},{0,2} ,{0,3} });
-	_firework_rules[5].set(5, 0, 1, { -10,-1,0 }, { 10,4,0 }, 0.999, { {0,5},{1,3},{2,2},{3,1},{4,5} });
-	_firework_rules[6].set(6, 0.5, 1.5, { -3,-0.5,0 }, { 3,0.25,0 }, 0.9, { {0,5} });
-	_firework_rules[7].set(7, 4, 6, { -5,-0.5,0 }, { 5,0,0 }, 0.999, { {6,25} });
-}
-
-void ParticleSystem::generateFirework(unsigned type) {
-	if (type > _firework_rules.size())
+void ParticleSystem::generateFirework(unsigned type) {//para el primer firework
+	if (type > _fireworks_pool.size())
 		return;
 
 	_firework_gen->setParticle(_fireworks_pool[type]);//
 	auto& n_p = _firework_gen->generateParticles();
 	_particles.push_back(*n_p.begin());
 }
+
 void ParticleSystem::generateFireworkSystem() {
 
 }
