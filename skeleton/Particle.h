@@ -16,7 +16,7 @@ public:
 	enum TYPE {
 		NORMAL = 0,
 		FIREWORK
-	}_type = NORMAL;
+	}_type;
 
 	Particle(Vector3 position, Vector3 velocity, Vector3 accceleration, double damp, double mass,
 		Vector4 color, double scale, int lifeTime, double posDes);
@@ -68,7 +68,6 @@ class ParticleGenerator;//forward declaration
 class Firework : public Particle {
 public:
 	Firework(Vector3 pos, Vector3 vel, Vector3 accel, std::list<std::shared_ptr<ParticleGenerator>> gens, double damp, Vector4 color, double scale, double duration, unsigned type);
-	~Firework() {};
 
 	virtual Particle* clone()const override;
 	std::list<std::shared_ptr <ParticleGenerator>> _gens;

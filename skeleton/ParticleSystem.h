@@ -5,8 +5,6 @@
 #include "ParticleGenerator.h"
 #include "core.hpp"
 
-
-
 class ParticleSystem
 {
 public:
@@ -23,7 +21,9 @@ protected:
 	std::list<Particle*> _particles;
 	std::list<ParticleGenerator*> _particle_generators;
 	std::vector<Firework*> _fireworks_pool;
-	ParticleGenerator* _firework_gen;
+	ParticleGenerator* _firework_gen = nullptr;
+
+	Vector3 _gravity = { 0.0,-9.8,0.0 };
 };
 
 #endif __PARTICLE_SYSTEM__

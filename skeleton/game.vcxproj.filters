@@ -27,6 +27,7 @@
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleGenerator.h" />
     <ClInclude Include="ParticleSystem.h" />
+    <ClInclude Include="checkML.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

@@ -12,12 +12,12 @@ using namespace std;
 class ParticleGenerator
 {
 public:
-	ParticleGenerator() {};
-	~ParticleGenerator() {};
+	~ParticleGenerator();
 	void setParticle(Particle* model);
 	virtual list<Particle*>generateParticles() = 0;
 	void setOrigin(Vector3 pos) { _mean_pos = pos; }
 	string getName() { return name_; }
+	void setName(string name) { name_ = name; }
 protected:
 	string name_;
 	Vector3 _mean_pos, _mean_vel;
@@ -28,9 +28,8 @@ protected:
 
 class GaussianParticleGenerator : public ParticleGenerator {
 public:
-	GaussianParticleGenerator(Vector3 mean_pos, Vector3 mean_vel, Vector3 dev_pos, Vector3 dev_vel, 
+	GaussianParticleGenerator(Vector3 mean_pos, Vector3 mean_vel, Vector3 dev_pos, Vector3 dev_vel,
 		int num_particles = 10, double prob = 1);
-	~GaussianParticleGenerator() { if(_model != nullptr) delete _model; }
 	virtual std::list<Particle*> generateParticles() override;
 
 protected:
@@ -40,12 +39,18 @@ protected:
 	std::normal_distribution<double> d{ 0,1 };
 };
 
+class CircleParticleGenerator : public GaussianParticleGenerator {
+public :
+	CircleParticleGenerator(Vector3 mean_pos, Vector3 mean_vel, Vector3 dev_pos, Vector3 dev_vel,
+		int num_particles = 10, double prob = 1);
+	virtual std::list<Particle*> generateParticles() override;
+
+};
 
 class UniformParticleGenerator : public ParticleGenerator {
 public:
 	UniformParticleGenerator(Vector3 mean_pos, Vector3 mean_vel, double a, double b,
 		int num_particles = 10, double prob = 1);
-	~UniformParticleGenerator() { if (_model != nullptr) delete _model; }
 	virtual std::list<Particle*> generateParticles() override;
 
 protected:

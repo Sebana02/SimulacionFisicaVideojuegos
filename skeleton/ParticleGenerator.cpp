@@ -1,11 +1,16 @@
 #include "ParticleGenerator.h"
 
+ParticleGenerator::~ParticleGenerator()
+{
+	delete _model;
+	_model = nullptr;
+}
+
 void ParticleGenerator::setParticle(Particle* model)
 {
 	delete _model;
 	_model = model;
 }
-
 GaussianParticleGenerator::GaussianParticleGenerator(Vector3 mean_pos, Vector3 mean_vel,
 	Vector3 dev_pos, Vector3 dev_vel, int num_particles, double prob)
 {
@@ -26,24 +31,26 @@ std::list<Particle*> GaussianParticleGenerator::generateParticles()
 		return lista;
 
 	for (int i = 0; i < _num_particles; i++) {
+
+		if (abs(d(_gen)) > _generation_probability)
+			continue;
+
 		auto p = _model->clone();
 
-		if (d(_gen) > _generation_probability) {
+		Vector3 newPos = _mean_pos;
+		newPos.x += (d(_gen) * std_dev_pos.x);
+		newPos.y += (d(_gen) * std_dev_pos.y);
+		newPos.z += (d(_gen) * std_dev_pos.z);
 
-			Vector3 newPos = _mean_pos;
-			newPos.x += (d(_gen) * std_dev_pos.x);
-			newPos.y += (d(_gen) * std_dev_pos.y);
-			newPos.z += (d(_gen) * std_dev_pos.z);
+		Vector3 newVel = _mean_vel;
+		newVel.x += (d(_gen) * std_dev_vel.x);
+		newVel.y += (d(_gen) * std_dev_vel.y);
+		newVel.z += (d(_gen) * std_dev_vel.z);
 
-			Vector3 newVel = _mean_vel;
-			newVel.x += (d(_gen) * std_dev_vel.x);
-			newVel.y += (d(_gen) * std_dev_vel.y);
-			newVel.z += (d(_gen) * std_dev_vel.z);
+		p->setVel(newVel);
+		p->setPos(newPos);
+		lista.push_back(p);
 
-			p->setVel(newVel);
-			p->setPos(newPos);
-			lista.push_back(p);
-		}
 	}
 
 	return lista;
@@ -72,25 +79,64 @@ std::list<Particle*> UniformParticleGenerator::generateParticles()
 		return lista;
 
 	for (int i = 0; i < _num_particles; i++) {
+
+		if (abs(d(_gen)) > _generation_probability)
+			continue;
+
 		auto p = _model->clone();
 
-		if (d(_gen) > _generation_probability) {
+		Vector3 newPos = _mean_pos;
+		newPos.x += d(_gen);
+		newPos.y += d(_gen);
+		newPos.z += d(_gen);
 
-			Vector3 newPos = _mean_pos;
-			newPos.x += d(_gen);
-			newPos.y += d(_gen);
-			newPos.z += d(_gen);
+		Vector3 newVel = _mean_vel;
+		newVel.x += d(_gen);
+		newVel.y += d(_gen);
+		newVel.z += d(_gen);
 
-			Vector3 newVel = _mean_vel;
-			newVel.x += d(_gen);
-			newVel.y += d(_gen);
-			newVel.z += d(_gen);
+		p->setVel(newVel);
+		p->setPos(newPos);
+		lista.push_back(p);
+	}
+		return lista;
+}
 
-			p->setVel(newVel);
-			p->setPos(newPos);
-			lista.push_back(p);
+CircleParticleGenerator::CircleParticleGenerator(Vector3 mean_pos, Vector3 mean_vel, Vector3 dev_pos, Vector3 dev_vel, int num_particles, double prob)
+	: GaussianParticleGenerator(mean_pos,mean_vel,dev_pos,dev_vel,num_particles,prob)
+{
+	name_ = "Circle";
+}
+
+std::list<Particle*> CircleParticleGenerator::generateParticles()
+{
+	std::list<Particle*> lista;
+
+	if (_model == nullptr)
+		return lista;
+
+	for (int i = 0; i < _num_particles; i++) {
+
+		if (abs(d(_gen)) > _generation_probability)
+			continue;
+
+		auto p = _model->clone();
+
+		Vector3 newPos = _mean_pos;
+		newPos.x += (d(_gen) * std_dev_pos.x);
+		newPos.y += (d(_gen) * std_dev_pos.y);
+		newPos.z += (d(_gen) * std_dev_pos.z);
+
+		Vector3 newVel = _mean_vel;
+		newVel.x += (d(_gen) * std_dev_vel.x);
+		newVel.y += (d(_gen) * std_dev_vel.y);
+		newVel.z += (d(_gen) * std_dev_vel.z);
+
+		p->setVel(newVel);
+		p->setPos(newPos);
+		lista.push_back(p);
+
 	}
 
 	return lista;
 }
-

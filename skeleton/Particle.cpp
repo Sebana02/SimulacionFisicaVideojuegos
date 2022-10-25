@@ -26,6 +26,7 @@ Particle::Particle(Vector3 position, Vector3 velocity, Vector3 accceleration, do
 Particle::~Particle()
 {
 	DeregisterRenderItem(_renderItem);
+	delete _renderItem;
 }
 
 void Particle::integrate(double t)
@@ -40,7 +41,7 @@ void Particle::integrate(double t)
 	_tr = PxTransform(_tr.p.x + _vel.x * t, _tr.p.y + _vel.y * t, _tr.p.z + _vel.z * t);
 
 	if ((_lifeTime > 0 && glutGet(GLUT_ELAPSED_TIME) >= _lifeTime) ||
-		(_lifePos > 0 && (abs(_tr.p.magnitude()) > _lifePos)))
+		(_lifePos > 0 && (abs(_tr.p.magnitude()) > _lifePos)) || _tr.p.y < 0) 
 		_alive = false;
 }
 
