@@ -16,10 +16,8 @@ public:
 	void setParticle(Particle* model);
 	virtual list<Particle*>generateParticles() = 0;
 	void setOrigin(Vector3 pos) { _mean_pos = pos; }
-	string getName() { return name_; }
-	void setName(string name) { name_ = name; }
+
 protected:
-	string name_;
 	Vector3 _mean_pos, _mean_vel;
 	double _generation_probability;
 	int _num_particles;
@@ -35,7 +33,8 @@ public:
 protected:
 	Vector3 std_dev_pos, std_dev_vel;
 
-	std::default_random_engine _gen;
+	std::random_device mch; //get each time a different distribution
+	std::default_random_engine _gen{ mch() };
 	std::normal_distribution<double> d{ 0,1 };
 };
 
@@ -56,7 +55,8 @@ public:
 protected:
 	double _a = -20, _b = 20;
 
-	std::default_random_engine _gen;
+	std::random_device mch;
+	std::default_random_engine _gen{mch()};
 	std::uniform_real_distribution<double> d{ _a,_b };
 };
 #endif __PARTICLE__GENERATOR__

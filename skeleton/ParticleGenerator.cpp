@@ -14,7 +14,6 @@ void ParticleGenerator::setParticle(Particle* model)
 GaussianParticleGenerator::GaussianParticleGenerator(Vector3 mean_pos, Vector3 mean_vel,
 	Vector3 dev_pos, Vector3 dev_vel, int num_particles, double prob)
 {
-	name_ = "Gaussian";
 	_mean_pos = mean_pos;
 	_mean_vel = mean_vel;
 	std_dev_pos = dev_pos;
@@ -59,7 +58,6 @@ std::list<Particle*> GaussianParticleGenerator::generateParticles()
 UniformParticleGenerator::UniformParticleGenerator(Vector3 mean_pos, Vector3 mean_vel, double a, double b,
 	int num_particles, double prob)
 {
-	name_ = "Uniform";
 	_mean_pos = mean_pos;
 	_mean_vel = mean_vel;
 	_num_particles = num_particles;
@@ -105,7 +103,6 @@ std::list<Particle*> UniformParticleGenerator::generateParticles()
 CircleParticleGenerator::CircleParticleGenerator(Vector3 mean_pos, Vector3 mean_vel, Vector3 dev_pos, Vector3 dev_vel, int num_particles, double prob)
 	: GaussianParticleGenerator(mean_pos,mean_vel,dev_pos,dev_vel,num_particles,prob)
 {
-	name_ = "Circle";
 }
 
 std::list<Particle*> CircleParticleGenerator::generateParticles()
@@ -122,18 +119,14 @@ std::list<Particle*> CircleParticleGenerator::generateParticles()
 
 		auto p = _model->clone();
 
-		Vector3 newPos = _mean_pos;
-		newPos.x += (d(_gen) * std_dev_pos.x);
-		newPos.y += (d(_gen) * std_dev_pos.y);
-		newPos.z += (d(_gen) * std_dev_pos.z);
+		double increase = 360.0/_num_particles;
 
 		Vector3 newVel = _mean_vel;
-		newVel.x += (d(_gen) * std_dev_vel.x);
-		newVel.y += (d(_gen) * std_dev_vel.y);
-		newVel.z += (d(_gen) * std_dev_vel.z);
+		newVel.y = (newVel.y * (std::sin(i * increase * std::_Pi / 180))) + (d(_gen) * std_dev_vel.y);
+		newVel.z = (newVel.z * (std::cos(i * increase * std::_Pi / 180))) + (d(_gen) * std_dev_vel.z);
 
 		p->setVel(newVel);
-		p->setPos(newPos);
+		p->setPos(_mean_pos);
 		lista.push_back(p);
 
 	}

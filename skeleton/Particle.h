@@ -67,13 +67,11 @@ class ParticleGenerator;//forward declaration
 
 class Firework : public Particle {
 public:
-	Firework(Vector3 pos, Vector3 vel, Vector3 accel, std::list<std::shared_ptr<ParticleGenerator>> gens, double damp, Vector4 color, double scale, double duration, unsigned type);
+	Firework(Vector3 pos, Vector3 vel, Vector3 accel, std::list<std::shared_ptr<ParticleGenerator>> gens, double damp, Vector4 color, double scale, double duration);
 
 	virtual Particle* clone()const override;
 	std::list<std::shared_ptr <ParticleGenerator>> _gens;
 	std::list<Particle*> explode();
 
-protected:
-	unsigned _type;
 };
 #endif // !

@@ -12,7 +12,6 @@ public:
 	ParticleSystem();
 	~ParticleSystem();
 	void update(double t);
-	ParticleGenerator* getParticleGenerator(string name);
 	void generateFireworkSystem();
 	void generateShot(Proyectile::TYPE proyectile_type, Vector3 pos, Vector3 dir, int lifeTime, double posDes);
 	void generateFirework(unsigned type);

@@ -41,7 +41,7 @@ void Particle::integrate(double t)
 	_tr = PxTransform(_tr.p.x + _vel.x * t, _tr.p.y + _vel.y * t, _tr.p.z + _vel.z * t);
 
 	if ((_lifeTime > 0 && glutGet(GLUT_ELAPSED_TIME) >= _lifeTime) ||
-		(_lifePos > 0 && (abs(_tr.p.magnitude()) > _lifePos)) || _tr.p.y < 0) 
+		(_lifePos > 0 && (abs(_tr.p.magnitude()) > _lifePos))) 
 		_alive = false;
 }
 
@@ -95,16 +95,15 @@ Proyectile::Proyectile(TYPE tipo, Vector3 pos, Vector3 dir, int lifeTime, double
 
 
 Firework::Firework(Vector3 pos, Vector3 vel, Vector3 accel, std::list<std::shared_ptr<ParticleGenerator>> gens,
-	double damp, Vector4 color, double scale, double duration, unsigned type) :Particle(pos, vel, accel, damp, 1.0, color, scale, duration, -1)
+	double damp, Vector4 color, double scale, double duration) :Particle(pos, vel, accel, damp, 1.0, color, scale, duration, -1)
 {
 	_gens = gens;
 	Particle::_type = FIREWORK;
-	_type = type;
 }
 
 Particle* Firework::clone() const
 {
-	return new Firework(_tr.p, _vel, _accel, _gens, _damping, _color, _scale, _duration, _type);
+	return new Firework(_tr.p, _vel, _accel, _gens, _damping, _color, _scale, _duration);
 }
 
 Particle* Particle::clone() const
