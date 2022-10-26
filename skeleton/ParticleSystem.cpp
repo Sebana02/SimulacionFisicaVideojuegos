@@ -87,16 +87,26 @@ void ParticleSystem::generateFirework(unsigned type) {//para el primer firework?
 
 void ParticleSystem::generateFireworkSystem() {
 
-	Particle* base_particle = new Particle({ 0.0,0.0,0.0 }, { 0.0, 0.0, 0.0 }, _gravity, 0.999, 1.0, { 0.3, 0.2, 0.2, 0.8 }, 0.2, 5000, -1);
-	shared_ptr<ParticleGenerator> g1(new CircleParticleGenerator({ 0.0,0.0,0.0 }, { 0.0,5.0,5.0 }, { 0.0,0.0,0.0 }, { 0.0,0.2,0.2 }, 20, 1.0));
+	//Particle* base_particle = new Particle({ 0.0,0.0,0.0 }, { 0.0, 0.0, 0.0 }, _gravity, 0.999, 1.0, { 0.3, 0.2, 0.2, 0.8 }, 0.2, 5000, -1);
+	//shared_ptr<ParticleGenerator> g1(new CircleParticleGenerator({ 0.0,0.0,0.0 }, { 0.0,5.0,5.0 }, { 0.0,0.0,0.0 }, { 0.0,0.2,0.2 }, 20, 1.0));
+	//g1->setParticle(base_particle);
+	//Firework* firework = new Firework({ 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, _gravity, { g1 }, 0.999, { 0.7, 0.3, 0.5, 1.0 }, 0.4, 1000);
+	//shared_ptr<ParticleGenerator> g2(new CircleParticleGenerator({ 0.0,0.0,0.0 }, { 0.0,5.0,5.0 }, { 0.0,0.0,0.0 }, { 0.0,0.2,0.2 }, 20, 1.0));
+	//g2->setParticle(firework);
+	//Firework* firework2 = new Firework({ 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, _gravity, { g2 }, 0.999, { 0.9, 0.5, 0.7, 1.0 }, 0.6, 2000);
+	//_fireworks_pool.push_back(firework2);
+
+
+	Particle* base_particle = new Particle({ 0.0,0.0,0.0 }, { 0.0, 0.0, 0.0 }, _gravity, 0.999, 1.0, { 0.9, 0.5, 0.7, 1.0 }, 0.2, 5000, -1);
+	shared_ptr<ParticleGenerator> g1(new SphereParticleGenerator({ 0.0,0.0,0.0 }, { 5.0,5.0,5.0 }, 10));
 	g1->setParticle(base_particle);
-	Firework* firework = new Firework({ 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, _gravity, { g1 }, 0.999, { 0.7, 0.3, 0.5, 1.0 }, 0.4, 1000);
-	shared_ptr<ParticleGenerator> g2(new CircleParticleGenerator({ 0.0,0.0,0.0 }, { 0.0,5.0,5.0 }, { 0.0,0.0,0.0 }, { 0.0,0.2,0.2 }, 20, 1.0));
+	Firework* firework = new Firework({ 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, _gravity, { g1 }, 0.999, { 0.9, 0.5, 0.7, 1.0 }, 0.4, 1000);
+	shared_ptr<ParticleGenerator> g2(new SphereParticleGenerator({ 0.0,0.0,0.0 }, { 5.0,5.0,5.0 }, 100));
 	g2->setParticle(firework);
 	Firework* firework2 = new Firework({ 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, _gravity, { g2 }, 0.999, { 0.9, 0.5, 0.7, 1.0 }, 0.6, 2000);
 	_fireworks_pool.push_back(firework2);
 
-	_firework_gen = new GaussianParticleGenerator({ 0,0,0 }, { 0.0,30.0,0.0 }, { 0.0, 0.0,0.0 }, { 0.0,5.0,5.0 }, 20, 1);
+	_firework_gen = new GaussianParticleGenerator({ 0,0,0 }, { 0.0,30.0,0.0 }, { 0.0, 0.0,0.0 }, { 0.0,1.0,5.0 }, 10, 2);
 }
 void ParticleSystem::onParticleDeath(Particle* p) {
 	if (p->_type == Particle::TYPE::FIREWORK) {

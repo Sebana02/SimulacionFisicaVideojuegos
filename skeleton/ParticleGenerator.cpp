@@ -100,11 +100,6 @@ std::list<Particle*> UniformParticleGenerator::generateParticles()
 		return lista;
 }
 
-CircleParticleGenerator::CircleParticleGenerator(Vector3 mean_pos, Vector3 mean_vel, Vector3 dev_pos, Vector3 dev_vel, int num_particles, double prob)
-	: GaussianParticleGenerator(mean_pos,mean_vel,dev_pos,dev_vel,num_particles,prob)
-{
-}
-
 std::list<Particle*> CircleParticleGenerator::generateParticles()
 {
 	std::list<Particle*> lista;
@@ -131,5 +126,31 @@ std::list<Particle*> CircleParticleGenerator::generateParticles()
 
 	}
 
+	return lista;
+}
+
+std::list<Particle*> SphereParticleGenerator::generateParticles()
+{
+	std::list<Particle*> lista;
+
+	if (_model == nullptr)
+		return lista;
+
+	for (int i = 0; i < _num_particles; i++) {
+
+		auto p = _model->clone();
+
+		double theta = 2 * std::_Pi * d(_gen);
+		double phi = acos(2 * d(_gen) - 1.0);
+
+		Vector3 newVel = _mean_vel;
+		newVel.x *= cos(theta) * sin(phi);
+		newVel.y *= sin(theta) * sin(phi);
+		newVel.z *= cos(phi);
+
+		p->setVel(newVel);
+		p->setPos(_mean_pos);
+		lista.push_back(p);
+	}
 	return lista;
 }
