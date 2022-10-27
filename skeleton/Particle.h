@@ -6,6 +6,8 @@
 #include <memory>
 #include <list>
 
+#include "checkML.h"
+
 using namespace physx;
 using namespace std;
 
@@ -53,14 +55,14 @@ protected:
 
 class Proyectile : public Particle {
 public:
-	enum TYPE {
+	enum PROYECTILE_TYPE {
 		PISTOL = 0,
 		ARTILLERY,
 		FIREBALL,
 		LASER
-	}_type;
+	}_proyectile_type;
 
-	Proyectile(TYPE tipo, Vector3 pos, Vector3 dir, int lifeTime, double posDes);
+	Proyectile(PROYECTILE_TYPE tipo, Vector3 pos, Vector3 dir, int lifeTime, double posDes);
 };
 
 class ParticleGenerator;//forward declaration
@@ -68,8 +70,8 @@ class ParticleGenerator;//forward declaration
 class Firework : public Particle {
 public:
 	Firework(Vector3 pos, Vector3 vel, Vector3 accel, std::list<std::shared_ptr<ParticleGenerator>> gens, double damp, Vector4 color, double scale, double duration);
-
-	virtual Particle* clone()const override;
+	
+	virtual Firework* clone()const override;
 	std::list<std::shared_ptr <ParticleGenerator>> _gens;
 	std::list<Particle*> explode();
 

@@ -21,6 +21,8 @@ Particle::Particle(Vector3 position, Vector3 velocity, Vector3 accceleration, do
 
 	_color = color;
 	_scale = scale;
+
+	_type = NORMAL;
 }
 
 Particle::~Particle()
@@ -45,13 +47,17 @@ void Particle::integrate(double t)
 		_alive = false;
 }
 
+Particle * Particle::clone() const
+{
+	return new Particle(_tr.p, _vel, _accel, _damping, _inverse_mass / 1.0, _color, _scale, _duration, _lifePos);
+}
 //___________________________________________
-Proyectile::Proyectile(TYPE tipo, Vector3 pos, Vector3 dir, int lifeTime, double posDes) :
+Proyectile::Proyectile(PROYECTILE_TYPE tipo, Vector3 pos, Vector3 dir, int lifeTime, double posDes) :
 	Particle(pos, { 0,0,0 }, { 0,0,0 }, 0, 0, { 1.0,1.0,1.0,1.0 }, 1.0, lifeTime, posDes) {
 
-	_type = tipo;
+	_proyectile_type = tipo;
 
-	switch (_type) {
+	switch (_proyectile_type) {
 	case PISTOL:
 		_inverse_mass = 1.0 / 2.0f;
 		_vel = dir * 35.0f;
@@ -92,24 +98,20 @@ Proyectile::Proyectile(TYPE tipo, Vector3 pos, Vector3 dir, int lifeTime, double
 		break;
 	}
 }
-
-
+//--------------------------------------------------------------------------------
 Firework::Firework(Vector3 pos, Vector3 vel, Vector3 accel, std::list<std::shared_ptr<ParticleGenerator>> gens,
 	double damp, Vector4 color, double scale, double duration) :Particle(pos, vel, accel, damp, 1.0, color, scale, duration, -1)
 {
 	_gens = gens;
-	Particle::_type = FIREWORK;
+	_type = FIREWORK;
 }
 
-Particle* Firework::clone() const
+
+Firework* Firework::clone() const
 {
 	return new Firework(_tr.p, _vel, _accel, _gens, _damping, _color, _scale, _duration);
 }
 
-Particle* Particle::clone() const
-{
-	return new Particle(_tr.p, _vel, _accel, _damping, _inverse_mass / 1.0, _color, _scale, _duration, _lifePos);
-}
 
 std::list<Particle*> Firework::explode()
 {

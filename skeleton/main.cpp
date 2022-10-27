@@ -13,7 +13,10 @@
 #include <iostream>
 
 #include "Particle.h"
+#include "ParticleGenerator.h"
 #include "ParticleSystem.h"
+
+#include "checkML.h"
 
 using namespace physx;
 using namespace std;
@@ -34,7 +37,6 @@ PxScene* gScene = NULL;
 ContactReportCallback gContactReportCallback;
 
 ParticleSystem* _particle_system = nullptr;
-
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -95,7 +97,6 @@ void cleanupPhysics(bool interactive)
 	gFoundation->release();
 
 	delete _particle_system;
-
 }
 
 // Function called when a key is pressed
@@ -108,8 +109,18 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	case '1':
 	case '2':
 	case '3':
-	case '4':
-		_particle_system->generateShot((Proyectile::TYPE)(key - '0' - 1), GetCamera()->getTransform().p, GetCamera()->getDir(), 5000, 200.0);
+	case '4'://proyectiles
+		_particle_system->generateShot((Proyectile::PROYECTILE_TYPE)(key - '0' - 1), GetCamera()->getTransform().p, GetCamera()->getDir(), 5000, 200.0);
+		break;
+	case '5'://gaussian
+	case '6'://uniform
+	{
+		ParticleGenerator* p = _particle_system->getGenerator(key - '5');
+		p->setActive(!p->isActive());
+		break;
+	}
+	case '7'://firework
+		_particle_system->changeSpawnFireworks();
 		break;
 	default:
 		break;
@@ -122,11 +133,10 @@ void onCollision(physx::PxActor* actor1, physx::PxActor* actor2)
 	PX_UNUSED(actor2);
 }
 
-
 int main(int, const char* const*)
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);//check memory leaks
-	srand(NULL);//change seed for random numbers
+	srand(time(NULL));//change seed for random numbers
 
 #ifndef OFFLINE_EXECUTION 
 	extern void renderLoop();

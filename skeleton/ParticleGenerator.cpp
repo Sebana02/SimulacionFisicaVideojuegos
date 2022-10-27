@@ -11,6 +11,7 @@ void ParticleGenerator::setParticle(Particle* model)
 	delete _model;
 	_model = model;
 }
+
 GaussianParticleGenerator::GaussianParticleGenerator(Vector3 mean_pos, Vector3 mean_vel,
 	Vector3 dev_pos, Vector3 dev_vel, int num_particles, double prob)
 {
@@ -26,7 +27,7 @@ std::list<Particle*> GaussianParticleGenerator::generateParticles()
 {
 	std::list<Particle*> lista;
 
-	if (_model == nullptr)
+	if (_model == nullptr || !_active)
 		return lista;
 
 	for (int i = 0; i < _num_particles; i++) {
@@ -73,7 +74,7 @@ std::list<Particle*> UniformParticleGenerator::generateParticles()
 {
 	std::list<Particle*> lista;
 
-	if (_model == nullptr)
+	if (_model == nullptr || !_active)
 		return lista;
 
 	for (int i = 0; i < _num_particles; i++) {
@@ -104,7 +105,7 @@ std::list<Particle*> CircleParticleGenerator::generateParticles()
 {
 	std::list<Particle*> lista;
 
-	if (_model == nullptr)
+	if (_model == nullptr || !_active)
 		return lista;
 
 	for (int i = 0; i < _num_particles; i++) {
@@ -133,7 +134,7 @@ std::list<Particle*> SphereParticleGenerator::generateParticles()
 {
 	std::list<Particle*> lista;
 
-	if (_model == nullptr)
+	if (_model == nullptr || !_active)
 		return lista;
 
 	for (int i = 0; i < _num_particles; i++) {

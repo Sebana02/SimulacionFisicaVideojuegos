@@ -3,21 +3,20 @@
 
 ParticleSystem::ParticleSystem() {
 
+
+	//fuente
+	ParticleGenerator* fuente = new GaussianParticleGenerator(Vector3(), {1.0,25.0,1.0}, {0.0,0.0,0.0}, {2.0,1.0,2.0}, 100, 0.1);
+	fuente->setParticle(new Particle({0.0,-10000.0,0.0}, Vector3(), _gravity, 0.99, 1.0, randomColor(), 0.3, 5000, 300));
+	_particle_generators.push_back(fuente);
+	fuente->setActive(false);
+
+	//humo
+	ParticleGenerator* humo = new UniformParticleGenerator({ 0.0,20.0,0.0 },{0,0,0}, -10,10, 400, 0.1);
+	humo->setParticle(new Particle({ 0.0,-10000.0,0.0 }, Vector3(), _gravity, 0.99, 1.0, randomColor(), 0.3, 2000, 200.0));
+	_particle_generators.push_back(humo);
+	humo->setActive(false);
+	
 	generateFireworkSystem();
-
-	generateFirework(0);
-
-
-	//generador
-	/*Vector3 mean_pos = { 0,0,0 }, meanVel = { 1.0,25.0,1.0 };
-	ParticleGenerator* gaussian_generator = new GaussianParticleGenerator(mean_pos, meanVel, { 0.0,0.0,0.0 }, { 2.0,1.0,2.0 }, 100, 0.1);
-	gaussian_generator->setParticle(new Particle(mean_pos, meanVel, _gravity, 0.99, 1.0, { 0.5,0.5,1.0,1.0 }, 0.5, 10000, 300));
-	_particle_generators.push_back(gaussian_generator);*/
-
-
-	//ParticleGenerator* uniform_generator = new UniformParticleGenerator(mean_pos, meanVel, -10, 10, 100, 0.1);
-	//uniform_generator->setParticle(new Particle(mean_pos, meanVel, _gravity, 0.99, 1.0, { 1.0,1.0,0.0,1.0 }, 1.0, 5000, 500.0));
-	//_particle_generators.push_back(uniform_generator);
 
 	////suelo
 	//Particle* suelo = new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0, 0, { 1.0,0.0,0.0,1.0 }, 1.0, 0, 0);
@@ -25,10 +24,15 @@ ParticleSystem::ParticleSystem() {
 	//renderItem->shape = CreateShape(physx::PxBoxGeometry(100.0f, 1.0f, 100.0f));
 	//_particles.push_back(suelo);
 
-
 }
 
 ParticleSystem::~ParticleSystem() {
+	for (auto firework : _fireworks_pool)
+		delete firework;
+	_fireworks_pool.clear();
+
+	delete _firework_gen;
+
 	for (auto gen : _particle_generators)
 		delete gen;
 	_particle_generators.clear();
@@ -37,15 +41,19 @@ ParticleSystem::~ParticleSystem() {
 		delete particle;
 	_particles.clear();
 
-	delete _firework_gen;
-
-	for (auto firework : _fireworks_pool)
-		delete firework;
-	_fireworks_pool.clear();
 }
 
 void ParticleSystem::update(double t) {
 
+	//generar fireworks
+	if (_spawn_fireworks && glutGet(GLUT_ELAPSED_TIME) > _next_firework) {
+		if (_fireworks_pool.size() > 0) {
+			generateFirework(rand() % _fireworks_pool.size());
+			_next_firework = glutGet(GLUT_ELAPSED_TIME) + rand() % 500 + 500;
+		}
+	}
+
+	//generate particles
 	for (auto p : _particle_generators) {
 		std::list<Particle*> particles = p->generateParticles();
 		for (auto particle : particles)
@@ -68,7 +76,7 @@ void ParticleSystem::update(double t) {
 	}
 }
 
-void ParticleSystem::generateShot(Proyectile::TYPE proyectile_type, Vector3 pos, Vector3 dir, int lifeTime, double posDes) {
+void ParticleSystem::generateShot(Proyectile::PROYECTILE_TYPE proyectile_type, Vector3 pos, Vector3 dir, int lifeTime, double posDes) {
 	_particles.push_back(new Proyectile(proyectile_type, pos, dir, lifeTime, posDes));
 }
 
@@ -78,36 +86,44 @@ void ParticleSystem::generateFirework(unsigned type) {//para el primer firework?
 
 	_firework_gen->setParticle(_fireworks_pool[type]->clone());
 
-	std::list<Particle*> particles = _firework_gen->generateParticles();
-	for (auto p : particles)
+	for (auto p : _firework_gen->generateParticles())
 		_particles.push_back(p);
 
-	particles.clear();
 }
 
 void ParticleSystem::generateFireworkSystem() {
 
-	//Particle* base_particle = new Particle({ 0.0,0.0,0.0 }, { 0.0, 0.0, 0.0 }, _gravity, 0.999, 1.0, { 0.3, 0.2, 0.2, 0.8 }, 0.2, 5000, -1);
-	//shared_ptr<ParticleGenerator> g1(new CircleParticleGenerator({ 0.0,0.0,0.0 }, { 0.0,5.0,5.0 }, { 0.0,0.0,0.0 }, { 0.0,0.2,0.2 }, 20, 1.0));
-	//g1->setParticle(base_particle);
-	//Firework* firework = new Firework({ 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, _gravity, { g1 }, 0.999, { 0.7, 0.3, 0.5, 1.0 }, 0.4, 1000);
-	//shared_ptr<ParticleGenerator> g2(new CircleParticleGenerator({ 0.0,0.0,0.0 }, { 0.0,5.0,5.0 }, { 0.0,0.0,0.0 }, { 0.0,0.2,0.2 }, 20, 1.0));
-	//g2->setParticle(firework);
-	//Firework* firework2 = new Firework({ 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, _gravity, { g2 }, 0.999, { 0.9, 0.5, 0.7, 1.0 }, 0.6, 2000);
-	//_fireworks_pool.push_back(firework2);
+	_next_firework = 0;
+	_spawn_fireworks = false;
 
+	//circulo
+	Vector4 randColor;
+	for (int i = 0; i < 5; i++) {
+		randColor = randomColor();
+		shared_ptr<ParticleGenerator> g(new CircleParticleGenerator({ 0.0,0.0,0.0 }, { 0.0,5.0,5.0 }, { 0.0,0.0,0.0 }, { 0.0,0.2,0.2 }, 150, 1.0));
+		g->setParticle(new Particle({ 0.0,-10000.0,0.0 }, { 0.0, 0.0, 0.0 }, _gravity, 0.999, 1.0, randColor, 0.2, 5000, -1));
+		_fireworks_pool.push_back(new Firework({ 0.0,-10000.0,0.0 }, { 0.0, 0.0, 0.0 }, _gravity, { g }, 0.999, randColor, 0.4, rand()%1000 + 1000));
+	}
 
-	Particle* base_particle = new Particle({ 0.0,0.0,0.0 }, { 0.0, 0.0, 0.0 }, _gravity, 0.999, 1.0, { 0.9, 0.5, 0.7, 1.0 }, 0.2, 3000, -1);
-	shared_ptr<ParticleGenerator> g1(new SphereParticleGenerator({ 0.0,0.0,0.0 }, { 5.0,5.0,5.0 }, 10));
-	g1->setParticle(base_particle);
-	Firework* firework = new Firework({ 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, _gravity, { g1 }, 0.999, { 0.9, 0.5, 0.7, 1.0 }, 0.4, 2000);
-	shared_ptr<ParticleGenerator> g2(new SphereParticleGenerator({ 0.0,0.0,0.0 }, { 5.0,5.0,5.0 }, 100));
-	g2->setParticle(firework);
-	Firework* firework2 = new Firework({ 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0 }, _gravity, { g2 }, 0.999, { 0.9, 0.5, 0.7, 1.0 }, 0.6, 2000);
-	_fireworks_pool.push_back(firework2);
+	//esfera
+	for (int i = 0; i < 5; i++) {
+		randColor = randomColor();
+		shared_ptr<ParticleGenerator> g(new SphereParticleGenerator({ 0.0,0.0,0.0 }, { 5.0,5.0,5.0 }, 150));
+		g->setParticle(new Particle({ 0.0,-10000.0,0.0 }, { 0.0, 0.0, 0.0 }, _gravity, 0.999, 1.0, randColor, 0.2, 4000, -1));
+		_fireworks_pool.push_back(new Firework({ 0.0, -10000.0, 0.0 }, { 0.0, 0.0, 0.0 }, _gravity, { g }, 0.999, randColor, 0.4, rand() % 1000 + 1000));
+	}
 
-	_firework_gen = new GaussianParticleGenerator({ 0,0,0 }, { 0.0,35.0,0.0 }, { 0.0, 0.0,0.0 }, { 0.0,1.0,5.0 }, 10, 2);
+	//random
+	for (int i = 0; i < 5; i++) {
+		randColor = randomColor();
+		shared_ptr<ParticleGenerator> g(new GaussianParticleGenerator({ 0.0,0.0,0.0 }, { 5.0,5.0,5.0 }, { 0.0,0.0,0.0 }, { 2.0,2.0,2.0 }, 150,1.0));
+		g->setParticle(new Particle({ 0.0,-10000.0,0.0 }, { 0.0, 0.0, 0.0 }, _gravity, 0.999, 1.0, randColor, 0.2, 3000, -1));
+		_fireworks_pool.push_back(new Firework({ 0.0, -10000.0, 0.0 }, { 0.0, 0.0, 0.0 }, _gravity, { g }, 0.999, randColor, 0.4, rand() % 1000 + 1000));
+	}
+
+	_firework_gen = new GaussianParticleGenerator({ 0,0,0 }, { 0.0,35.0,0.0 }, { 0.0, 0.0,0.0 }, { 0.0,1.0,5.0 }, 1, 2);
 }
+
 void ParticleSystem::onParticleDeath(Particle* p) {
 	if (p->_type == Particle::TYPE::FIREWORK) {
 		Firework* firework = (Firework*)p;
@@ -119,4 +135,32 @@ void ParticleSystem::onParticleDeath(Particle* p) {
 		}
 	}
 	delete p;
+}
+
+void ParticleSystem::addGenerator(ParticleGenerator* gen)
+{
+	_particle_generators.push_back(gen);
+}
+
+ParticleGenerator* ParticleSystem::getGenerator(int i)
+{
+	if (i < _particle_generators.size() && i >= 0) {
+		list<ParticleGenerator*>::iterator it = _particle_generators.begin();
+		for (int j = 0; j < i; j++) 
+			++it;
+		
+		return *it;
+	}
+
+	return nullptr;
+}
+
+Vector4 ParticleSystem::randomColor()
+{
+	return Vector4((rand() % 9 + 1) / 10.0, (rand() % 9 + 1) / 10.0, (rand() % 9 + 1) / 10.0, 1.0);
+}
+
+void ParticleSystem::changeSpawnFireworks()
+{
+	_spawn_fireworks = !_spawn_fireworks;
 }

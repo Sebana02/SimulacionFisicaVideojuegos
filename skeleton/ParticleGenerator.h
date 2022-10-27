@@ -7,6 +7,8 @@
 #include "Particle.h"
 #include <random>
 
+#include "checkML.h"
+
 using namespace std;
 
 class ParticleGenerator
@@ -16,12 +18,17 @@ public:
 	void setParticle(Particle* model);
 	virtual list<Particle*>generateParticles() = 0;
 	void setOrigin(Vector3 pos) { _mean_pos = pos; }
+	double getProb() { return _generation_probability; }
+	void setProb(double prob) { _generation_probability = prob; }
+	bool isActive() { return _active; }
+	void setActive(bool set) { _active = set; }
 
 protected:
 	Vector3 _mean_pos, _mean_vel;
 	double _generation_probability;
 	int _num_particles;
 	Particle* _model = nullptr;
+	bool _active = true;
 };
 
 class GaussianParticleGenerator : public ParticleGenerator {
