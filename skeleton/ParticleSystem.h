@@ -25,7 +25,7 @@ public:
 	void onParticleDeath(Particle* p);
 	void addGenerator(ParticleGenerator* gen);
 	ParticleGenerator* getGenerator(int i);
-	void changeSpawnFireworks();
+	inline void changeSpawnFireworks() noexcept{_spawn_fireworks = !_spawn_fireworks;};
 protected:
 	std::list<Particle*> _particles;
 	std::list<ParticleGenerator*> _particle_generators;

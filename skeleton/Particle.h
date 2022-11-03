@@ -15,7 +15,7 @@ using namespace std;
 class Particle {
 
 public:
-	enum TYPE {
+	enum class TYPE {
 		NORMAL = 0,
 		FIREWORK
 	}_type;
@@ -26,16 +26,20 @@ public:
 
 	void integrate(double t);
 
-	RenderItem* getRenderItem() { return _renderItem; }
+	inline RenderItem* getRenderItem() noexcept { return _renderItem; };
+	inline bool isAlive() noexcept { return _alive; };
+	
+	inline Vector3 getVel() { return _vel; };
+	inline void setVel(Vector3 vel) { _vel = vel; };
+	inline void setPos(Vector3 pos) { _tr.p = pos; };
+	inline double getInverseMass() noexcept { return _inverse_mass; };
+	inline double getMass() noexcept { return _inverse_mass / 1.0; };
+	
+	virtual inline Particle* clone() const;
 
-	bool isAlive() { return _alive; }
-
-	Vector3 getVel() { return _vel; }
-	void setVel(Vector3 vel) { _vel = vel; }
-	void setPos(Vector3 pos) { _tr.p = pos; }
-
-	virtual Particle* clone() const;
-
+	//fuerzas
+	inline void clearForce() {_force = { 0,0,0 };};
+	inline void addForce(const Vector3& force) { _force += force; };
 protected:
 	RenderItem* _renderItem;
 	Vector3 _vel;
@@ -44,18 +48,22 @@ protected:
 	double _damping;
 	double _inverse_mass;
 
-	int _lifeTime;
-	double _lifePos, _duration;
+	//determinan la vida de la particula
+	int _lifeTime, _duration;
+	double _lifePos;
 
+	//is alive?
 	bool _alive;
 
 	Vector4 _color;
 	double _scale;
+
+	Vector3 _force;
 };
 
 class Proyectile : public Particle {
 public:
-	enum PROYECTILE_TYPE {
+	enum class PROYECTILE_TYPE {
 		PISTOL = 0,
 		ARTILLERY,
 		FIREBALL,
@@ -70,8 +78,7 @@ class ParticleGenerator;//forward declaration
 class Firework : public Particle {
 public:
 	Firework(Vector3 pos, Vector3 vel, Vector3 accel, std::list<std::shared_ptr<ParticleGenerator>> gens, double damp, Vector4 color, double scale, double duration);
-	
-	virtual Firework* clone()const override;
+	inline Firework* clone()const override;
 	std::list<std::shared_ptr <ParticleGenerator>> _gens;
 	std::list<Particle*> explode();
 

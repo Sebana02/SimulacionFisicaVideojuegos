@@ -5,12 +5,11 @@
 #include <vector>
 #include <list>
 #include <random>
+#include <iostream>
 
 #include "core.hpp"
 #include "RenderUtils.hpp"
 #include "callbacks.hpp"
-
-#include <iostream>
 
 #include "Particle.h"
 #include "ParticleGenerator.h"

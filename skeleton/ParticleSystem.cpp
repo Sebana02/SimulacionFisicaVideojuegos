@@ -18,11 +18,11 @@ ParticleSystem::ParticleSystem() {
 	
 	generateFireworkSystem();
 
-	////suelo
-	//Particle* suelo = new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0, 0, { 1.0,0.0,0.0,1.0 }, 1.0, 0, 0);
-	//RenderItem* renderItem = suelo->getRenderItem();
-	//renderItem->shape = CreateShape(physx::PxBoxGeometry(100.0f, 1.0f, 100.0f));
-	//_particles.push_back(suelo);
+	/*//suelo
+	Particle* suelo = new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0, 0, { 1.0,0.0,0.0,1.0 }, 1.0, 0, 0);
+	RenderItem* renderItem = suelo->getRenderItem();
+	renderItem->shape = CreateShape(physx::PxBoxGeometry(100.0f, 1.0f, 100.0f));
+	_particles.push_back(suelo);*/
 
 }
 
@@ -55,6 +55,8 @@ void ParticleSystem::update(double t) {
 
 	//generate particles
 	for (auto p : _particle_generators) {
+		if (!p)continue;
+		
 		std::list<Particle*> particles = p->generateParticles();
 		for (auto particle : particles)
 			_particles.push_back(particle);
@@ -65,6 +67,7 @@ void ParticleSystem::update(double t) {
 	std::list<Particle*>::iterator it = _particles.begin();
 	while (it != _particles.end()) {
 		Particle* p = *it;
+		if (!p)continue;
 		if (p->isAlive()) {
 			p->integrate(t);
 			++it;
@@ -84,7 +87,7 @@ void ParticleSystem::generateFirework(unsigned type) {//para el primer firework?
 	if (type > _fireworks_pool.size())
 		return;
 
-	_firework_gen->setParticle(_fireworks_pool[type]->clone());
+	_firework_gen->setParticle(_fireworks_pool.at(type)->clone());
 
 	for (auto p : _firework_gen->generateParticles())
 		_particles.push_back(p);
@@ -126,11 +129,11 @@ void ParticleSystem::generateFireworkSystem() {
 
 void ParticleSystem::onParticleDeath(Particle* p) {
 	if (p->_type == Particle::TYPE::FIREWORK) {
-		Firework* firework = (Firework*)p;
+		Firework* firework = dynamic_cast<Firework*>(p);
 		if (firework != nullptr) {
 			std::list<Particle*> particles = firework->explode();
-			for (auto p : particles)
-				_particles.push_back(p);
+			for (auto par : particles)
+				_particles.push_back(par);
 			particles.clear();
 		}
 	}
@@ -158,9 +161,4 @@ ParticleGenerator* ParticleSystem::getGenerator(int i)
 Vector4 ParticleSystem::randomColor()
 {
 	return Vector4((rand() % 9 + 1) / 10.0, (rand() % 9 + 1) / 10.0, (rand() % 9 + 1) / 10.0, 1.0);
-}
-
-void ParticleSystem::changeSpawnFireworks()
-{
-	_spawn_fireworks = !_spawn_fireworks;
 }
