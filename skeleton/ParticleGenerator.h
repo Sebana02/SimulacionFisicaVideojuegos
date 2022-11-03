@@ -14,7 +14,7 @@ using namespace std;
 class ParticleGenerator
 {
 public:
-	~ParticleGenerator();
+	virtual ~ParticleGenerator();
 	void setParticle(Particle* model);
 	virtual list<Particle*>generateParticles() = 0;
 	void setOrigin(Vector3 pos) { _mean_pos = pos; }
@@ -35,6 +35,7 @@ class GaussianParticleGenerator : public ParticleGenerator {
 public:
 	GaussianParticleGenerator(Vector3 mean_pos, Vector3 mean_vel, Vector3 dev_pos, Vector3 dev_vel,
 		int num_particles = 10, double prob = 1);
+	virtual ~GaussianParticleGenerator() {};
 	virtual std::list<Particle*> generateParticles() override;
 
 protected:
@@ -50,6 +51,8 @@ public :
 	CircleParticleGenerator(Vector3 mean_pos, Vector3 mean_vel, Vector3 dev_pos, Vector3 dev_vel,
 		int num_particles = 10, double prob = 1)
 		: GaussianParticleGenerator(mean_pos, mean_vel, dev_pos, dev_vel, num_particles, prob) {};
+	virtual ~CircleParticleGenerator() {};
+
 	virtual std::list<Particle*> generateParticles() override;
 
 };
@@ -58,6 +61,7 @@ class UniformParticleGenerator : public ParticleGenerator {
 public:
 	UniformParticleGenerator(Vector3 mean_pos, Vector3 mean_vel, double a, double b,
 		int num_particles = 10, double prob = 1);
+	virtual ~UniformParticleGenerator() {};
 	virtual std::list<Particle*> generateParticles() override;
 
 protected:
@@ -73,6 +77,8 @@ public:
 	SphereParticleGenerator(Vector3 mean_pos, Vector3 mean_vel,
 		int num_particles = 10)
 		:UniformParticleGenerator(mean_pos, mean_vel, 0, 1, num_particles, 1) {};
+	virtual ~SphereParticleGenerator() {};
+
 	virtual std::list<Particle*> generateParticles() override;
 
 protected:

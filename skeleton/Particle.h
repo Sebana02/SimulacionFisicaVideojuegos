@@ -22,7 +22,7 @@ public:
 
 	Particle(Vector3 position, Vector3 velocity, Vector3 accceleration, double damp, double mass,
 		Vector4 color, double scale, int lifeTime, double posDes);
-	~Particle();
+	virtual ~Particle();
 
 	void integrate(double t);
 
