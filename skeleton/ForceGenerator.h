@@ -11,6 +11,7 @@ public:
 	ForceGenerator() {};
 	virtual ~ForceGenerator() {};
 	virtual void updateForce(Particle* particle, double duration) = 0;
+	inline std::string getName() { return _name; };
 	std::string _name;
 	double t = -1e10;//if starting negative --> eternal
 };

@@ -4,6 +4,8 @@
 #include "Particle.h"
 #include "ParticleGenerator.h"
 #include "core.hpp"
+#include "ParticleForceRegistry.h"
+#include "ForceGenerator.h"
 #include <random>
 #include <memory>
 #include <list>
@@ -17,6 +19,7 @@ class ParticleSystem
 public:
 
 	ParticleSystem();
+	void generateForceGenerators();
 	~ParticleSystem();
 	void update(double t);
 	void generateFireworkSystem();
@@ -29,9 +32,13 @@ public:
 protected:
 	std::list<Particle*> _particles;
 	std::list<ParticleGenerator*> _particle_generators;
-
+	
+	std::list<ForceGenerator*> _force_generators;
+	ParticleForceRegistry* _registry;
+	
 	std::vector<Firework*> _fireworks_pool;
 	ParticleGenerator* _firework_gen = nullptr;
+	
 	bool _spawn_fireworks;
 	int _next_firework;
 

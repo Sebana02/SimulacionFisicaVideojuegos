@@ -17,10 +17,10 @@ public:
 	virtual ~ParticleGenerator();
 	void setParticle(Particle* model);
 	virtual list<Particle*>generateParticles() = 0;
-	void setOrigin(Vector3 pos) { _mean_pos = pos; }
+	inline void setOrigin(Vector3 pos) noexcept { _mean_pos = pos; };
 
-	bool isActive() { return _active; }
-	void setActive(bool set) { _active = set; }
+	inline bool isActive() noexcept { return _active; };
+	inline void setActive(bool set) noexcept { _active = set; };
 
 protected:
 	Vector3 _mean_pos, _mean_vel;

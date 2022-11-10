@@ -18,11 +18,22 @@ public:
 		insert(FRPair(fg, p));
 	}
 
-	void deleteParticleRegistry(Particle* const p){
-		for (auto it = begin(); it != end();it++)
+	void deleteParticleRegistry(Particle* const p) {
+		for (auto it = begin(); it != end(); it++)
 			if (it->second == p) {
-				erase(it--);
+				it = erase(it);
+				it--;
 			}
+	}
+
+	void deleteForce(ForceGenerator* generator) {
+
+		for (auto it = begin(); it != end(); it++)
+			if (it->first == generator) {
+				it = erase(it);
+				it--;
+			}
+
 	}
 };
 
