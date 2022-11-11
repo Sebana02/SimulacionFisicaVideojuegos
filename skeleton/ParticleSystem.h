@@ -29,20 +29,20 @@ public:
 	void addGenerator(ParticleGenerator* gen);
 	ParticleGenerator* getGenerator(int i);
 	inline void changeSpawnFireworks() noexcept{_spawn_fireworks = !_spawn_fireworks;};
+	void changeGravity();
 protected:
 	std::list<Particle*> _particles;
 	std::list<ParticleGenerator*> _particle_generators;
 	
 	std::list<ForceGenerator*> _force_generators;
-	ParticleForceRegistry* _registry;
+	ParticleForceRegistry* _registry = nullptr;
 	
 	std::vector<Firework*> _fireworks_pool;
 	ParticleGenerator* _firework_gen = nullptr;
-	
 	bool _spawn_fireworks;
 	int _next_firework;
 
-	Vector3 _gravity = { 0.0,-9.8,0.0 };
+	bool _gravity_active;
 
 	Vector4 randomColor();
 };

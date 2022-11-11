@@ -121,6 +121,9 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	case '7'://firework
 		_particle_system->changeSpawnFireworks();
 		break;
+	case 'G'://change gravity
+		_particle_system->changeGravity();
+		break;
 	default:
 		break;
 	}

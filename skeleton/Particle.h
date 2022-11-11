@@ -33,7 +33,7 @@ public:
 	inline void setVel(Vector3 vel) { _vel = vel; };
 	inline void setPos(Vector3 pos) { _tr.p = pos; };
 	inline double getInverseMass() noexcept { return _inverse_mass; };
-	inline double getMass() noexcept { return _inverse_mass / 1.0; };
+	inline double getMass() noexcept { return 1.0 / _inverse_mass; };
 	
 	virtual inline Particle* clone() const;
 

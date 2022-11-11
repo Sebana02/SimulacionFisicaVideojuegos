@@ -5,21 +5,21 @@ ParticleSystem::ParticleSystem() {
 
 
 	//fuente
-	ParticleGenerator* fuente = new GaussianParticleGenerator({0,0,0}, {1.0,25.0,1.0}, {0.0,0.0,0.0}, {2.0,1.0,2.0}, 100, 0.1);
-	fuente->setParticle(new Particle({0.0,-10000.0,0.0}, {0,0,0}, {0,0,0}, 0.99, 1.0, randomColor(), 0.3, 5000, 300));
+	ParticleGenerator* fuente = new GaussianParticleGenerator({ 0,0,0 }, { 1.0,25.0,1.0 }, { 0.0,0.0,0.0 }, { 2.0,1.0,2.0 }, 100, 0.1);
+	fuente->setParticle(new Particle({ 0.0,-10000.0,0.0 }, { 0,0,0 }, { 0,-9.8,0 }, 0.99, 1.0, randomColor(), 0.3, 5000, 300));
 	_particle_generators.push_back(fuente);
 	fuente->setActive(false);
 
 	//humo
-	ParticleGenerator* humo = new UniformParticleGenerator({ 0.0,20.0,0.0 },{0,0,0}, -10,10, 400, 0.1);
-	humo->setParticle(new Particle({ 0.0,-10000.0,0.0 }, {0,0,0}, {0,0,0}, 0.99, 1.0, randomColor(), 0.3, 2000, 200.0));
+	ParticleGenerator* humo = new UniformParticleGenerator({ 0.0,20.0,0.0 }, { 0,0,0 }, -10, 10, 400, 0.1);
+	humo->setParticle(new Particle({ 0.0,-10000.0,0.0 }, { 0,0,0 }, { 0,-9.8,0 }, 0.99, 1.0, randomColor(), 0.3, 2000, 200.0));
 	_particle_generators.push_back(humo);
 	humo->setActive(false);
-	
+
 	generateFireworkSystem();
-	
+
 	generateForceGenerators();
-	
+
 	_registry = new ParticleForceRegistry();
 
 	/*//suelo
@@ -32,7 +32,8 @@ ParticleSystem::ParticleSystem() {
 
 void ParticleSystem::generateForceGenerators()
 {
-	_force_generators.push_back(new GravityForceGenerator(_gravity));
+	_gravity_active = false;
+	_force_generators.push_back(new GravityForceGenerator({ 0.0,-9.8,0.0 }));
 }
 
 ParticleSystem::~ParticleSystem() {
@@ -53,6 +54,8 @@ ParticleSystem::~ParticleSystem() {
 	for (auto force : _force_generators)
 		delete force;
 
+	delete _registry;
+
 }
 
 void ParticleSystem::update(double t) {
@@ -68,14 +71,15 @@ void ParticleSystem::update(double t) {
 	//generate particles
 	for (auto p : _particle_generators) {
 		if (!p)continue;
-		
+
 		std::list<Particle*> particles = p->generateParticles();
 		for (auto particle : particles) {
-			
 			_particles.push_back(particle);
 		}
 		particles.clear();
 	}
+
+	_registry->updateForces(t);
 
 	//update de las particulas
 	std::list<Particle*>::iterator it = _particles.begin();
@@ -91,6 +95,7 @@ void ParticleSystem::update(double t) {
 			it = _particles.erase(it);
 		}
 	}
+
 }
 
 void ParticleSystem::generateShot(Proyectile::PROYECTILE_TYPE proyectile_type, Vector3 pos, Vector3 dir, int lifeTime, double posDes) {
@@ -118,27 +123,27 @@ void ParticleSystem::generateFireworkSystem() {
 	for (int i = 0; i < 5; i++) {
 		randColor = randomColor();
 		shared_ptr<ParticleGenerator> g(new CircleParticleGenerator({ 0.0,0.0,0.0 }, { 0.0,5.0,5.0 }, { 0.0,0.0,0.0 }, { 0.0,0.2,0.2 }, 150, 1.0));
-		g->setParticle(new Particle({ 0.0,-10000.0,0.0 }, {0,0,0}, {0,0,0}, 0.999, 1.0, randColor, 0.2, 5000, -1));
-		_fireworks_pool.push_back(new Firework({ 0.0,-10000.0,0.0 }, { 0.0, 0.0, 0.0 }, _gravity, { g }, 0.999, randColor, 0.4, rand()%1000 + 1000));
+		g->setParticle(new Particle({ 0.0,-10000.0,0.0 }, { 0,0,0 }, { 0,-9.8,0 }, 0.999, 1.0, randColor, 0.2, 5000, -1));
+		_fireworks_pool.push_back(new Firework({ 0.0,-10000.0,0.0 }, { 0.0, 0.0, 0.0 }, { 0.0,-+9.8,0.0 }, { g }, 0.999, randColor, 0.4, rand() % 1000 + 1000));
 	}
 
 	//esfera
 	for (int i = 0; i < 5; i++) {
 		randColor = randomColor();
 		shared_ptr<ParticleGenerator> g(new SphereParticleGenerator({ 0.0,0.0,0.0 }, { 5.0,5.0,5.0 }, 150));
-		g->setParticle(new Particle({ 0.0,-10000.0,0.0 }, {0,0,0}, {0,0,0}, 0.999, 1.0, randColor, 0.2, 4000, -1));
-		_fireworks_pool.push_back(new Firework({ 0.0, -10000.0, 0.0 }, { 0.0, 0.0, 0.0 }, {0,0,0}, {g}, 0.999, randColor, 0.4, rand() % 1000 + 1000));
+		g->setParticle(new Particle({ 0.0,-10000.0,0.0 }, { 0,0,0 }, { 0,-9.8,0 }, 0.999, 1.0, randColor, 0.2, 4000, -1));
+		_fireworks_pool.push_back(new Firework({ 0.0, -10000.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0,-9.8,0 }, { g }, 0.999, randColor, 0.4, rand() % 1000 + 1000));
 	}
 
 	//random
 	for (int i = 0; i < 5; i++) {
 		randColor = randomColor();
-		shared_ptr<ParticleGenerator> g(new GaussianParticleGenerator({ 0.0,0.0,0.0 }, { 5.0,5.0,5.0 }, {0,0,0}, {2.0,2.0,2.0}, 150, 1.0));
-		g->setParticle(new Particle({ 0.0,-10000.0,0.0 }, {0,0,0}, {0,0,0}, 0.999, 1.0, randColor, 0.2, 3000, -1));
-		_fireworks_pool.push_back(new Firework({ 0.0, -10000.0, 0.0 }, {0,0,0}, {0,0,0}, {g}, 0.999, randColor, 0.4, rand() % 1000 + 1000));
+		shared_ptr<ParticleGenerator> g(new GaussianParticleGenerator({ 0.0,0.0,0.0 }, { 5.0,5.0,5.0 }, { 0,0,0 }, { 2.0,2.0,2.0 }, 150, 1.0));
+		g->setParticle(new Particle({ 0.0,-10000.0,0.0 }, { 0,0,0 }, { 0,-9.8,0 }, 0.999, 1.0, randColor, 0.2, 3000, -1));
+		_fireworks_pool.push_back(new Firework({ 0.0, -10000.0, 0.0 }, { 0,0,0 }, { 0,-9.8,0 }, { g }, 0.999, randColor, 0.4, rand() % 1000 + 1000));
 	}
 
-	_firework_gen = new GaussianParticleGenerator({0,0,0}, {0.0,35.0,0.0}, {0,0,0}, {0.0,1.0,5.0}, 1, 2);
+	_firework_gen = new GaussianParticleGenerator({ 0,0,0 }, { 0.0,35.0,0.0 }, { 0,0,0 }, { 0.0,1.0,5.0 }, 1, 2);
 }
 
 void ParticleSystem::onParticleDeath(Particle* p) {
@@ -151,6 +156,7 @@ void ParticleSystem::onParticleDeath(Particle* p) {
 			particles.clear();
 		}
 	}
+	_registry->deleteParticleRegistry(p);
 	delete p;
 }
 
@@ -163,13 +169,36 @@ ParticleGenerator* ParticleSystem::getGenerator(int i)
 {
 	if (i < _particle_generators.size() && i >= 0) {
 		list<ParticleGenerator*>::iterator it = _particle_generators.begin();
-		for (int j = 0; j < i; j++) 
+		for (int j = 0; j < i; j++)
 			++it;
-		
+
 		return *it;
 	}
 
 	return nullptr;
+}
+
+void ParticleSystem::changeGravity()
+{
+	ForceGenerator* gravity = nullptr;
+	for (auto& fg : _force_generators) {
+		if (fg->getName() == "Gravity") {
+			gravity = fg;
+			break;
+		}
+	}
+
+	if (gravity != nullptr) {
+		if (_gravity_active) {
+			_registry->deleteForce(gravity);
+		}
+		else {
+			for (auto& p : _particles)
+				_registry->addRegistry(gravity, p);
+		}
+	}
+
+	_gravity_active = !_gravity_active;
 }
 
 Vector4 ParticleSystem::randomColor()

@@ -19,20 +19,25 @@ public:
 	}
 
 	void deleteParticleRegistry(Particle* const p) {
-		for (auto it = begin(); it != end(); it++)
+		auto it = begin();
+		while (it != end()) {
 			if (it->second == p) {
 				it = erase(it);
-				it--;
 			}
+			else
+				it++;
+		}
 	}
 
-	void deleteForce(ForceGenerator* generator) {
 
-		for (auto it = begin(); it != end(); it++)
-			if (it->first == generator) {
+	void deleteForce(ForceGenerator* generator) {
+		auto it = begin();
+		while (it != end()) {
+			if (it->first == generator)
 				it = erase(it);
-				it--;
-			}
+			else
+				it++;
+		}
 
 	}
 };
