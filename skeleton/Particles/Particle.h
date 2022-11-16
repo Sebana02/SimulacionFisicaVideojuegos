@@ -1,12 +1,12 @@
 #ifndef __PARTICLE__ 
 #define __PARTICLE__ 
 
-#include "core.hpp"
-#include "RenderUtils.hpp"
+#include "../core.hpp"
+#include "../RenderUtils.hpp"
 #include <memory>
 #include <list>
 
-#include "checkML.h"
+#include "../checkML.h"
 
 using namespace physx;
 using namespace std;

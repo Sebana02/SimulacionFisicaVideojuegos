@@ -3,11 +3,11 @@
 
 #include <string>
 #include <list>
-#include "core.hpp"
-#include "Particle.h"
+#include "../core.hpp"
+#include "../Particles/Particle.h"
 #include <random>
 
-#include "checkML.h"
+#include "../checkML.h"
 
 using namespace std;
 

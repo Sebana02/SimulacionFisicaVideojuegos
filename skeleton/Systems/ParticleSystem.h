@@ -1,16 +1,16 @@
 #ifndef __PARTICLE_SYSTEM__ 
 #define __PARTICLE_SYSTEM__ 
 
-#include "Particle.h"
+#include "../Particles/Particle.h"
 #include "ParticleGenerator.h"
-#include "core.hpp"
-#include "ParticleForceRegistry.h"
-#include "ForceGenerator.h"
+#include "../core.hpp"
+#include "../Forces/ParticleForceRegistry.h"
+#include "../Forces/ForceGenerator.h"
 #include <random>
 #include <memory>
 #include <list>
 
-#include "checkML.h"
+#include "../checkML.h"
 
 using namespace std;
 
@@ -19,7 +19,6 @@ class ParticleSystem
 public:
 
 	ParticleSystem();
-	void generateForceGenerators();
 	~ParticleSystem();
 	void update(double t);
 	void generateFireworkSystem();

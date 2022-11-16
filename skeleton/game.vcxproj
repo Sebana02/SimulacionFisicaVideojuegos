@@ -254,27 +254,27 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="callbacks.cpp" />
-    <ClCompile Include="ForceGenerator.cpp" />
+    <ClCompile Include="Forces\ForceGenerator.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Particle.cpp" />
-    <ClCompile Include="ParticleGenerator.cpp" />
-    <ClCompile Include="ParticleSystem.cpp" />
+    <ClCompile Include="Particles\Particle.cpp" />
     <ClCompile Include="RenderUtils.cpp" />
     <ClCompile Include="Render\Camera.cpp" />
     <ClCompile Include="Render\Render.cpp" />
+    <ClCompile Include="Systems\ParticleGenerator.cpp" />
+    <ClCompile Include="Systems\ParticleSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="callbacks.hpp" />
     <ClInclude Include="checkML.h" />
     <ClInclude Include="core.hpp" />
-    <ClInclude Include="ForceGenerator.h" />
-    <ClInclude Include="Particle.h" />
-    <ClInclude Include="ParticleForceRegistry.h" />
-    <ClInclude Include="ParticleGenerator.h" />
-    <ClInclude Include="ParticleSystem.h" />
+    <ClInclude Include="Forces\ForceGenerator.h" />
+    <ClInclude Include="Forces\ParticleForceRegistry.h" />
+    <ClInclude Include="Particles\Particle.h" />
     <ClInclude Include="RenderUtils.hpp" />
     <ClInclude Include="Render\Camera.h" />
     <ClInclude Include="Render\Render.h" />
+    <ClInclude Include="Systems\ParticleGenerator.h" />
+    <ClInclude Include="Systems\ParticleSystem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

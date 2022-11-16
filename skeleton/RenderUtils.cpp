@@ -138,6 +138,7 @@ void renderLoop()
 {
 	StartCounter();
 	sCamera = new Camera(PxVec3(75.0f, 50.0f, 0.0f), PxVec3(-0.5f,-0.05f,0.0f));
+	//sCamera = new Camera(PxVec3(75.0f, 50.0f, 0.0f), PxVec3(-0.5f,-0.05f,0.0f));
 
 	setupDefaultWindow("Simulacion Fisica Videojuegos");
 	setupDefaultRenderState();
@@ -163,7 +164,7 @@ void RegisterRenderItem(const RenderItem* _item)
 void DeregisterRenderItem(const RenderItem* _item)
 {
 	auto it = find(gRenderItems.begin(), gRenderItems.end(), _item);
-	if(it != gRenderItems.end()) gRenderItems.erase(it);
+	gRenderItems.erase(it);
 }
 
 double GetLastTime()

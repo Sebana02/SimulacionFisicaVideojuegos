@@ -1,5 +1,5 @@
 #include "Particle.h"
-#include "ParticleGenerator.h"
+#include "../Systems/ParticleGenerator.h"
 #include <iostream>
 
 Particle::Particle(Vector3 position, Vector3 velocity, Vector3 accceleration, double damp, double mass,

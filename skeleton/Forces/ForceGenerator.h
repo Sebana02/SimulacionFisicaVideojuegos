@@ -1,7 +1,7 @@
 #ifndef __FORCE_GENERATOR__
 #define __FORCE_GENERATOR__
 
-#include "Particle.h"
+#include "../Particles/Particle.h"
 #include <list>
 #include <random>
 
@@ -30,15 +30,14 @@ class WindForceGenerator : public ForceGenerator
 {
 public:
 	WindForceGenerator(const Vector3& wind, double radius, const Vector3& position);
-	~WindForceGenerator();
+	virtual ~WindForceGenerator();
 	void updateForce(Particle* particle, double duration) override;
 	inline void setWind(Vector3 wind) { _wind = wind; }
-	inline RenderItem* getRenderItem() noexcept { return _renderItem; }
 protected:
 	Vector3 _wind, _position;
 	double _action_radius;
 
-	RenderItem* _renderItem = nullptr;
+	Particle* _particle = nullptr;
 };
 
 #endif // __FORCE_GENERATOR__

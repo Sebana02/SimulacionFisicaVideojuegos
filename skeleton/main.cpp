@@ -11,9 +11,9 @@
 #include "RenderUtils.hpp"
 #include "callbacks.hpp"
 
-#include "Particle.h"
-#include "ParticleGenerator.h"
-#include "ParticleSystem.h"
+#include "./Particles/Particle.h"
+#include "./Systems/ParticleGenerator.h"
+#include "./Systems/ParticleSystem.h"
 
 #include "checkML.h"
 
@@ -120,9 +120,9 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	}
 	case '7': //uniform generation, just one time, no velocity
 	{
-		UniformParticleGenerator* p = new UniformParticleGenerator({ -100,50,0 }, { 0,0,0 }, -50, 50, 50, 10);
+		UniformParticleGenerator* p = new UniformParticleGenerator({-300,0,0 }, { 0,0,0 }, -50, 50, 50, 10);
 		int mass = rand() % 5 + 1;
-		p->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, mass, _particle_system->randomColor(), mass, -1, 500));
+		p->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, mass, _particle_system->randomColor(), 1.0/mass, -1, 2000));
 
 		std::list<Particle*> particles = p->generateParticles();
 		for (Particle* p : particles)

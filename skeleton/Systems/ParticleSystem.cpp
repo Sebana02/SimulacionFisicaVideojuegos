@@ -18,23 +18,9 @@ ParticleSystem::ParticleSystem() {
 
 	generateFireworkSystem();
 
-	generateForceGenerators();
-
 	_registry = new ParticleForceRegistry();
-
-	/*//suelo
-	Particle* suelo = new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0, 0, { 1.0,0.0,0.0,1.0 }, 1.0, 0, 0);
-	RenderItem* renderItem = suelo->getRenderItem();
-	renderItem->shape = CreateShape(physx::PxBoxGeometry(100.0f, 1.0f, 100.0f));
-	_particles.push_back(suelo);*/
-
 }
 
-void ParticleSystem::generateForceGenerators()
-{
-	gravity_force = new GravityForceGenerator({ 0.0,-9.8,0.0 });
-	wind_force = new WindForceGenerator({ 0.0,100.0,100.0 }, 200, { 0.0,0.0,0.0 });
-}
 
 ParticleSystem::~ParticleSystem() {
 	for (auto firework : _fireworks_pool)
@@ -51,8 +37,8 @@ ParticleSystem::~ParticleSystem() {
 		delete particle;
 	_particles.clear();
 
-	delete gravity_force;
-	delete wind_force;
+	if (gravity_force != nullptr) delete gravity_force;
+	if (wind_force != nullptr)delete wind_force;
 
 	delete _registry;
 
@@ -69,11 +55,9 @@ void ParticleSystem::update(double t) {
 	}
 
 	//generate particles
-	for (auto p : _particle_generators) {
-		if (!p)continue;
-
+	for (auto p : _particle_generators) 
 		addParticles(p->generateParticles());
-	}
+	
 
 	_registry->updateForces(t);
 
@@ -174,32 +158,37 @@ ParticleGenerator* ParticleSystem::getGenerator(int i)
 
 
 void ParticleSystem::addGravity() {
-	if (gravity_force != nullptr) {
-		for (auto& p : _particles)
-			_registry->addRegistry(gravity_force, p);
-	}
+
+	deleteGravity();
+
+	gravity_force = new GravityForceGenerator({ 0.0,-9.8,0.0 });
+	for (auto& p : _particles)
+		_registry->addRegistry(gravity_force, p);
+
 }
 
 void ParticleSystem::deleteGravity() {
 	if (gravity_force != nullptr) {
 		_registry->deleteForce(gravity_force);
+		delete gravity_force;
+		gravity_force = nullptr;
 	}
 }
 
 void ParticleSystem::addWind() {
-	if (wind_force != nullptr) {
-		for (auto& p : _particles)
-			_registry->addRegistry(wind_force, p);
-
-		RegisterRenderItem(wind_force->getRenderItem());
-	}
+	
+	deleteWind();
+	
+	wind_force = new WindForceGenerator({ 0.0,50.0,50.0 }, 200, { -300.0,0.0,0.0 });
+	for (auto& p : _particles)
+		_registry->addRegistry(wind_force, p);
 }
 
 void ParticleSystem::deleteWind() {
 	if (wind_force != nullptr) {
 		_registry->deleteForce(wind_force);
-
-		DeregisterRenderItem(wind_force->getRenderItem());
+		delete wind_force;
+		wind_force = nullptr;
 	}
 }
 
