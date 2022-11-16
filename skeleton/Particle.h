@@ -34,6 +34,7 @@ public:
 	inline void setPos(Vector3 pos) { _tr.p = pos; };
 	inline double getInverseMass() noexcept { return _inverse_mass; };
 	inline double getMass() noexcept { return 1.0 / _inverse_mass; };
+	inline Vector3 getPos() { return _tr.p; };
 	
 	virtual inline Particle* clone() const;
 

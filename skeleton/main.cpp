@@ -112,18 +112,41 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		_particle_system->generateShot((Proyectile::PROYECTILE_TYPE)(key - '0' - 1), GetCamera()->getTransform().p, GetCamera()->getDir(), 5000, 200.0);
 		break;
 	case '5'://gaussian
-	case '6'://uniform
-	case '7'://uniform sin aceleracion		
+	case '6'://uniform	
 	{
 		ParticleGenerator* p = _particle_system->getGenerator(key - '5');
 		p->setActive(!p->isActive());
 		break;
 	}
+	case '7': //uniform generation, just one time, no velocity
+	{
+		UniformParticleGenerator* p = new UniformParticleGenerator({ -100,50,0 }, { 0,0,0 }, -50, 50, 50, 10);
+		int mass = rand() % 5 + 1;
+		p->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, mass, _particle_system->randomColor(), mass, -1, 500));
+
+		std::list<Particle*> particles = p->generateParticles();
+		for (Particle* p : particles)
+			p->setVel({ 0,0,0 });
+
+		_particle_system->addParticles(particles);
+		delete p;
+		
+		break;
+	}
 	case '8'://firework
 		_particle_system->changeSpawnFireworks();
 		break;
-	case 'G'://change gravity
-		_particle_system->changeGravity();
+	case 'G':
+		_particle_system->addGravity();
+		break;
+	case 'H':
+		_particle_system->deleteGravity();
+		break;
+	case 'J':
+		_particle_system->addWind();
+		break;
+	case 'K':
+		_particle_system->deleteWind();
 		break;
 	default:
 		break;

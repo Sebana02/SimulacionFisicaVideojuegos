@@ -53,6 +53,7 @@ void Particle::integrate(double t)
 		_alive = false;
 
 	clearForce();
+
 }
 
 inline Particle * Particle::clone() const

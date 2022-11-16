@@ -163,7 +163,7 @@ void RegisterRenderItem(const RenderItem* _item)
 void DeregisterRenderItem(const RenderItem* _item)
 {
 	auto it = find(gRenderItems.begin(), gRenderItems.end(), _item);
-	gRenderItems.erase(it);
+	if(it != gRenderItems.end()) gRenderItems.erase(it);
 }
 
 double GetLastTime()

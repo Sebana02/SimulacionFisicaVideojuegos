@@ -32,8 +32,8 @@ ParticleSystem::ParticleSystem() {
 
 void ParticleSystem::generateForceGenerators()
 {
-	_gravity_active = false;
-	_force_generators.push_back(new GravityForceGenerator({ 0.0,-9.8,0.0 }));
+	gravity_force = new GravityForceGenerator({ 0.0,-9.8,0.0 });
+	wind_force = new WindForceGenerator({ 0.0,100.0,100.0 }, 200, { 0.0,0.0,0.0 });
 }
 
 ParticleSystem::~ParticleSystem() {
@@ -51,8 +51,8 @@ ParticleSystem::~ParticleSystem() {
 		delete particle;
 	_particles.clear();
 
-	for (auto force : _force_generators)
-		delete force;
+	delete gravity_force;
+	delete wind_force;
 
 	delete _registry;
 
@@ -72,11 +72,7 @@ void ParticleSystem::update(double t) {
 	for (auto p : _particle_generators) {
 		if (!p)continue;
 
-		std::list<Particle*> particles = p->generateParticles();
-		for (auto particle : particles) {
-			_particles.push_back(particle);
-		}
-		particles.clear();
+		addParticles(p->generateParticles());
 	}
 
 	_registry->updateForces(t);
@@ -102,9 +98,10 @@ void ParticleSystem::generateShot(Proyectile::PROYECTILE_TYPE proyectile_type, V
 	_particles.push_back(new Proyectile(proyectile_type, pos, dir, lifeTime, posDes));
 }
 
-void ParticleSystem::generateFirework(unsigned type) {//para el primer firework??
+void ParticleSystem::generateFirework(unsigned type) {
 	if (type > _fireworks_pool.size())
 		return;
+
 
 	_firework_gen->setParticle(_fireworks_pool.at(type)->clone());
 
@@ -150,10 +147,7 @@ void ParticleSystem::onParticleDeath(Particle* p) {
 	if (p->_type == Particle::TYPE::FIREWORK) {
 		Firework* firework = dynamic_cast<Firework*>(p);
 		if (firework != nullptr) {
-			std::list<Particle*> particles = firework->explode();
-			for (auto par : particles)
-				_particles.push_back(par);
-			particles.clear();
+			addParticles(firework->explode());
 		}
 	}
 	_registry->deleteParticleRegistry(p);
@@ -178,30 +172,45 @@ ParticleGenerator* ParticleSystem::getGenerator(int i)
 	return nullptr;
 }
 
-void ParticleSystem::changeGravity()
-{
-	ForceGenerator* gravity = nullptr;
-	for (auto& fg : _force_generators) {
-		if (fg->getName() == "Gravity") {
-			gravity = fg;
-			break;
-		}
-	}
 
-	if (gravity != nullptr) {
-		if (_gravity_active) {
-			_registry->deleteForce(gravity);
-		}
-		else {
-			for (auto& p : _particles)
-				_registry->addRegistry(gravity, p);
-		}
+void ParticleSystem::addGravity() {
+	if (gravity_force != nullptr) {
+		for (auto& p : _particles)
+			_registry->addRegistry(gravity_force, p);
 	}
+}
 
-	_gravity_active = !_gravity_active;
+void ParticleSystem::deleteGravity() {
+	if (gravity_force != nullptr) {
+		_registry->deleteForce(gravity_force);
+	}
+}
+
+void ParticleSystem::addWind() {
+	if (wind_force != nullptr) {
+		for (auto& p : _particles)
+			_registry->addRegistry(wind_force, p);
+
+		RegisterRenderItem(wind_force->getRenderItem());
+	}
+}
+
+void ParticleSystem::deleteWind() {
+	if (wind_force != nullptr) {
+		_registry->deleteForce(wind_force);
+
+		DeregisterRenderItem(wind_force->getRenderItem());
+	}
 }
 
 Vector4 ParticleSystem::randomColor()
 {
 	return Vector4((rand() % 9 + 1) / 10.0, (rand() % 9 + 1) / 10.0, (rand() % 9 + 1) / 10.0, 1.0);
+}
+
+void ParticleSystem::addParticles(std::list<Particle*>& list) {
+	for (auto particle : list) {
+		_particles.push_back(particle);
+	}
+	list.clear();
 }
