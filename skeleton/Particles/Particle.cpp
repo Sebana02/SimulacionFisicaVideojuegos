@@ -51,8 +51,6 @@ void Particle::integrate(double t)
 	if ((_lifeTime > 0 && glutGet(GLUT_ELAPSED_TIME) >= _lifeTime) ||
 		(_lifePos > 0 && (abs(_tr.p.magnitude()) > _lifePos))) 
 		_alive = false;
-
-	cout << _force.y << endl;
 	clearForce();
 
 

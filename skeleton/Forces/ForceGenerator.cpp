@@ -1,4 +1,5 @@
 #include "ForceGenerator.h"
+#include <iostream>
 
 GravityForceGenerator::GravityForceGenerator(const Vector3& gravity)
 {
@@ -71,8 +72,8 @@ void WindForceGenerator::updateForce(Particle* particle, double duration)
 
 		//compute drag force
 		Vector3 vel =particle->getVel() - _wind;//?????
+		cout << particle->getVel().y << endl;
 		float velocity_module = vel.normalize();
-
 		Vector3 dragF;
 		velocity_module = _k1 * velocity_module + _k2 * velocity_module * velocity_module;
 
@@ -84,4 +85,31 @@ void WindForceGenerator::updateForce(Particle* particle, double duration)
 	
 }
 
+Whirlwind::Whirlwind(double k1, double k2, const Vector3& wind, double radius, const Vector3& position):
+	WindForceGenerator(k1, k2, wind, radius, position)
+{
+	_name = "Whirlwind";
+}
 
+void Whirlwind::updateForce(Particle* particle, double duration)
+{
+	if (fabs(particle->getInverseMass() < 1e-10))
+		return;
+	
+	//compute drag force
+	auto x = -(particle->getPos().z - _position.z);
+	auto y = 50 - (particle->getPos().y - _position.y);
+	auto z = -(particle->getPos().x - _position.x);
+	_wind = K * Vector3(x, y, z);
+	
+	Vector3 v = _wind - particle->getVel();
+	float velocity_module = v.normalize();
+
+	Vector3 dragF;
+	velocity_module = _k1 * velocity_module + _k2 * velocity_module * velocity_module;
+
+	dragF = -v * velocity_module;
+	
+	//apply drag force
+	particle->addForce(dragF);
+}

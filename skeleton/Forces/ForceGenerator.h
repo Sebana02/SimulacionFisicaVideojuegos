@@ -44,7 +44,7 @@ class WindForceGenerator : public ParticleDragGenerator
 public:
 	WindForceGenerator(double k1,double k2,const Vector3& wind, double radius, const Vector3& position);
 	virtual ~WindForceGenerator();
-	void updateForce(Particle* particle, double duration) override;
+	virtual void updateForce(Particle* particle, double duration) override;
 	inline void setWind(Vector3 wind) { _wind = wind; }
 protected:
 	Vector3 _wind, _position;
@@ -52,6 +52,15 @@ protected:
 
 	Particle* _particle = nullptr;
 
+};
+
+class Whirlwind : public WindForceGenerator {
+public:
+	Whirlwind(double k1, double k2, const Vector3& wind, double radius, const Vector3& position);
+	virtual ~Whirlwind() {};
+	virtual void updateForce(Particle* particle, double duration) override;
+protected:
+	int K;
 };
 
 #endif // __FORCE_GENERATOR__

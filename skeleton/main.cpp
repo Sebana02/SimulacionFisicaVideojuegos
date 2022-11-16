@@ -126,7 +126,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 
 		std::list<Particle*> particles = p->generateParticles();
 		for (Particle* p : particles)
-			p->setVel({ 0, -20 ,0 });
+			p->setVel({ 0, 0 ,0 });
 
 		_particle_system->addParticles(particles);
 		delete p;
