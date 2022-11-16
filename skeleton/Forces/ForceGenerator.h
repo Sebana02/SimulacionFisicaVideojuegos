@@ -20,16 +20,29 @@ class GravityForceGenerator : public ForceGenerator
 {
 public:
 	GravityForceGenerator(const Vector3& gravity);
-	void updateForce(Particle* particle, double duration) override;
+	virtual void updateForce(Particle* particle, double duration) override;
 	inline void setGravity(Vector3 gravity) { _gravity = gravity; }
 protected:
 	Vector3 _gravity;
 };
 
-class WindForceGenerator : public ForceGenerator
+class ParticleDragGenerator : public ForceGenerator {
+	
+public:
+	ParticleDragGenerator(const float k1, const float k2);
+	virtual void updateForce(Particle* particle, double duration) override;
+	inline void setDrag(float k1, float k2) noexcept { _k1 = k1; _k2 = k2; }
+
+
+protected:
+	float _k1;
+	float _k2;
+};
+
+class WindForceGenerator : public ParticleDragGenerator
 {
 public:
-	WindForceGenerator(const Vector3& wind, double radius, const Vector3& position);
+	WindForceGenerator(double k1,double k2,const Vector3& wind, double radius, const Vector3& position);
 	virtual ~WindForceGenerator();
 	void updateForce(Particle* particle, double duration) override;
 	inline void setWind(Vector3 wind) { _wind = wind; }
@@ -38,6 +51,7 @@ protected:
 	double _action_radius;
 
 	Particle* _particle = nullptr;
+
 };
 
 #endif // __FORCE_GENERATOR__

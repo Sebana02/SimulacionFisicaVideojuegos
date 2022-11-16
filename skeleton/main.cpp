@@ -120,13 +120,13 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	}
 	case '7': //uniform generation, just one time, no velocity
 	{
-		UniformParticleGenerator* p = new UniformParticleGenerator({-300,0,0 }, { 0,0,0 }, -50, 50, 50, 10);
-		int mass = rand() % 5 + 1;
-		p->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, mass, _particle_system->randomColor(), 1.0/mass, -1, 2000));
+		UniformParticleGenerator* p = new UniformParticleGenerator({-300,0,0 }, { 0,0,0 }, -50, 50, 1, 1000);
+		int mass = rand() % 5 + 5;
+		p->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, mass, _particle_system->randomColor(), 2.0, -1, 2000));
 
 		std::list<Particle*> particles = p->generateParticles();
 		for (Particle* p : particles)
-			p->setVel({ 0,0,0 });
+			p->setVel({ 0, -20 ,0 });
 
 		_particle_system->addParticles(particles);
 		delete p;

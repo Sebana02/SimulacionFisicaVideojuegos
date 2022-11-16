@@ -52,7 +52,9 @@ void Particle::integrate(double t)
 		(_lifePos > 0 && (abs(_tr.p.magnitude()) > _lifePos))) 
 		_alive = false;
 
+	cout << _force.y << endl;
 	clearForce();
+
 
 }
 

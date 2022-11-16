@@ -39,7 +39,7 @@ public:
 	virtual inline Particle* clone() const;
 
 	//fuerzas
-	inline void clearForce() {_force = { 0,0,0 };};
+	inline void clearForce() {_force*=0;};
 	inline void addForce(const Vector3& force) { _force += force; };
 protected:
 	RenderItem* _renderItem;
