@@ -113,12 +113,13 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		break;
 	case '5'://gaussian
 	case '6'://uniform
+	case '7'://uniform sin aceleracion		
 	{
 		ParticleGenerator* p = _particle_system->getGenerator(key - '5');
 		p->setActive(!p->isActive());
 		break;
 	}
-	case '7'://firework
+	case '8'://firework
 		_particle_system->changeSpawnFireworks();
 		break;
 	case 'G'://change gravity
