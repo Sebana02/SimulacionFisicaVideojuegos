@@ -126,7 +126,7 @@ ExplosionForceGenerator::ExplosionForceGenerator(int K, const Vector3& position,
 	_K = K;
 	_position = position;
 	_const_explosion = const_explosion;
-	_radius = 1;
+	_radius = 0;
 }
 
 ExplosionForceGenerator::~ExplosionForceGenerator()
