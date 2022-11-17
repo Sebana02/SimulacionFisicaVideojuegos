@@ -153,8 +153,9 @@ void ExplosionForceGenerator::updateForce(Particle* particle, double t)
 				particle->getPos().z - _position.z) *
 			pow(e, -t / _const_explosion);
 
-		particle->addForce(explosion_force);
+		particle->addForce(explosion_force * particle->getMass());
 	}
 
-	_radius += vel_expansion * t;
+	_radius += vel_expansion * t;//
+	_const_explosion += t;
 }

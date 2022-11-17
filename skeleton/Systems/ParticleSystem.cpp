@@ -216,7 +216,7 @@ void ParticleSystem::deleteWhirlwind()
 void ParticleSystem::addExplosion()
 {
 	deleteExplosion();
-	explosion_force = new ExplosionForceGenerator(200, { -300.0,0.0,0.0 }, 1);
+	explosion_force = new ExplosionForceGenerator(200, { -300.0,0.0,0.0 }, 10);
 	for (auto& p : _particles)
 		_registry->addRegistry(explosion_force, p);
 }

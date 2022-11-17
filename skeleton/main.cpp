@@ -122,7 +122,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	{
 		GaussianParticleGenerator* p = new GaussianParticleGenerator({ -300,0,0 }, { 0,0,0 }, { 50,50,50 }, { 0,0,0 }, 10, 100);
 		const int mass = rand() % 5 + 5;
-		p->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, mass, _particle_system->randomColor(), mass/5.0, -1, 2000));
+		p->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, mass, _particle_system->randomColor(), 5.0/mass, -1, 2000));
 		_particle_system->addParticles(p->generateParticles());
 		delete p;
 
@@ -132,7 +132,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	{
 		GaussianParticleGenerator* p = new GaussianParticleGenerator({ -300,0,0 }, { 5,5,5 }, { 50,50,50 }, { 5,5,5 }, 10, 100);
 		int mass = rand() % 5 + 5;
-		p->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, mass, _particle_system->randomColor(), mass/5.0, -1, 2000));
+		p->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, mass, _particle_system->randomColor(), 5.0/mass, -1, 2000));
 		_particle_system->addParticles(p->generateParticles());
 		delete p;
 
