@@ -39,7 +39,9 @@ ParticleSystem::~ParticleSystem() {
 
 	if (gravity_force != nullptr) delete gravity_force;
 	if (wind_force != nullptr)delete wind_force;
-
+	if (whirlwind_force != nullptr)delete whirlwind_force;
+	if (explosion_force != nullptr)delete explosion_force;
+	
 	delete _registry;
 
 }
@@ -208,6 +210,23 @@ void ParticleSystem::deleteWhirlwind()
 		_registry->deleteForce(whirlwind_force);
 		delete whirlwind_force;
 		whirlwind_force = nullptr;
+	}
+}
+
+void ParticleSystem::addExplosion()
+{
+	deleteExplosion();
+	explosion_force = new ExplosionForceGenerator(200, { -300.0,0.0,0.0 }, 1);
+	for (auto& p : _particles)
+		_registry->addRegistry(explosion_force, p);
+}
+
+void ParticleSystem::deleteExplosion()
+{
+	if (explosion_force != nullptr) {
+		_registry->deleteForce(explosion_force);
+		delete explosion_force;
+		explosion_force = nullptr;
 	}
 }
 

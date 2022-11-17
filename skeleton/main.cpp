@@ -118,32 +118,22 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		p->setActive(!p->isActive());
 		break;
 	}
-	case '7': //uniform generation, just one time, no velocity
+	case '7': //gaussian generation, just one time, no velocity
 	{
-		UniformParticleGenerator* p = new UniformParticleGenerator({ -300,0,0 }, { 0,0,0 }, -100, 100, 10, 1000);
+		GaussianParticleGenerator* p = new GaussianParticleGenerator({ -300,0,0 }, { 0,0,0 }, { 50,50,50 }, { 0,0,0 }, 10, 100);
 		const int mass = rand() % 5 + 5;
 		p->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, mass, _particle_system->randomColor(), mass/5.0, -1, 2000));
-
-		std::list<Particle*> particles = p->generateParticles();
-		for (Particle* p : particles)
-			p->setVel({ 0, 0 ,0 });
-
-		_particle_system->addParticles(particles);
+		_particle_system->addParticles(p->generateParticles());
 		delete p;
 
 		break;
 	}
 	case '8': //uniform generation, just one time, with velocity
 	{
-		UniformParticleGenerator* p = new UniformParticleGenerator({ -300,0,0 }, { 0,0,0 }, -100, 100, 10, 1000);
+		GaussianParticleGenerator* p = new GaussianParticleGenerator({ -300,0,0 }, { 5,5,5 }, { 50,50,50 }, { 5,5,5 }, 10, 100);
 		int mass = rand() % 5 + 5;
 		p->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, mass, _particle_system->randomColor(), mass/5.0, -1, 2000));
-
-		std::list<Particle*> particles = p->generateParticles();
-		for (Particle* p : particles)
-			p->setVel({ 0, -20 ,0 });
-
-		_particle_system->addParticles(particles);
+		_particle_system->addParticles(p->generateParticles());
 		delete p;
 
 		break;
@@ -168,6 +158,12 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		break;
 	case 'B':
 		_particle_system->deleteWhirlwind();
+		break;
+	case 'N':
+		_particle_system->addExplosion();
+		break;
+	case 'M':
+		_particle_system->deleteExplosion();
 		break;
 	default:
 		break;

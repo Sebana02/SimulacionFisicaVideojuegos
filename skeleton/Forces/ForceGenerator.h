@@ -4,6 +4,7 @@
 #include "../Particles/Particle.h"
 #include <list>
 #include <random>
+#include <numbers>
 
 class ForceGenerator
 {
@@ -63,6 +64,20 @@ protected:
 	int _K;
 };
 
+
+class ExplosionForceGenerator : public ForceGenerator {
+public:
+	ExplosionForceGenerator(int K, const Vector3& position, float const_explosion);
+	virtual ~ExplosionForceGenerator();
+	virtual void updateForce(Particle* particle, double duration) override;
+protected:
+	int _K;
+	double _radius;
+	Vector3 _position;
+	float _const_explosion;
+	long double e = 2.71828182845904523536;
+	float vel_expansion = 344.4;
+};
 #endif // __FORCE_GENERATOR__
 
 
