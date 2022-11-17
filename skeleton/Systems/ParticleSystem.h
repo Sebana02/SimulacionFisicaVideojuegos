@@ -36,6 +36,9 @@ public:
 
 	void addWind();
 	void deleteWind();
+
+	void addWhirlwind();
+	void deleteWhirlwind();
 	
 	void addParticles(std::list<Particle*>& list);
 	Vector4 randomColor();
@@ -46,6 +49,7 @@ protected:
 	
 	GravityForceGenerator* gravity_force = nullptr;
 	WindForceGenerator* wind_force = nullptr;
+	WhirlwindForceGenerator* whirlwind_force = nullptr;
 	ParticleForceRegistry* _registry = nullptr;
 	
 	std::vector<Firework*> _fireworks_pool;

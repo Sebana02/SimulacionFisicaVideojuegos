@@ -54,13 +54,13 @@ protected:
 
 };
 
-class Whirlwind : public WindForceGenerator {
+class WhirlwindForceGenerator : public WindForceGenerator {
 public:
-	Whirlwind(double k1, double k2, const Vector3& wind, double radius, const Vector3& position);
-	virtual ~Whirlwind() {};
+	WhirlwindForceGenerator(double k1, double k2,int K, double radius, const Vector3& position);
+	virtual ~WhirlwindForceGenerator() {};
 	virtual void updateForce(Particle* particle, double duration) override;
 protected:
-	int K;
+	int _K;
 };
 
 #endif // __FORCE_GENERATOR__

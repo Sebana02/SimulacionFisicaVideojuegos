@@ -120,9 +120,9 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	}
 	case '7': //uniform generation, just one time, no velocity
 	{
-		UniformParticleGenerator* p = new UniformParticleGenerator({-300,0,0 }, { 0,0,0 }, -50, 50, 1, 1000);
-		int mass = rand() % 5 + 5;
-		p->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, mass, _particle_system->randomColor(), 2.0, -1, 2000));
+		UniformParticleGenerator* p = new UniformParticleGenerator({ -300,0,0 }, { 0,0,0 }, -100, 100, 10, 1000);
+		const int mass = rand() % 5 + 5;
+		p->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, mass, _particle_system->randomColor(), mass/5.0, -1, 2000));
 
 		std::list<Particle*> particles = p->generateParticles();
 		for (Particle* p : particles)
@@ -130,10 +130,25 @@ void keyPress(unsigned char key, const PxTransform& camera)
 
 		_particle_system->addParticles(particles);
 		delete p;
-		
+
 		break;
 	}
-	case '8'://firework
+	case '8': //uniform generation, just one time, with velocity
+	{
+		UniformParticleGenerator* p = new UniformParticleGenerator({ -300,0,0 }, { 0,0,0 }, -100, 100, 10, 1000);
+		int mass = rand() % 5 + 5;
+		p->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, mass, _particle_system->randomColor(), mass/5.0, -1, 2000));
+
+		std::list<Particle*> particles = p->generateParticles();
+		for (Particle* p : particles)
+			p->setVel({ 0, -20 ,0 });
+
+		_particle_system->addParticles(particles);
+		delete p;
+
+		break;
+	}
+	case '9'://firework
 		_particle_system->changeSpawnFireworks();
 		break;
 	case 'G':
@@ -147,6 +162,12 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		break;
 	case 'K':
 		_particle_system->deleteWind();
+		break;
+	case 'V':
+		_particle_system->addWhirlwind();
+		break;
+	case 'B':
+		_particle_system->deleteWhirlwind();
 		break;
 	default:
 		break;

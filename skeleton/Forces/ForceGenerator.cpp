@@ -71,8 +71,7 @@ void WindForceGenerator::updateForce(Particle* particle, double duration)
 		&& (particleDistance.z <= _position.z + _action_radius && particleDistance.z >= _position.z - _action_radius)) {
 
 		//compute drag force
-		Vector3 vel =particle->getVel() - _wind;//?????
-		cout << particle->getVel().y << endl;
+		Vector3 vel =particle->getVel() - _wind;
 		float velocity_module = vel.normalize();
 		Vector3 dragF;
 		velocity_module = _k1 * velocity_module + _k2 * velocity_module * velocity_module;
@@ -85,31 +84,38 @@ void WindForceGenerator::updateForce(Particle* particle, double duration)
 	
 }
 
-Whirlwind::Whirlwind(double k1, double k2, const Vector3& wind, double radius, const Vector3& position):
-	WindForceGenerator(k1, k2, wind, radius, position)
+WhirlwindForceGenerator::WhirlwindForceGenerator(double k1, double k2, int K,double radius, const Vector3& position):
+	WindForceGenerator(k1, k2, {0.0,0.0,0.0}, radius, position)
 {
 	_name = "Whirlwind";
+	_K = K;
 }
 
-void Whirlwind::updateForce(Particle* particle, double duration)
+void WhirlwindForceGenerator::updateForce(Particle* particle, double duration)
 {
 	if (fabs(particle->getInverseMass() < 1e-10))
 		return;
 	
-	//compute drag force
-	auto x = -(particle->getPos().z - _position.z);
-	auto y = 50 - (particle->getPos().y - _position.y);
-	auto z = -(particle->getPos().x - _position.x);
-	_wind = K * Vector3(x, y, z);
-	
-	Vector3 v = _wind - particle->getVel();
-	float velocity_module = v.normalize();
+	Vector3 particleDistance = particle->getPos();
 
-	Vector3 dragF;
-	velocity_module = _k1 * velocity_module + _k2 * velocity_module * velocity_module;
+	if ((particleDistance.x <= _position.x + _action_radius && particleDistance.x >= _position.x - _action_radius)
+		&& (particleDistance.y <= _position.y + _action_radius && particleDistance.y >= _position.y - _action_radius)
+		&& (particleDistance.z <= _position.z + _action_radius && particleDistance.z >= _position.z - _action_radius)) {
 
-	dragF = -v * velocity_module;
-	
-	//apply drag force
-	particle->addForce(dragF);
+		//compute drag force
+		_wind = _K * Vector3(-(particle->getPos().z - _position.z)
+			, 50 - (particle->getPos().y - _position.y)
+			, particle->getPos().x - _position.x);
+
+		Vector3 v = particle->getVel() - _wind;
+		float velocity_module = v.normalize();
+
+		Vector3 dragF;
+		velocity_module = _k1 * velocity_module + _k2 * velocity_module * velocity_module;
+
+		dragF = -v * velocity_module;
+
+		//apply drag force
+		particle->addForce(dragF);
+	}
 }

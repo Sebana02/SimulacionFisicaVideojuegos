@@ -192,6 +192,27 @@ void ParticleSystem::deleteWind() {
 	}
 }
 
+void ParticleSystem::addWhirlwind()
+{
+	deleteWhirlwind();
+
+	whirlwind_force = new WhirlwindForceGenerator(1, 0.0 ,3, 200, { -300.0,0.0,0.0 });
+	for (auto& p : _particles)
+		_registry->addRegistry(whirlwind_force, p);
+	
+}
+
+void ParticleSystem::deleteWhirlwind()
+{
+	if (whirlwind_force != nullptr) {
+		_registry->deleteForce(whirlwind_force);
+		delete whirlwind_force;
+		whirlwind_force = nullptr;
+	}
+}
+
+
+
 Vector4 ParticleSystem::randomColor()
 {
 	return Vector4((rand() % 9 + 1) / 10.0, (rand() % 9 + 1) / 10.0, (rand() % 9 + 1) / 10.0, 1.0);
