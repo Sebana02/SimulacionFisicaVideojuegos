@@ -66,9 +66,9 @@ void WindForceGenerator::updateForce(Particle* particle, double duration)
 
 	Vector3 particleDistance = particle->getPos();
 
-	if ((particleDistance.x <= _position.x + _action_radius && particleDistance.x >= _position.x - _action_radius)
-		&& (particleDistance.y <= _position.y + _action_radius && particleDistance.y >= _position.y - _action_radius)
-		&& (particleDistance.z <= _position.z + _action_radius && particleDistance.z >= _position.z - _action_radius)) {
+	if ((pow(particleDistance.x, 2) <= pow(_position.x + _action_radius, 2))
+		&& (pow(particleDistance.y, 2) <= pow(_position.y + _action_radius, 2))
+		&& (pow(particleDistance.z, 2) <= pow(_position.z + _action_radius, 2))) {
 
 		//compute drag force
 		Vector3 vel = particle->getVel() - _wind;
@@ -98,9 +98,9 @@ void WhirlwindForceGenerator::updateForce(Particle* particle, double duration)
 
 	Vector3 particleDistance = particle->getPos();
 
-	if ((particleDistance.x <= _position.x + _action_radius && particleDistance.x >= _position.x - _action_radius)
-		&& (particleDistance.y <= _position.y + _action_radius && particleDistance.y >= _position.y - _action_radius)
-		&& (particleDistance.z <= _position.z + _action_radius && particleDistance.z >= _position.z - _action_radius)) {
+	if ((pow(particleDistance.x, 2) <= pow(_position.x + _action_radius, 2))
+		&& (pow(particleDistance.y, 2) <= pow(_position.y + _action_radius, 2))
+		&& (pow(particleDistance.z, 2) <= pow(_position.z + _action_radius, 2))) {
 
 		//compute drag force
 		_wind = _K * Vector3(-(particle->getPos().z - _position.z)
@@ -150,7 +150,7 @@ void ExplosionForceGenerator::updateForce(Particle* particle, double t)
 			Vector3(particle->getPos().x - _position.x,
 				particle->getPos().y - _position.y,
 				particle->getPos().z - _position.z) *
-			std::exp(- t / _const_explosion);
+			std::exp(-t / _const_explosion);
 
 		particle->addForce(explosion_force);
 	}
