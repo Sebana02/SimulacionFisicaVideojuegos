@@ -181,7 +181,7 @@ void ParticleSystem::addWind() {
 	
 	deleteWind();
 	
-	wind_force = new WindForceGenerator(0.9,0.1,{ 0.0,80.0,10.0 }, 200, { 0.0,0.0,0.0 });
+	wind_force = new WindForceGenerator(0.9,0.1,{ 0.0,10.0,10.0 }, 200, { 0.0,75.0,0.0 });
 	for (auto& p : _particles)
 		_registry->addRegistry(wind_force, p);
 }
