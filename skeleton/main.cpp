@@ -121,8 +121,8 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	case '7': //gaussian generation, just one time, no velocity
 	{
 		GaussianParticleGenerator* p = new GaussianParticleGenerator({ 0,0,0 }, { 0,0,0 }, { 50,50,50 }, { 0,0,0 }, 10, 100);
-		const int mass = rand() % 5 + 5;
-		p->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, mass, _particle_system->randomColor(), 5.0/mass, -1, 2000));
+		const int mass = rand() % 20 + 1;
+		p->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, mass, _particle_system->randomColor(), mass/5.0, -1, 2000));
 		_particle_system->addParticles(p->generateParticles());
 		delete p;
 
@@ -131,9 +131,10 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	case '8': //uniform generation, just one time, with velocity
 	{
 		GaussianParticleGenerator* p = new GaussianParticleGenerator({ 0,0,0 }, { 1,5,1 }, { 50,50,50 }, { 1,5,1 }, 10, 100);
-		int mass = rand() % 5 + 5;
-		p->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, mass, _particle_system->randomColor(), 5.0/mass, -1, 2000));
+		int mass = rand() % 20 + 1;
+		p->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, mass, _particle_system->randomColor(), mass/5.0, -1, 2000));
 		_particle_system->addParticles(p->generateParticles());
+		cout << mass << endl;
 		delete p;
 
 		break;
