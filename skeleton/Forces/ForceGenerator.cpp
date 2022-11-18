@@ -131,7 +131,6 @@ ExplosionForceGenerator::ExplosionForceGenerator(int K, const Vector3& position,
 
 ExplosionForceGenerator::~ExplosionForceGenerator()
 {
-
 }
 
 void ExplosionForceGenerator::updateForce(Particle* particle, double t)
@@ -146,16 +145,15 @@ void ExplosionForceGenerator::updateForce(Particle* particle, double t)
 		+ pow((particle->getPos().y - _position.y), 2)
 		+ pow((particle->getPos().z - _position.z), 2);
 
-	if (r < _radius * _radius) {
+	if (r < _radius) {
 		Vector3 explosion_force = (_K / r) *
 			Vector3(particle->getPos().x - _position.x,
 				particle->getPos().y - _position.y,
 				particle->getPos().z - _position.z) *
-			pow(e, -t / _const_explosion);
+			std::exp(- t / _const_explosion);
 
-		particle->addForce(explosion_force * particle->getMass());
+		particle->addForce(explosion_force);
 	}
 
-	_radius += vel_expansion * t;//
-	_const_explosion += t;
+	_radius += vel_expansion * t;
 }

@@ -75,7 +75,6 @@ protected:
 	double _radius;
 	Vector3 _position;
 	float _const_explosion;
-	long double e = 2.71828182845904523536;
 	float vel_expansion = 343.4;
 };
 #endif // __FORCE_GENERATOR__

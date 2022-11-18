@@ -6,13 +6,13 @@ ParticleSystem::ParticleSystem() {
 
 	//fuente
 	ParticleGenerator* fuente = new GaussianParticleGenerator({ 0,0,0 }, { 1.0,25.0,1.0 }, { 0.0,0.0,0.0 }, { 2.0,1.0,2.0 }, 100, 0.1);
-	fuente->setParticle(new Particle({ 0.0,-10000.0,0.0 }, { 0,0,0 }, { 0,-9.8,0 }, 0.99, 1.0, randomColor(), 0.3, 5000, 300));
+	fuente->setParticle(new Particle({ 0.0,-10000.0,0.0 }, { 0,0,0 }, { 0,-9.8,0 }, 0.99, 1.0, randomColor(), 0.3, -1, 400));
 	_particle_generators.push_back(fuente);
 	fuente->setActive(false);
 
 	//humo
 	ParticleGenerator* humo = new UniformParticleGenerator({ 0.0,20.0,0.0 }, { 0,0,0 }, -10, 10, 400, 0.1);
-	humo->setParticle(new Particle({ 0.0,-10000.0,0.0 }, { 0,0,0 }, { 0,-9.8,0 }, 0.99, 1.0, randomColor(), 0.3, 2000, 200.0));
+	humo->setParticle(new Particle({ 0.0,-10000.0,0.0 }, { 0,0,0 }, { 0,-9.8,0 }, 0.99, 1.0, randomColor(), 0.3, -1, 400));
 	_particle_generators.push_back(humo);
 	humo->setActive(false);
 
@@ -181,7 +181,7 @@ void ParticleSystem::addWind() {
 	
 	deleteWind();
 	
-	wind_force = new WindForceGenerator(0.9,0.1,{ 0.0,10.0,0.0 }, 200, { -300.0,0.0,0.0 });
+	wind_force = new WindForceGenerator(0.9,0.1,{ 0.0,80.0,10.0 }, 200, { 0.0,0.0,0.0 });
 	for (auto& p : _particles)
 		_registry->addRegistry(wind_force, p);
 }
@@ -198,7 +198,7 @@ void ParticleSystem::addWhirlwind()
 {
 	deleteWhirlwind();
 
-	whirlwind_force = new WhirlwindForceGenerator(1, 0.0 ,3, 200, { -300.0,0.0,0.0 });
+	whirlwind_force = new WhirlwindForceGenerator(1, 0.0 ,1, 200, { 0.0,0.0,0.0 });
 	for (auto& p : _particles)
 		_registry->addRegistry(whirlwind_force, p);
 	
@@ -216,7 +216,7 @@ void ParticleSystem::deleteWhirlwind()
 void ParticleSystem::addExplosion()
 {
 	deleteExplosion();
-	explosion_force = new ExplosionForceGenerator(200, { -300.0,0.0,0.0 }, 10);
+	explosion_force = new ExplosionForceGenerator(200000, { 0.0,0.0,0.0 }, 2);
 	for (auto& p : _particles)
 		_registry->addRegistry(explosion_force, p);
 }
@@ -239,6 +239,16 @@ Vector4 ParticleSystem::randomColor()
 
 void ParticleSystem::addParticles(std::list<Particle*>& list) {
 	for (auto particle : list) {
+
+		if (gravity_force != nullptr)
+			_registry->addRegistry(gravity_force, particle);
+		if (wind_force != nullptr)
+			_registry->addRegistry(wind_force, particle);
+		if (whirlwind_force != nullptr)
+			_registry->addRegistry(whirlwind_force, particle);
+		if (explosion_force != nullptr)
+			_registry->addRegistry(explosion_force, particle);
+		
 		_particles.push_back(particle);
 	}
 	list.clear();
