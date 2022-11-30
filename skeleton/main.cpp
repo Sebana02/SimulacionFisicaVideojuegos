@@ -122,7 +122,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	{
 		GaussianParticleGenerator* p = new GaussianParticleGenerator({ 0,0,0 }, { 0,0,0 }, { 50,50,50 }, { 0,0,0 }, 10, 100);
 		const int mass = rand() % 20 + 1;
-		p->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, mass, _particle_system->randomColor(), mass/5.0, -1, 2000));
+		p->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, mass, _particle_system->randomColor(), mass / 5.0, -1, 2000));
 		_particle_system->addParticles(p->generateParticles());
 		delete p;
 
@@ -132,7 +132,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	{
 		GaussianParticleGenerator* p = new GaussianParticleGenerator({ 0,0,0 }, { 1,5,1 }, { 50,50,50 }, { 1,5,1 }, 10, 100);
 		int mass = rand() % 20 + 1;
-		p->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, mass, _particle_system->randomColor(), mass/5.0, -1, 2000));
+		p->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, mass, _particle_system->randomColor(), mass / 5.0, -1, 2000));
 		_particle_system->addParticles(p->generateParticles());
 		cout << mass << endl;
 		delete p;
@@ -165,6 +165,15 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		break;
 	case 'M':
 		_particle_system->deleteExplosion();
+		break;
+	case 'P':
+		_particle_system->generateSpringDemo();
+		break;
+	case 'O':
+		_particle_system->generateAnchoredSpringDemo();
+		break;
+	case 'I':
+		_particle_system->generateBungeeSpringDemo();
 		break;
 	default:
 		break;

@@ -34,14 +34,16 @@ ParticleSystem::~ParticleSystem() {
 	_particle_generators.clear();
 
 	for (auto particle : _particles)
-		delete particle;
+		if (particle != nullptr) delete particle;
 	_particles.clear();
 
 	if (gravity_force != nullptr) delete gravity_force;
 	if (wind_force != nullptr)delete wind_force;
 	if (whirlwind_force != nullptr)delete whirlwind_force;
 	if (explosion_force != nullptr)delete explosion_force;
-	
+	for (auto spring : _springs_forces)
+		if (spring != nullptr) delete spring;
+
 	delete _registry;
 
 }
@@ -57,9 +59,9 @@ void ParticleSystem::update(double t) {
 	}
 
 	//generate particles
-	for (auto p : _particle_generators) 
+	for (auto p : _particle_generators)
 		addParticles(p->generateParticles());
-	
+
 
 	_registry->updateForces(t);
 
@@ -178,10 +180,10 @@ void ParticleSystem::deleteGravity() {
 }
 
 void ParticleSystem::addWind() {
-	
+
 	deleteWind();
-	
-	wind_force = new WindForceGenerator(0.9,0.1,{ 0.0,10.0,10.0 }, 200, { 0.0,75.0,0.0 });
+
+	wind_force = new WindForceGenerator(0.9, 0.1, { 0.0,10.0,10.0 }, 200, { 0.0,75.0,0.0 });
 	for (auto& p : _particles)
 		_registry->addRegistry(wind_force, p);
 }
@@ -198,10 +200,10 @@ void ParticleSystem::addWhirlwind()
 {
 	deleteWhirlwind();
 
-	whirlwind_force = new WhirlwindForceGenerator(1, 0.0 ,1, 200, { 0.0,0.0,0.0 });
+	whirlwind_force = new WhirlwindForceGenerator(1, 0.0, 1, 200, { 0.0,0.0,0.0 });
 	for (auto& p : _particles)
 		_registry->addRegistry(whirlwind_force, p);
-	
+
 }
 
 void ParticleSystem::deleteWhirlwind()
@@ -237,6 +239,61 @@ Vector4 ParticleSystem::randomColor()
 	return Vector4((rand() % 9 + 1) / 10.0, (rand() % 9 + 1) / 10.0, (rand() % 9 + 1) / 10.0, 1.0);
 }
 
+void ParticleSystem::generateSpringDemo()
+{
+	Particle* p1 = new Particle({ 0.0,30.0,-10.0 }, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 0.85, 2.0, { 0.5,0.5,0.5,1.0 }, 2.0, -1, -1);
+	Particle* p2 = new Particle({ 0.0,30.0,10.0 }, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 0.85, 2.0, { 0.5,0.5,0.5,1.0 }, 2.0, -1, -1);
+
+	SpringForceGenerator* spring_force1 = new SpringForceGenerator(10, 10, p2);
+	_registry->addRegistry(spring_force1, p1);
+	SpringForceGenerator* spring_force2 = new SpringForceGenerator(10, 10, p1);
+	_registry->addRegistry(spring_force2, p2);
+
+	_springs_forces.push_back(spring_force1);
+	_springs_forces.push_back(spring_force2);
+	_particles.push_back(p1);
+	_particles.push_back(p2);
+}
+
+void ParticleSystem::generateAnchoredSpringDemo()
+{
+	Particle* p3 = new Particle({ 0.0,30.0,0.0 }, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 0.85, 2.0, { 1.0,1.0,1.0,1.0 }, 2.0, -1, -1);
+	AnchoredSpringFG* f3 = new AnchoredSpringFG(10, 10, { 0.0,50.0,0.0 });
+	_registry->addRegistry(f3, p3);
+	_springs_forces.push_back(f3);
+	_particles.push_back(p3);
+}
+
+void ParticleSystem::generateBungeeSpringDemo()
+{
+	Particle* p1 = new Particle({ 0.0,30.0,-10.0 }, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 0.85, 2.0, { 0.5,0.5,0.5,1.0 }, 2.0, -1, -1);
+	Particle* p2 = new Particle({ 0.0,30.0,10.0 }, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 0.85, 2.0, { 0.5,0.5,0.5,1.0 }, 2.0, -1, -1);
+
+	BungeeForceGenerator* spring_force1 = new BungeeForceGenerator(10, 10, p2);
+	_registry->addRegistry(spring_force1, p1);
+	BungeeForceGenerator* spring_force2 = new BungeeForceGenerator(10, 10, p1);
+	_registry->addRegistry(spring_force2, p2);
+
+	_springs_forces.push_back(spring_force1);
+	_springs_forces.push_back(spring_force2);
+	_particles.push_back(p1);
+	_particles.push_back(p2);
+}
+
+void ParticleSystem::generateBuoyancyDemo()
+{
+	Particle* suelo = new Particle({ 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 0, 0.0, { 1.0,1.0,0.0,1.0 }, 2.0, -1, -1);
+	suelo->getRenderItem()->shape = CreateShape(physx::PxBoxGeometry(100.0, 2.0, 100.0));
+	_particles.push_back(suelo);
+
+	Particle* cubo = new Particle({ 0.0,20.0,0.0 }, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 0, 2.0, { 1.0,1.0,0.0,1.0 }, 2.0, -1, -1);
+	cubo->getRenderItem()->shape = CreateShape(physx::PxBoxGeometry(10.0,10.0,10.0));
+	_particles.push_back(cubo);
+
+	BuoyancyForceGenerator* force = new BuoyancyForceGenerator()
+
+
+}
 void ParticleSystem::addParticles(std::list<Particle*>& list) {
 	for (auto particle : list) {
 
@@ -248,7 +305,7 @@ void ParticleSystem::addParticles(std::list<Particle*>& list) {
 			_registry->addRegistry(whirlwind_force, particle);
 		if (explosion_force != nullptr)
 			_registry->addRegistry(explosion_force, particle);
-		
+
 		_particles.push_back(particle);
 	}
 	list.clear();

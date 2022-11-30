@@ -129,10 +129,6 @@ ExplosionForceGenerator::ExplosionForceGenerator(int K, const Vector3& position,
 	_radius = 0;
 }
 
-ExplosionForceGenerator::~ExplosionForceGenerator()
-{
-}
-
 void ExplosionForceGenerator::updateForce(Particle* particle, double t)
 {
 	if (fabs(particle->getInverseMass() < 1e-10))
@@ -156,4 +152,87 @@ void ExplosionForceGenerator::updateForce(Particle* particle, double t)
 	}
 
 	_radius += vel_expansion * t;
+}
+
+//------------------------------------------------------------------------------------------
+
+SpringForceGenerator::SpringForceGenerator(double K, double resting_length, Particle* other)
+{
+	_K = K;
+	_resting_length = resting_length;
+	_other = other;
+	_name = "Spring";
+}
+
+void SpringForceGenerator::updateForce(Particle* particle, double duration)
+{
+	Vector3 force = _other->getPos() - particle->getPos();
+
+	const float length = force.normalize();
+	const float delta_x = length - _resting_length;
+	force *= delta_x * _K;
+
+	particle->addForce(force);
+}
+
+AnchoredSpringFG::AnchoredSpringFG(double K, double resting_length, const Vector3& anchor)
+	:SpringForceGenerator(K,resting_length,nullptr)
+{
+	_other = new Particle(anchor, { 0,0,0 }, { 0,0,0 }, 0, 1e6, { 1,0,0,1 }, 5, -1, -1);
+	_other->getRenderItem()->shape = CreateShape(physx::PxBoxGeometry(3.0, 3.0, 3.0));
+}
+AnchoredSpringFG::~AnchoredSpringFG() 
+{
+	delete _other;
+}
+BungeeForceGenerator::BungeeForceGenerator(double K, double resting_length, Particle* other)
+	:SpringForceGenerator(K, resting_length, other)
+{
+	_name = "Bungee";
+}
+
+void BungeeForceGenerator::updateForce(Particle* particle, double duration)
+{
+	Vector3 f = particle->getPos();
+	f -= _other->getPos();
+
+	//length
+	float length = f.normalize();
+	length = length - _resting_length;
+	if (length <= 0.0f)
+		return;
+
+	//Resulting force
+	f *= -(length * _K);
+	particle->addForce(f);
+}
+
+//--------------------------------------------------------------------------------------------
+BuoyancyForceGenerator::BuoyancyForceGenerator(float h, float V, float d)
+{
+	_height = h;
+	_volume = V;
+	_liquid_density = d;
+	_gravity = 9.8;
+	_name = "Buoyancy";
+}
+
+void BuoyancyForceGenerator::updateForce(Particle* particle, double duration)
+{
+	float h = particle->getPos().y;
+	float h0 = _liquid_particle->getPos().y;
+
+	Vector3 f(0, 0, 0);
+	float immersed = 0.0;
+	if (h - h0 > _height * 0.5)
+		immersed = 0.0;
+	else if (h0 - h > _height * 0.5)
+		immersed = 1.0;
+	else
+		immersed = (h0 - h) / _height * 0.5;
+
+	f.y = _liquid_density * _volume * immersed * _gravity;
+
+	particle->addForce(f);
+	
 }

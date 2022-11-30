@@ -46,6 +46,11 @@ public:
 	void addParticles(std::list<Particle*>& list);
 	Vector4 randomColor();
 
+	void generateSpringDemo();
+	void generateAnchoredSpringDemo();
+	void generateBungeeSpringDemo();
+	void generateBuoyancyDemo();
+
 protected:
 	std::list<Particle*> _particles;
 	std::list<ParticleGenerator*> _particle_generators;
@@ -55,6 +60,8 @@ protected:
 	WhirlwindForceGenerator* whirlwind_force = nullptr;
 	ExplosionForceGenerator* explosion_force = nullptr;
 	ParticleForceRegistry* _registry = nullptr;
+	std::list<SpringForceGenerator*> _springs_forces;
+
 	
 	std::vector<Firework*> _fireworks_pool;
 	ParticleGenerator* _firework_gen = nullptr;
