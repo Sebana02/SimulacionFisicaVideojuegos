@@ -50,6 +50,7 @@ public:
 	void generateAnchoredSpringDemo();
 	void generateBungeeSpringDemo();
 	void generateBuoyancyDemo();
+	void generateSlinkyDemo();
 
 protected:
 	std::list<Particle*> _particles;
@@ -60,7 +61,8 @@ protected:
 	WhirlwindForceGenerator* whirlwind_force = nullptr;
 	ExplosionForceGenerator* explosion_force = nullptr;
 	ParticleForceRegistry* _registry = nullptr;
-	std::list<SpringForceGenerator*> _springs_forces;
+	
+	std::list<ForceGenerator*> _springs_forces;
 
 	
 	std::vector<Firework*> _fireworks_pool;

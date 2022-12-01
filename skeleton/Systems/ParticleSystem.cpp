@@ -239,14 +239,16 @@ Vector4 ParticleSystem::randomColor()
 	return Vector4((rand() % 9 + 1) / 10.0, (rand() % 9 + 1) / 10.0, (rand() % 9 + 1) / 10.0, 1.0);
 }
 
+
+
 void ParticleSystem::generateSpringDemo()
 {
-	Particle* p1 = new Particle({ 0.0,30.0,-10.0 }, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 0.85, 2.0, { 0.5,0.5,0.5,1.0 }, 2.0, -1, -1);
-	Particle* p2 = new Particle({ 0.0,30.0,10.0 }, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 0.85, 2.0, { 0.5,0.5,0.5,1.0 }, 2.0, -1, -1);
+	Particle* p1 = new Particle({ 0.0,60.0,-10.0 }, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 0.85, 2.0, { 0.5,0.5,1.0,1.0 }, 2.0, -1, -1);
+	Particle* p2 = new Particle({ 0.0,20.0,10.0 }, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 0.85, 2.0, { 0.5,0.5,1.0,1.0 }, 2.0, -1, -1);
 
-	SpringForceGenerator* spring_force1 = new SpringForceGenerator(10, 10, p2);
+	SpringForceGenerator* spring_force1 = new SpringForceGenerator(1, 20, p2);
 	_registry->addRegistry(spring_force1, p1);
-	SpringForceGenerator* spring_force2 = new SpringForceGenerator(10, 10, p1);
+	SpringForceGenerator* spring_force2 = new SpringForceGenerator(1, 20, p1);
 	_registry->addRegistry(spring_force2, p2);
 
 	_springs_forces.push_back(spring_force1);
@@ -257,8 +259,8 @@ void ParticleSystem::generateSpringDemo()
 
 void ParticleSystem::generateAnchoredSpringDemo()
 {
-	Particle* p3 = new Particle({ 0.0,30.0,0.0 }, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 0.85, 2.0, { 1.0,1.0,1.0,1.0 }, 2.0, -1, -1);
-	AnchoredSpringFG* f3 = new AnchoredSpringFG(10, 10, { 0.0,50.0,0.0 });
+	Particle* p3 = new Particle({ 0.0,30.0,30.0 }, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 0.85, 2.0, { 1.0,1.0,1.0,1.0 }, 2.0, -1, -1);
+	AnchoredSpringFG* f3 = new AnchoredSpringFG(1, 10, { 0.0,50.0,30.0 });
 	_registry->addRegistry(f3, p3);
 	_springs_forces.push_back(f3);
 	_particles.push_back(p3);
@@ -266,12 +268,12 @@ void ParticleSystem::generateAnchoredSpringDemo()
 
 void ParticleSystem::generateBungeeSpringDemo()
 {
-	Particle* p1 = new Particle({ 0.0,30.0,-10.0 }, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 0.85, 2.0, { 0.5,0.5,0.5,1.0 }, 2.0, -1, -1);
-	Particle* p2 = new Particle({ 0.0,30.0,10.0 }, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 0.85, 2.0, { 0.5,0.5,0.5,1.0 }, 2.0, -1, -1);
+	Particle* p1 = new Particle({ 0.0,60.0,-30.0 }, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 0.85, 2.0, { 0.5,1.0,0.5,1.0 }, 2.0, -1, -1);
+	Particle* p2 = new Particle({ 0.0,20.0,-10.0 }, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 0.85, 2.0, { 0.5,1.0,0.5,1.0 }, 2.0, -1, -1);
 
-	BungeeForceGenerator* spring_force1 = new BungeeForceGenerator(10, 10, p2);
+	BungeeForceGenerator* spring_force1 = new BungeeForceGenerator(1, 20, p2);
 	_registry->addRegistry(spring_force1, p1);
-	BungeeForceGenerator* spring_force2 = new BungeeForceGenerator(10, 10, p1);
+	BungeeForceGenerator* spring_force2 = new BungeeForceGenerator(1, 20, p1);
 	_registry->addRegistry(spring_force2, p2);
 
 	_springs_forces.push_back(spring_force1);
@@ -282,18 +284,78 @@ void ParticleSystem::generateBungeeSpringDemo()
 
 void ParticleSystem::generateBuoyancyDemo()
 {
-	Particle* suelo = new Particle({ 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 0, 0.0, { 1.0,1.0,0.0,1.0 }, 2.0, -1, -1);
-	suelo->getRenderItem()->shape = CreateShape(physx::PxBoxGeometry(100.0, 2.0, 100.0));
-	_particles.push_back(suelo);
-
-	Particle* cubo = new Particle({ 0.0,20.0,0.0 }, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 0, 2.0, { 1.0,1.0,0.0,1.0 }, 2.0, -1, -1);
-	cubo->getRenderItem()->shape = CreateShape(physx::PxBoxGeometry(10.0,10.0,10.0));
+	Particle* cubo = new Particle({ 0.0,20.0,0.0 }, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 0.99, 2.0, { 1.0,0.5,0.5,1.0 }, 2.0, -1, -1);
+	cubo->getRenderItem()->shape = CreateShape(physx::PxBoxGeometry(5.0, 5.0, 5.0));
 	_particles.push_back(cubo);
 
-	BuoyancyForceGenerator* force = new BuoyancyForceGenerator()
+	BuoyancyForceGenerator* force = new BuoyancyForceGenerator(0, 125, 1);
+	_registry->addRegistry(force, cubo);
+	GravityForceGenerator* gravity = new GravityForceGenerator({ 0.0,-9.8,0.0 });
+	_registry->addRegistry(gravity, cubo);
 
 
+	_springs_forces.push_back(gravity);
+	_springs_forces.push_back(force);
 }
+
+void ParticleSystem::generateSlinkyDemo()
+{
+	Particle* p1 = new Particle({ 0.0, 70.0, 20.0 }, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 0.5, 2.0, { 0.5,1.0,0.5,1.0 }, 2.0, -1, -1);
+	AnchoredSpringFG* f1 = new AnchoredSpringFG(1, 2, {0, 75.0, 20.0 });
+	_registry->addRegistry(f1, p1);
+	_springs_forces.push_back(f1);
+	_particles.push_back(p1);
+
+	Particle* p2 = new Particle({ 0.0, 65.0, 20.0 }, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 0.5, 2.0, { 0.4,0.0,1.0,1.0 }, 2.0, -1, -1);
+	SpringForceGenerator* f2 = new SpringForceGenerator(1, 2, p1);
+	_registry->addRegistry(f2, p2);
+	_springs_forces.push_back(f2);
+	_particles.push_back(p2);
+
+	Particle* p3 = new Particle({ 0.0, 60.0, 20.0 }, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 0.5, 2.0, { 0.7,0.0,1.0,1.0 }, 2.0, -1, -1);
+	SpringForceGenerator* f3 = new SpringForceGenerator(1, 2, p2);
+	_registry->addRegistry(f3, p3);
+	_springs_forces.push_back(f3);
+	_particles.push_back(p3);
+
+	Particle* p4 = new Particle({ 0.0, 55.0, 20.0 }, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 0.5, 2.0, { 1.0,0.0,1.0,1.0 }, 2.0, -1, -1);
+	SpringForceGenerator* f4 = new SpringForceGenerator(1, 2, p3);
+	_registry->addRegistry(f4, p4);
+	_springs_forces.push_back(f4);
+	_particles.push_back(p4);
+
+	Particle* p5 = new Particle({ 0.0, 50.0, 20.0 }, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 0.5, 2.0, { 1.0,0.0,0.7,1.0 }, 2.0, -1, -1);
+	SpringForceGenerator* f5 = new SpringForceGenerator(1, 2, p4);
+	_registry->addRegistry(f5, p5);
+	_springs_forces.push_back(f5);
+	_particles.push_back(p5);
+
+	Particle* p6 = new Particle({ 0.0, 45.0, 20.0 }, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 0.5, 2.0, { 1.0,0.0,0.4,1.0 }, 2.0, -1, -1);
+	SpringForceGenerator* f6 = new SpringForceGenerator(1, 2, p5);
+	_registry->addRegistry(f6, p6);
+	_springs_forces.push_back(f6);
+	_particles.push_back(p6);
+
+	Particle* p7 = new Particle({ 0.0, 40.0, 20.0 }, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 0.5, 2.0, { 1.0,0.0,0.1,1.0 }, 2.0, -1, -1);
+	SpringForceGenerator* f7 = new SpringForceGenerator(1, 2, p6);
+	_registry->addRegistry(f7, p7);
+	_springs_forces.push_back(f7);
+	_particles.push_back(p7);
+
+	GravityForceGenerator* gravity = new GravityForceGenerator({ 0.0,-9.8,0.0 });
+	_springs_forces.push_back(gravity);
+
+	_registry->addRegistry(gravity, p1);
+	_registry->addRegistry(gravity, p2);
+	_registry->addRegistry(gravity, p3);
+	_registry->addRegistry(gravity, p4);
+	_registry->addRegistry(gravity, p5);
+	_registry->addRegistry(gravity, p6);
+	_registry->addRegistry(gravity, p7);
+	
+}
+
+
 void ParticleSystem::addParticles(std::list<Particle*>& list) {
 	for (auto particle : list) {
 

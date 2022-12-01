@@ -175,6 +175,12 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	case 'I':
 		_particle_system->generateBungeeSpringDemo();
 		break;
+	case 'U':
+		_particle_system->generateBuoyancyDemo();
+		break;
+	case 'Y':
+		_particle_system->generateSlinkyDemo();
+		break;
 	default:
 		break;
 	}

@@ -107,7 +107,7 @@ public:
 class BuoyancyForceGenerator : public ForceGenerator {
 public:
 	BuoyancyForceGenerator(float h, float V, float d);
-	virtual ~BuoyancyForceGenerator() { };
+	virtual ~BuoyancyForceGenerator();
 	virtual void updateForce(Particle* particle, double duration) override;
 
 protected:

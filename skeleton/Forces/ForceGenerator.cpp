@@ -215,6 +215,13 @@ BuoyancyForceGenerator::BuoyancyForceGenerator(float h, float V, float d)
 	_liquid_density = d;
 	_gravity = 9.8;
 	_name = "Buoyancy";
+	_liquid_particle = new Particle({ 0.0,h,0.0 }, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 0, 0.0, { 1.0,1.0,0.0,1.0 }, 2.0, -1, -1);
+	_liquid_particle->getRenderItem()->shape = CreateShape(physx::PxBoxGeometry(100.0, 1.0, 100.0));
+}
+
+BuoyancyForceGenerator::~BuoyancyForceGenerator()
+{
+	if (_liquid_particle != nullptr) delete _liquid_particle;
 }
 
 void BuoyancyForceGenerator::updateForce(Particle* particle, double duration)
