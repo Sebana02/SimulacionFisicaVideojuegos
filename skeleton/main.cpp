@@ -14,6 +14,7 @@
 #include "./Particles/Particle.h"
 #include "./Systems/ParticleGenerator.h"
 #include "./Systems/ParticleSystem.h"
+#include "./Systems/RigidBodySystem.h"
 
 #include "checkML.h"
 
@@ -36,6 +37,7 @@ PxScene* gScene = NULL;
 ContactReportCallback gContactReportCallback;
 
 ParticleSystem* _particle_system = nullptr;
+RigidBodySystem* _rigid_body_system = nullptr;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -50,7 +52,8 @@ void initPhysics(bool interactive)
 
 	gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
 
-	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
+	gMaterial = gPhysics->createMaterial(0.9f, 0.5f, 0.7f);
+	//gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
 
 	// For Solid Rigids +++++++++++++++++++++++++++++++++++++
 	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
@@ -61,6 +64,24 @@ void initPhysics(bool interactive)
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
 
+	//RigidBody system
+	//add static objects
+	PxRigidStatic* Suelo = gPhysics->createRigidStatic(PxTransform({0.0f, 0.0f, 0.0f}));
+	PxShape* shape = CreateShape(PxBoxGeometry(100, 0.1, 100));
+	Suelo->attachShape(*shape);
+	RenderItem* rI = new RenderItem(shape, Suelo, { 0.8,0.8,0.8,1.0 });
+	gScene->addActor(*Suelo);
+	
+	PxRigidStatic* Pared = gPhysics->createRigidStatic(PxTransform({ 10,10,-30 }));
+	PxShape* shape_suelo = CreateShape(PxBoxGeometry(40, 20, 5));
+	Pared->attachShape(*shape_suelo);
+	RenderItem* rI2 = new RenderItem(shape_suelo, Pared, { 0.8,0.8,0.8,1.0 });
+	gScene->addActor(*Pared);
+	
+	_rigid_body_system = new RigidBodySystem(gScene, gPhysics);
+
+	
+	//particle system
 	_particle_system = new ParticleSystem();
 }
 
@@ -121,7 +142,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	case '7': //gaussian generation, just one time, no velocity
 	{
 		GaussianParticleGenerator* p = new GaussianParticleGenerator({ 0,0,0 }, { 0,0,0 }, { 50,50,50 }, { 0,0,0 }, 10, 100);
-		const int mass = rand() % 20 + 1;
+		const int mass = rand() % 50 + 1;
 		p->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, mass, _particle_system->randomColor(), mass / 5.0, -1, 2000));
 		_particle_system->addParticles(p->generateParticles());
 		delete p;

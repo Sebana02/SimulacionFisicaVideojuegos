@@ -262,6 +262,7 @@
     <ClCompile Include="Render\Render.cpp" />
     <ClCompile Include="Systems\ParticleGenerator.cpp" />
     <ClCompile Include="Systems\ParticleSystem.cpp" />
+    <ClCompile Include="Systems\RigidBodySystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="callbacks.hpp" />
@@ -275,6 +276,7 @@
     <ClInclude Include="Render\Render.h" />
     <ClInclude Include="Systems\ParticleGenerator.h" />
     <ClInclude Include="Systems\ParticleSystem.h" />
+    <ClInclude Include="Systems\RigidBodySystem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
