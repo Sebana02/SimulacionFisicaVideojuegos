@@ -271,6 +271,7 @@
     <ClInclude Include="core.hpp" />
     <ClInclude Include="Forces\ForceGenerator.h" />
     <ClInclude Include="Forces\ParticleForceRegistry.h" />
+    <ClInclude Include="Forces\RigidBodyForceRegistry.h" />
     <ClInclude Include="Particles\Particle.h" />
     <ClInclude Include="RenderUtils.hpp" />
     <ClInclude Include="Render\Camera.h" />

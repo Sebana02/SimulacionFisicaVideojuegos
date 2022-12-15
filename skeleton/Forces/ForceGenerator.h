@@ -2,6 +2,7 @@
 #define __FORCE_GENERATOR__
 
 #include "../Particles/Particle.h"
+#include "../Particles/Rigidbody.h"
 #include <list>
 #include <random>
 #include <numbers>
@@ -12,16 +13,18 @@ public:
 	ForceGenerator() {};
 	virtual ~ForceGenerator() {};
 	virtual void updateForce(Particle* particle, double duration) = 0;
+	virtual void updateForce(Rigidbody* body, double duration) = 0;
 	inline std::string getName() { return _name; };
 	std::string _name;
 	double t = -1e10;//if starting negative --> eternal
 };
-
+//particles
 class GravityForceGenerator : public ForceGenerator
 {
 public:
 	GravityForceGenerator(const Vector3& gravity);
 	virtual void updateForce(Particle* particle, double duration) override;
+	virtual void updateForce(Rigidbody* body, double duration) override {};
 	inline void setGravity(Vector3 gravity) { _gravity = gravity; }
 protected:
 	Vector3 _gravity;
@@ -32,6 +35,7 @@ class ParticleDragGenerator : public ForceGenerator {
 public:
 	ParticleDragGenerator(const float k1, const float k2);
 	virtual void updateForce(Particle* particle, double duration) override;
+	virtual void updateForce(Rigidbody* body, double duration) override {};
 	inline void setDrag(float k1, float k2) noexcept { _k1 = k1; _k2 = k2; }
 
 
@@ -46,6 +50,7 @@ public:
 	WindForceGenerator(double k1, double k2, const Vector3& wind, double radius, const Vector3& position);
 	virtual ~WindForceGenerator();
 	virtual void updateForce(Particle* particle, double duration) override;
+	virtual void updateForce(Rigidbody* body, double duration) override {};
 	inline void setWind(Vector3 wind) { _wind = wind; }
 protected:
 	Vector3 _wind, _position;
@@ -60,6 +65,7 @@ public:
 	WhirlwindForceGenerator(double k1, double k2, int K, double radius, const Vector3& position);
 	virtual ~WhirlwindForceGenerator() {};
 	virtual void updateForce(Particle* particle, double duration) override;
+	virtual void updateForce(Rigidbody* body, double duration) override {};
 protected:
 	int _K;
 };
@@ -70,6 +76,7 @@ public:
 	ExplosionForceGenerator(int K, const Vector3& position, float const_explosion);
 	virtual ~ExplosionForceGenerator() {};
 	virtual void updateForce(Particle* particle, double duration) override;
+	virtual void updateForce(Rigidbody* body, double duration) override {};
 protected:
 	int _K;
 	double _radius;
@@ -83,6 +90,7 @@ public:
 	SpringForceGenerator(double K, double resting_length, Particle* other);
 	virtual ~SpringForceGenerator() {};
 	virtual void updateForce(Particle* particle, double duration) override;
+	virtual void updateForce(Rigidbody* body, double duration) override {};
 	inline void setK(double K) { _K = K; }
 
 protected:
@@ -101,6 +109,7 @@ public:
 	BungeeForceGenerator(double K, double resting_length, Particle* other);
 	virtual ~BungeeForceGenerator() {};
 	virtual void updateForce(Particle* particle, double duration) override;
+	virtual void updateForce(Rigidbody* body, double duration) override {};
 };
 
 
@@ -109,6 +118,7 @@ public:
 	BuoyancyForceGenerator(float h, float V, float d);
 	virtual ~BuoyancyForceGenerator();
 	virtual void updateForce(Particle* particle, double duration) override;
+	virtual void updateForce(Rigidbody* body, double duration) override {};
 
 protected:
 	float _height;
@@ -117,6 +127,16 @@ protected:
 	float _gravity;
 
 	Particle* _liquid_particle;
+};
+
+//rigidbodies
+class WindForceGeneratorRB : public WindForceGenerator {
+public:
+	WindForceGeneratorRB(double k1, double k2, const Vector3& wind, double radius, const Vector3& position);
+	virtual ~WindForceGeneratorRB() {};
+	virtual void updateForce(Particle* particle, double duration) override {};
+	virtual void updateForce(Rigidbody* body, double duration) override;
+	
 };
 #endif // __FORCE_GENERATOR__
 

@@ -14,15 +14,15 @@ using namespace physx;
 class Rigidbody
 {
 public:
-	Rigidbody(PxTransform tr, Vector3 vel, Vector3 size, Vector4 color, float mass, int life, double posDes, PxScene* gScene, PxPhysics* gPhysics);
+	Rigidbody(PxTransform tr, Vector3 vel, Vector3 size, Vector4 color, float mass, int life, double posDes, PxScene* gScene, PxPhysics* gPhysics, bool is_static);
 	~Rigidbody();
 
 	void integrate(double t);
 	bool isAlive() noexcept { return _alive; };
+	PxRigidActor* getActor() noexcept{ return _solid; };
 protected:
-	PxRigidDynamic* solid = nullptr;
+	PxRigidActor* _solid = nullptr;
 	RenderItem* _renderItem = nullptr;
-	PxShape* shape = nullptr;
 	PxScene* _gScene = nullptr;
 	PxPhysics* _gPhysics = nullptr;
 
@@ -30,6 +30,7 @@ protected:
 	double _lifePos;
 
 	bool _alive;
+	bool _static;
 };
 #endif // !1
 

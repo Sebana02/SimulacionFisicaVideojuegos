@@ -65,19 +65,6 @@ void initPhysics(bool interactive)
 	gScene = gPhysics->createScene(sceneDesc);
 
 	//RigidBody system
-	//add static objects
-	/*PxRigidStatic* Suelo = gPhysics->createRigidStatic(PxTransform({ 0.0f, 0.0f, 0.0f }));
-	PxShape* shape = CreateShape(PxBoxGeometry(100, 0.1, 100));
-	Suelo->attachShape(*shape);
-	RenderItem* rI = new RenderItem(shape, Suelo, { 0.8,0.8,0.8,1.0 });
-	gScene->addActor(*Suelo);
-
-	PxRigidStatic* Pared = gPhysics->createRigidStatic(PxTransform({ 10,10,-30 }));
-	PxShape* shape_suelo = CreateShape(PxBoxGeometry(40, 20, 5));
-	Pared->attachShape(*shape_suelo);
-	RenderItem* rI2 = new RenderItem(shape_suelo, Pared, { 0.8,0.8,0.8,1.0 });
-	gScene->addActor(*Pared);*/
-
 	_rigid_body_system = new RigidBodySystem(gScene, gPhysics);
 
 	//particle system

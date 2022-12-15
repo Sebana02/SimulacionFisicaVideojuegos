@@ -35,6 +35,7 @@
     <ClInclude Include="Systems\ParticleSystem.h" />
     <ClInclude Include="Systems\RigidBodySystem.h" />
     <ClInclude Include="Particles\Rigidbody.h" />
+    <ClInclude Include="Forces\RigidBodyForceRegistry.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">
