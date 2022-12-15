@@ -1,10 +1,8 @@
 #ifndef __RIGID_BODY_SYSTEM__ 
 #define __RIGID_BODY_SYSTEM__
 
-#include "../core.hpp"
-#include "../RenderUtils.hpp"
-#include <memory>
-#include <list>
+
+#include "../Particles/Rigidbody.h"
 
 #include "../checkML.h"
 
@@ -21,11 +19,12 @@ public:
 	void addRigidBody(PxTransform tr, Vector3 vel, Vector3 size, Vector4 color, float mass, int life, double posDes);
 
 protected:
-	std::list<PxRigidDynamic*> _rigidBodies;
+	std::list<Rigidbody*> _rigidBodies;
 	PxScene* _gScene;
 	PxPhysics* _gPhysics;
 
-	int max_bodies;
+	int _max_bodies;
+	int _spawn_delay;
 };
 	
 

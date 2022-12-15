@@ -288,7 +288,7 @@ void ParticleSystem::generateBuoyancyDemo()
 	cubo->getRenderItem()->shape = CreateShape(physx::PxBoxGeometry(5.0, 5.0, 5.0));
 	_particles.push_back(cubo);
 
-	BuoyancyForceGenerator* force = new BuoyancyForceGenerator(0, 125, 1);
+	BuoyancyForceGenerator* force = new BuoyancyForceGenerator(0, 0.5, 1000);
 	_registry->addRegistry(force, cubo);
 	GravityForceGenerator* gravity = new GravityForceGenerator({ 0.0,-9.8,0.0 });
 	_registry->addRegistry(gravity, cubo);

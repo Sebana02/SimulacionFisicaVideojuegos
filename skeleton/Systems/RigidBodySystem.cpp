@@ -4,37 +4,42 @@ RigidBodySystem::RigidBodySystem(PxScene* gScene, PxPhysics* gPhysics)
 {
 	_gScene = gScene;
 	_gPhysics = gPhysics;
-	max_bodies = 50;
+	_max_bodies = 50;
+	_spawn_delay = glutGet(GLUT_ELAPSED_TIME) + 1000;
 }
 
 RigidBodySystem::~RigidBodySystem()
 {
+	for (auto rb : _rigidBodies) 
+		delete rb;
+
+	_rigidBodies.clear();
 }
 
 void RigidBodySystem::update(double t)
 {
-	if (_rigidBodies.size() < max_bodies) {
-		addRigidBody(PxTransform(PxVec3(0, 20, 0)), Vector3(10, 0, 0), Vector3(10, 10, 10), Vector4(0.5, 0.5, 0.5, 1.0), 2, 100, 0);
+	
+	if (_rigidBodies.size() < _max_bodies && glutGet(GLUT_ELAPSED_TIME) >= _spawn_delay) {
+		addRigidBody(PxTransform(PxVec3(0, 50, 0)), Vector3(10, 0, 0), Vector3(10, 10, 10), Vector4(0.5, 0.5, 0.5, 1.0), 2, 2000, 2000);
+		_spawn_delay = glutGet(GLUT_ELAPSED_TIME) + 1000;
 	}
 	
+	//update de las particulas
+	std::list<Rigidbody*>::iterator it = _rigidBodies.begin();
+	while (it != _rigidBodies.end()) {
+		Rigidbody* p = *it;
+		if (!p)continue;
+		if (p->isAlive()) {
+			p->integrate(t);
+			++it;
+		}
+		else {
+			delete p;
+			it = _rigidBodies.erase(it);
+		}
+	}
 }
 void RigidBodySystem::addRigidBody(PxTransform tr, Vector3 vel, Vector3 size, Vector4 color, float mass, int life, double posDes)
 {
-	RenderItem* rI;
-	PxShape* shape;
-
-
-	PxRigidDynamic* new_solid;
-	new_solid = _gPhysics->createRigidDynamic(PxTransform(tr));
-	new_solid->setLinearVelocity(vel);
-	new_solid->setAngularVelocity({ 1.0,0,0 });
-	shape = CreateShape(PxBoxGeometry(size / 2.0));
-	new_solid->attachShape(*shape);
-	Vector3 inertia = { size.y * size.y + size.z * size.z,
-					   size.x * size.x + size.z * size.z,
-					   size.y * size.y + size.x * size.x };
-	new_solid->setMass(mass);
-	new_solid->setMassSpaceInertiaTensor(inertia * new_solid->getMass() / 12.0);
-	rI = new RenderItem(shape, new_solid, color);
-	_gScene->addActor(*new_solid);
+	_rigidBodies.push_back(new Rigidbody(tr, vel, size, color, mass, life, posDes, _gScene, _gPhysics));
 };

@@ -66,21 +66,20 @@ void initPhysics(bool interactive)
 
 	//RigidBody system
 	//add static objects
-	PxRigidStatic* Suelo = gPhysics->createRigidStatic(PxTransform({0.0f, 0.0f, 0.0f}));
+	/*PxRigidStatic* Suelo = gPhysics->createRigidStatic(PxTransform({ 0.0f, 0.0f, 0.0f }));
 	PxShape* shape = CreateShape(PxBoxGeometry(100, 0.1, 100));
 	Suelo->attachShape(*shape);
 	RenderItem* rI = new RenderItem(shape, Suelo, { 0.8,0.8,0.8,1.0 });
 	gScene->addActor(*Suelo);
-	
+
 	PxRigidStatic* Pared = gPhysics->createRigidStatic(PxTransform({ 10,10,-30 }));
 	PxShape* shape_suelo = CreateShape(PxBoxGeometry(40, 20, 5));
 	Pared->attachShape(*shape_suelo);
 	RenderItem* rI2 = new RenderItem(shape_suelo, Pared, { 0.8,0.8,0.8,1.0 });
-	gScene->addActor(*Pared);
-	
+	gScene->addActor(*Pared);*/
+
 	_rigid_body_system = new RigidBodySystem(gScene, gPhysics);
 
-	
 	//particle system
 	_particle_system = new ParticleSystem();
 }
@@ -96,15 +95,19 @@ void stepPhysics(bool interactive, double t)
 	gScene->simulate(t);
 	gScene->fetchResults(true);
 
+	_rigid_body_system->update(t);
 	_particle_system->update(t);
 }
 
 // Function to clean data
-// Add custom code to the begining of the function
+// Add custom code to the begining of the functioncout
 void cleanupPhysics(bool interactive)
 {
+	delete _rigid_body_system;
+	delete _particle_system;
+	
 	PX_UNUSED(interactive);
-
+		
 	// Rigid Body ++++++++++++++++++++++++++++++++++++++++++
 	gScene->release();
 	gDispatcher->release();
@@ -115,8 +118,6 @@ void cleanupPhysics(bool interactive)
 	transport->release();
 
 	gFoundation->release();
-
-	delete _particle_system;
 }
 
 // Function called when a key is pressed
@@ -155,7 +156,6 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		int mass = rand() % 20 + 1;
 		p->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, mass, _particle_system->randomColor(), mass / 5.0, -1, 2000));
 		_particle_system->addParticles(p->generateParticles());
-		cout << mass << endl;
 		delete p;
 
 		break;

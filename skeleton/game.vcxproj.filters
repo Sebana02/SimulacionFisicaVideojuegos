@@ -15,6 +15,7 @@
     <ClCompile Include="Systems\ParticleGenerator.cpp" />
     <ClCompile Include="Systems\ParticleSystem.cpp" />
     <ClCompile Include="Systems\RigidBodySystem.cpp" />
+    <ClCompile Include="Particles\Rigidbody.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -33,6 +34,7 @@
     <ClInclude Include="Systems\ParticleGenerator.h" />
     <ClInclude Include="Systems\ParticleSystem.h" />
     <ClInclude Include="Systems\RigidBodySystem.h" />
+    <ClInclude Include="Particles\Rigidbody.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">
