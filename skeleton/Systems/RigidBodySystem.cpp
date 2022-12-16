@@ -66,3 +66,13 @@ Vector4 RigidBodySystem::randomColor()
 {
 	return Vector4((rand() % 9 + 1) / 10.0, (rand() % 9 + 1) / 10.0, (rand() % 9 + 1) / 10.0, 1.0);
 }
+
+void RigidBodySystem::turnOnWind()
+{
+	_wind->setActive(true);
+}
+
+void RigidBodySystem::turnOffWind()
+{
+	_wind->setActive(false);
+}

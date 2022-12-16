@@ -189,6 +189,12 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	case 'Y':
 		_particle_system->generateSlinkyDemo();
 		break;
+	case 'R':
+		_rigid_body_system->turnOnWind();
+		break;
+	case 'T':
+		_rigid_body_system->turnOffWind();
+		break;
 	default:
 		break;
 	}

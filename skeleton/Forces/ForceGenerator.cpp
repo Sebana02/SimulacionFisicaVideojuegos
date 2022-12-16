@@ -252,6 +252,8 @@ WindForceGeneratorRB::WindForceGeneratorRB(double k1, double k2, const Vector3& 
 
 void WindForceGeneratorRB::updateForce(Rigidbody* body, double duration)
 {
+	if (!_active)return;
+	
 	auto rigidBody = static_cast<PxRigidBody*>(body->getActor());
 	if (fabs(rigidBody->getInvMass() < 1e-10))
 		return;

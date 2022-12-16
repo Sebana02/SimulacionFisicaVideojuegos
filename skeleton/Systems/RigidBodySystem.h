@@ -23,6 +23,8 @@ public:
 	void update(double t);
 	void addRigidBody(PxTransform tr, Vector3 vel, Vector3 size, Vector4 color, float mass, int life, double posDes,bool isStatic);
 	Vector4 randomColor();
+	void turnOnWind();
+	void turnOffWind();
 
 protected:
 	std::list<Rigidbody*> _rigidBodies;

@@ -136,6 +136,9 @@ public:
 	virtual ~WindForceGeneratorRB() {};
 	virtual void updateForce(Particle* particle, double duration) override {};
 	virtual void updateForce(Rigidbody* body, double duration) override;
+	void setActive(bool set) noexcept { _active = set; };
+protected:
+	bool _active;
 	
 };
 #endif // __FORCE_GENERATOR__
