@@ -9,53 +9,8 @@ RigidBodyGenerator::~RigidBodyGenerator()
 void RigidBodyGenerator::setParticle(Rigidbody* model)
 {
 	delete _model;
+	model->getActor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);
 	_model = model;
-}
-
-UniformRBGenerator::UniformRBGenerator(Vector3 mean_pos, Vector3 mean_vel, double a, double b,
-	int num_particles, double prob)
-{
-	_mean_pos = mean_pos;
-	_mean_vel = mean_vel;
-	_num_particles = num_particles;
-	_generation_probability = prob;
-
-	_a = a;
-	_b = b;
-
-	d = std::uniform_real_distribution<double>{ _a,_b };
-}
-
-std::list<Rigidbody*> UniformRBGenerator::generateParticles()
-{
-	std::list<Rigidbody*> lista;
-
-	if (_model == nullptr || !_active)
-		return lista;
-
-	for (int i = 0; i < _num_particles; i++) {
-
-		if (abs(d(_gen)) > _generation_probability)
-			continue;
-
-		auto p = _model->clone();
-
-		Vector3 newPos = _mean_pos;
-		newPos.x += d(_gen);
-		newPos.y += d(_gen);
-		newPos.z += d(_gen);
-
-		Vector3 newVel = _mean_vel;
-		newVel.x += d(_gen);
-		newVel.y += d(_gen);
-		newVel.z += d(_gen);
-
-		static_cast<physx::PxRigidDynamic*>(p->getActor())->setLinearVelocity(newVel);
-		p->getActor()->setGlobalPose(PxTransform(newPos));
-		
-		lista.push_back(p);
-	}
-		return lista;
 }
 
 
@@ -94,7 +49,7 @@ std::list<Rigidbody*> GaussianRBGenerator::generateParticles()
 		newVel.z += (d(_gen) * std_dev_vel.z);
 
 		static_cast<physx::PxRigidDynamic*>(p->getActor())->setLinearVelocity(newVel);
-		p->getActor()->setGlobalPose(PxTransform(newPos));
+		p->getActor()->setGlobalPose(PxTransform(newPos));		
 		lista.push_back(p);
 
 	}

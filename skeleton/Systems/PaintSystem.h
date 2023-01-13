@@ -22,9 +22,10 @@ public:
 	~PaintSystem();
 
 	void update(double t);
-	void addRigidBody(PxTransform tr, Vector3 vel, Vector3 size, Vector4 color, float mass, int life, double posDes,bool isStatic);
+	Rigidbody* addRigidBody(PxTransform tr, Vector3 vel, Vector3 size, Vector4 color, float mass, int life, double posDes,bool isStatic,bool sphere);
 	Vector4 randomColor();
 
+	void setPaint() { paint = !paint; };
 
 protected:
 	std::list<Rigidbody*> _rigidBodies;
@@ -34,6 +35,8 @@ protected:
 	RigidBodyForceRegistry* _registry = nullptr;
 
 	GaussianRBGenerator* pincel = nullptr;
+
+	bool paint = false;
 	
 };
 	

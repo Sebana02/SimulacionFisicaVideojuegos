@@ -1,4 +1,5 @@
 #include "PaintSystem.h"
+#include <iostream>
 
 PaintSystem::PaintSystem(PxScene* gScene, PxPhysics* gPhysics)
 {
@@ -6,23 +7,15 @@ PaintSystem::PaintSystem(PxScene* gScene, PxPhysics* gPhysics)
 	_gPhysics = gPhysics;
 
 
-	////add static objects
-	////suelo
-	//addRigidBody(PxTransform({ 0.0f, 0.0f, 0.0f }), Vector3(), { 1000, 0.1, 1000 }, { 0.2,0.8,0.8,1.0 }, 1.0, -1, -1, true);
-	////paredes
-	//addRigidBody(PxTransform({ 10,10,-300 }), Vector3(), { 400, 200, 5 }, { 0.8,0.8,0.8,1.0 }, 1.0, -1, -1, true);
-
 	//canvas
-	addRigidBody(PxTransform({ 1000,0,0 }), Vector3(), { 10,1080,1920 }, { 255,255,255,255 }, 1.0, -1, -1, true);
+	addRigidBody(PxTransform({ 10,0,0 }), Vector3(), { 10,10,20 }, { 255,255,255,255 }, 1.0, -1, -1, true, false);
 
 	//pincel
-	pincel = new GaussianRBGenerator(GetCamera()->getTransform().p, GetCamera()->getDir() * 10,{1,1,0},Vector3(), 10, 10000);
-	Rigidbody* rb = new Rigidbody({1100,0,0}, Vector3(), {.1,.1,.1}, { 255,255,255,255 }, 1.0, -1, 1500, gScene, gPhysics, false);
-	pincel->setParticle(rb);
-	
+	pincel = new GaussianRBGenerator(GetCamera()->getTransform().p - GetCamera()->getDir(), GetCamera()->getDir() * 10, { 1,1,1 }, Vector3(), 100, 1);
+	pincel->setParticle(new Rigidbody(GetCamera()->getTransform(), Vector3(), { .1,.1,.1 }, { 0,0,0,255 }, 1.0, -1, -1, gScene, gPhysics, false, true));
+
 	_registry = new RigidBodyForceRegistry();
 
-	
 }
 
 PaintSystem::~PaintSystem()
@@ -39,18 +32,16 @@ PaintSystem::~PaintSystem()
 
 void PaintSystem::update(double t)
 {
+	_registry->updateForces(t);
 
-	//if (_rigidBodies.size() < _max_bodies && glutGet(GLUT_ELAPSED_TIME) >= _spawn_delay) {
-	//	addRigidBody(PxTransform(PxVec3(0, 50, 0)), Vector3(10, 30, 0), Vector3(10, 10, 10), randomColor(), 2, 6000, 2000, false);
-	//	_spawn_delay = glutGet(GLUT_ELAPSED_TIME) + 1000;
-	//}
+	if (paint) {
+		pincel->setVelocity(GetCamera()->getDir() * 10);
+		pincel->setOrigin(GetCamera()->getTransform().p - GetCamera()->getDir());
 
-	//_registry->updateForces(t);
+		std::list<Rigidbody*> bodies = pincel->generateParticles();
+		_rigidBodies.insert(_rigidBodies.end(), bodies.begin(), bodies.end());
+	}
 
-	pincel->setVelocity(GetCamera()->getDir() * 10);
-	std::list<Rigidbody*> bodies = pincel->generateParticles();
-	_rigidBodies.insert(_rigidBodies.end(), bodies.begin(), bodies.end());
-	
 	//update de las particulas
 	std::list<Rigidbody*>::iterator it = _rigidBodies.begin();
 	while (it != _rigidBodies.end()) {
@@ -62,17 +53,17 @@ void PaintSystem::update(double t)
 		}
 		else {
 			_registry->deleteBodyRegistry(p);
-			delete p;
 			it = _rigidBodies.erase(it);
+			delete p;
 		}
 	}
 }
-void PaintSystem::addRigidBody(PxTransform tr, Vector3 vel, Vector3 size, Vector4 color, float mass, int life, double posDes, bool isStatic)
+Rigidbody* PaintSystem::addRigidBody(PxTransform tr, Vector3 vel, Vector3 size, Vector4 color, float mass, int life, double posDes, bool isStatic, bool sphere)
 {
-	Rigidbody* rb = new Rigidbody(tr, vel, size, color, mass, life, posDes, _gScene, _gPhysics, isStatic);
+	Rigidbody* rb = new Rigidbody(tr, vel, size, color, mass, life, posDes, _gScene, _gPhysics, isStatic, sphere);
 	_rigidBodies.push_back(rb);
-	/*if (!isStatic)
-		_registry->addRegistry(_wind, rb);*/
+
+	return rb;
 };
 
 Vector4 PaintSystem::randomColor()

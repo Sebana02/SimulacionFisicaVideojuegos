@@ -56,7 +56,7 @@ void RigidBodySystem::update(double t)
 }
 void RigidBodySystem::addRigidBody(PxTransform tr, Vector3 vel, Vector3 size, Vector4 color, float mass, int life, double posDes, bool isStatic)
 {
-	Rigidbody* rb = new Rigidbody(tr, vel, size, color, mass, life, posDes, _gScene, _gPhysics, isStatic);
+	Rigidbody* rb = new Rigidbody(tr, vel, size, color, mass, life, posDes, _gScene, _gPhysics, isStatic,false);
 	_rigidBodies.push_back(rb);
 	if (!isStatic)
 		_registry->addRegistry(_wind, rb);

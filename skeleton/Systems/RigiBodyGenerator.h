@@ -31,21 +31,6 @@ protected:
 };
 
 
-class UniformRBGenerator : public RigidBodyGenerator {
-public:
-	UniformRBGenerator(Vector3 mean_pos, Vector3 mean_vel, double a, double b,
-		int num_particles = 10, double prob = 1);
-	virtual ~UniformRBGenerator() {};
-	virtual std::list<Rigidbody*> generateParticles() override;
-
-protected:
-	double _a = -20, _b = 20;
-
-	std::random_device mch;
-	std::default_random_engine _gen{mch()};
-	std::uniform_real_distribution<double> d{ _a,_b };
-};
-
 class GaussianRBGenerator : public RigidBodyGenerator {
 public:
 	GaussianRBGenerator(Vector3 mean_pos, Vector3 mean_vel, Vector3 dev_pos, Vector3 dev_vel,
@@ -59,6 +44,7 @@ protected:
 	std::random_device mch; //get each time a different distribution
 	std::default_random_engine _gen{ mch() };
 	std::normal_distribution<double> d{ 0,1 };
+
 };
 
 #endif __RIGID_BODY__GENERATOR__

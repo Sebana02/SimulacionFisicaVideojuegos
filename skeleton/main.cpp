@@ -11,10 +11,7 @@
 #include "RenderUtils.hpp"
 #include "callbacks.hpp"
 
-#include "./Particles/Particle.h"
 #include "./Systems/ParticleGenerator.h"
-#include "./Systems/ParticleSystem.h"
-#include "./Systems/RigidBodySystem.h"
 #include "./Systems/PaintSystem.h"
 
 #include "checkML.h"
@@ -65,7 +62,8 @@ void initPhysics(bool interactive)
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
 
-
+	MyCollisionCallback* callback = new MyCollisionCallback();
+	gScene->setSimulationEventCallback(callback);
 	//create systems
 	paintSystem = new PaintSystem(gScene, gPhysics);
 }
@@ -92,10 +90,10 @@ void cleanupPhysics(bool interactive)
 {
 	//delete systems
 	delete paintSystem;
-	
-	
+
+
 	PX_UNUSED(interactive);
-		
+
 	// Rigid Body ++++++++++++++++++++++++++++++++++++++++++
 	gScene->release();
 	gDispatcher->release();
@@ -115,11 +113,15 @@ void keyPress(unsigned char key, const PxTransform& camera)
 
 	switch (toupper(key))
 	{
-	
+	case 'P':
+		paintSystem->setPaint();
+		break;
+
 	default:
 		break;
 	}
 }
+
 
 void onCollision(physx::PxActor* actor1, physx::PxActor* actor2)
 {

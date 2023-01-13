@@ -143,7 +143,7 @@ void renderLoop()
 {
 	StartCounter();
 	//sCamera = new Camera(PxVec3(150.0f, 125.0f, 0.0f), PxVec3(-0.5f,-0.1f,0.0f));
-	sCamera = new Camera(PxVec3(0.0f,0.0f,0.0f), PxVec3(-0.5f, 0.0f, 0.0f));
+	sCamera = new Camera(PxVec3(0.0f,0.0f,0.0f), PxVec3(1.0f, 0.0f, 0.0f));
 
 	setupDefaultWindow("PaintSimulator");
 	setupDefaultRenderState();
@@ -186,6 +186,6 @@ Camera* GetCamera()
 
 PxShape* CreateShape(const PxGeometry& geo)
 {
-	PxShape* shape = gPhysics->createShape(geo, *gMaterial);
+	PxShape* shape = gPhysics->createShape(geo, *gMaterial, true);
 	return shape;
 }

@@ -29,3 +29,38 @@ void ContactReportCallback::onContact(const physx::PxContactPairHeader& pairHead
 	physx::PxActor* actor2 = pairHeader.actors[1];
 	onCollision(actor1, actor2);
 }
+
+
+void MyCollisionCallback::onContact(const physx::PxContactPairHeader& pairHeader, const physx::PxContactPair* pairs, physx::PxU32 nbPairs)
+{
+	PxRigidActor* actor1 = (PxRigidActor*)pairHeader.actors[0];
+	PxRigidActor* actor2 = (PxRigidActor*)pairHeader.actors[1];
+	
+	Rigidbody* rb1 = (Rigidbody*)actor1->userData;
+	Rigidbody* rb2 = (Rigidbody*)actor2->userData;
+	
+	
+	if (rb1->_type == Rigidbody::type::ARRIVING_PAINT && rb2->_type == Rigidbody::type::CANVAS) //canvas con pintura		
+		rb1->onCollision(Rigidbody::TO_STOP);
+
+	else if (rb1->_type == Rigidbody::type::CANVAS && rb2->_type == Rigidbody::type::ARRIVING_PAINT)
+		rb2->onCollision(Rigidbody::TO_STOP);
+
+	else if (rb1->_type == Rigidbody::type::ARRIVING_PAINT && rb2->_type == Rigidbody::type::STATIC_PAINT) //pintura con pintura estatica
+	{
+		rb1->onCollision(Rigidbody::TO_STOP);
+		rb2->onCollision(Rigidbody::TO_DELETE);
+
+	}
+	else if (rb1->_type == Rigidbody::type::STATIC_PAINT && rb2->_type == Rigidbody::type::ARRIVING_PAINT)
+	{
+		rb2->onCollision(Rigidbody::TO_STOP);
+		rb1->onCollision(Rigidbody::TO_DELETE);
+
+	}
+	else if (rb1->_type == Rigidbody::type::ARRIVING_PAINT && rb2->_type == Rigidbody::type::ARRIVING_PAINT) 
+	{
+		rb1->onCollision(Rigidbody::TO_DELETE);
+	}
+		
+}
