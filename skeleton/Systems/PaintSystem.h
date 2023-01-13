@@ -8,6 +8,7 @@
 #include "../Particles/Rigidbody.h"
 #include "../Forces/ForceGenerator.h"
 #include "../Forces/RigidBodyForceRegistry.h"
+#include "RigiBodyGenerator.h"
 
 #include "../checkML.h"
 
@@ -23,19 +24,16 @@ public:
 	void update(double t);
 	void addRigidBody(PxTransform tr, Vector3 vel, Vector3 size, Vector4 color, float mass, int life, double posDes,bool isStatic);
 	Vector4 randomColor();
-	void turnOnWind();
-	void turnOffWind();
+
 
 protected:
 	std::list<Rigidbody*> _rigidBodies;
 	PxScene* _gScene;
 	PxPhysics* _gPhysics;
 
-	int _max_bodies;
-	int _spawn_delay;
-
 	RigidBodyForceRegistry* _registry = nullptr;
-	WindForceGeneratorRB* _wind = nullptr;
+
+	GaussianRBGenerator* pincel = nullptr;
 	
 };
 	

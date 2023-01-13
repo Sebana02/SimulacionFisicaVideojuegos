@@ -17,6 +17,7 @@
     <ClCompile Include="Systems\RigidBodySystem.cpp" />
     <ClCompile Include="Particles\Rigidbody.cpp" />
     <ClCompile Include="Systems\PaintSystem.cpp" />
+    <ClCompile Include="Systems\RigiBodyGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -38,6 +39,7 @@
     <ClInclude Include="Particles\Rigidbody.h" />
     <ClInclude Include="Forces\RigidBodyForceRegistry.h" />
     <ClInclude Include="Systems\PaintSystem.h" />
+    <ClInclude Include="Systems\RigiBodyGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

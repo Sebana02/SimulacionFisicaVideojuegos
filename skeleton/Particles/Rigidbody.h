@@ -20,6 +20,7 @@ public:
 	void integrate(double t);
 	bool isAlive() noexcept { return _alive; };
 	PxRigidActor* getActor() noexcept{ return _solid; };
+	Rigidbody* clone();
 protected:
 	PxRigidActor* _solid = nullptr;
 	RenderItem* _renderItem = nullptr;
@@ -31,6 +32,8 @@ protected:
 
 	bool _alive;
 	bool _static;
+
+	Vector3 _size;
 };
 #endif // !1
 

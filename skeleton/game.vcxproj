@@ -264,6 +264,7 @@
     <ClCompile Include="Systems\PaintSystem.cpp" />
     <ClCompile Include="Systems\ParticleGenerator.cpp" />
     <ClCompile Include="Systems\ParticleSystem.cpp" />
+    <ClCompile Include="Systems\RigiBodyGenerator.cpp" />
     <ClCompile Include="Systems\RigidBodySystem.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -281,6 +282,7 @@
     <ClInclude Include="Systems\PaintSystem.h" />
     <ClInclude Include="Systems\ParticleGenerator.h" />
     <ClInclude Include="Systems\ParticleSystem.h" />
+    <ClInclude Include="Systems\RigiBodyGenerator.h" />
     <ClInclude Include="Systems\RigidBodySystem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

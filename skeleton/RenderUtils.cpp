@@ -68,7 +68,7 @@ namespace
 
 	void mousePassiveCallback(int mx, int my) 
 	{
-		sCamera->handleMotion(mx, my);
+		sCamera->handleMotion(mx * 0.5, my * 0.5);
 	}
 
 	void idleCallback()
