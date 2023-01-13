@@ -15,6 +15,7 @@
 #include "./Systems/ParticleGenerator.h"
 #include "./Systems/ParticleSystem.h"
 #include "./Systems/RigidBodySystem.h"
+#include "./Systems/PaintSystem.h"
 
 #include "checkML.h"
 
@@ -36,8 +37,8 @@ PxDefaultCpuDispatcher* gDispatcher = NULL;
 PxScene* gScene = NULL;
 ContactReportCallback gContactReportCallback;
 
-ParticleSystem* _particle_system = nullptr;
-RigidBodySystem* _rigid_body_system = nullptr;
+//systems
+PaintSystem* paintSystem = nullptr;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -64,11 +65,9 @@ void initPhysics(bool interactive)
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
 
-	//RigidBody system
-	_rigid_body_system = new RigidBodySystem(gScene, gPhysics);
 
-	//particle system
-	_particle_system = new ParticleSystem();
+	//create systems
+	paintSystem = new PaintSystem(gScene, gPhysics);
 }
 
 
@@ -82,16 +81,17 @@ void stepPhysics(bool interactive, double t)
 	gScene->simulate(t);
 	gScene->fetchResults(true);
 
-	_rigid_body_system->update(t);
-	_particle_system->update(t);
+	//update systems
+
 }
 
 // Function to clean data
 // Add custom code to the begining of the functioncout
 void cleanupPhysics(bool interactive)
 {
-	delete _rigid_body_system;
-	delete _particle_system;
+	//delete systems
+	delete paintSystem;
+	
 	
 	PX_UNUSED(interactive);
 		
@@ -114,87 +114,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 
 	switch (toupper(key))
 	{
-	case '1':
-	case '2':
-	case '3':
-	case '4'://proyectiles
-		_particle_system->generateShot((Proyectile::PROYECTILE_TYPE)(key - '0' - 1), GetCamera()->getTransform().p, GetCamera()->getDir(), 5000, 200.0);
-		break;
-	case '5'://gaussian
-	case '6'://uniform	
-	{
-		ParticleGenerator* p = _particle_system->getGenerator(key - '5');
-		p->setActive(!p->isActive());
-		break;
-	}
-	case '7': //gaussian generation, just one time, no velocity
-	{
-		GaussianParticleGenerator* p = new GaussianParticleGenerator({ 0,0,0 }, { 0,0,0 }, { 50,50,50 }, { 0,0,0 }, 10, 100);
-		const int mass = rand() % 50 + 1;
-		p->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, mass, _particle_system->randomColor(), mass / 5.0, -1, 2000));
-		_particle_system->addParticles(p->generateParticles());
-		delete p;
-
-		break;
-	}
-	case '8': //uniform generation, just one time, with velocity
-	{
-		GaussianParticleGenerator* p = new GaussianParticleGenerator({ 0,0,0 }, { 1,5,1 }, { 50,50,50 }, { 1,5,1 }, 10, 100);
-		int mass = rand() % 20 + 1;
-		p->setParticle(new Particle({ 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 0.99, mass, _particle_system->randomColor(), mass / 5.0, -1, 2000));
-		_particle_system->addParticles(p->generateParticles());
-		delete p;
-
-		break;
-	}
-	case '9'://firework
-		_particle_system->changeSpawnFireworks();
-		break;
-	case 'G':
-		_particle_system->addGravity();
-		break;
-	case 'H':
-		_particle_system->deleteGravity();
-		break;
-	case 'J':
-		_particle_system->addWind();
-		break;
-	case 'K':
-		_particle_system->deleteWind();
-		break;
-	case 'V':
-		_particle_system->addWhirlwind();
-		break;
-	case 'B':
-		_particle_system->deleteWhirlwind();
-		break;
-	case 'N':
-		_particle_system->addExplosion();
-		break;
-	case 'M':
-		_particle_system->deleteExplosion();
-		break;
-	case 'P':
-		_particle_system->generateSpringDemo();
-		break;
-	case 'O':
-		_particle_system->generateAnchoredSpringDemo();
-		break;
-	case 'I':
-		_particle_system->generateBungeeSpringDemo();
-		break;
-	case 'U':
-		_particle_system->generateBuoyancyDemo();
-		break;
-	case 'Y':
-		_particle_system->generateSlinkyDemo();
-		break;
-	case 'R':
-		_rigid_body_system->turnOnWind();
-		break;
-	case 'T':
-		_rigid_body_system->turnOffWind();
-		break;
+	
 	default:
 		break;
 	}
