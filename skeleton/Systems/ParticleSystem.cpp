@@ -109,7 +109,7 @@ void ParticleSystem::generateFireworkSystem() {
 		randColor = randomColor();
 		shared_ptr<ParticleGenerator> g(new CircleParticleGenerator({ 0.0,0.0,0.0 }, { 0.0,5.0,5.0 }, { 0.0,0.0,0.0 }, { 0.0,0.2,0.2 }, 150, 1.0));
 		g->setParticle(new Particle({ 0.0,-10000.0,0.0 }, { 0,0,0 }, { 0,-9.8,0 }, 0.999, 1.0, randColor, 0.2, 5000, -1));
-		_fireworks_pool.push_back(new Firework({ 0.0,-10000.0,0.0 }, { 0.0, 0.0, 0.0 }, { 0.0,-+9.8,0.0 }, { g }, 0.999, randColor, 0.4, rand() % 1000 + 1000));
+		_fireworks_pool.push_back(new Firework({ 0.0,-10000.0,0.0 }, { 0.0, 0.0, 0.0 }, { 0.0,-9.8,0.0 }, { g }, 0.999, randColor, 0.4, rand() % 1000 + 1000));
 	}
 
 	//esfera

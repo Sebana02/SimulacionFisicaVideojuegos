@@ -34,7 +34,8 @@ public:
 	PxRigidActor* getActor() noexcept{ return _solid; };
 	PxShape* getShape() noexcept { return _shape; };
 	Rigidbody* clone();
-
+	
+	
 	void onCollision(type t);
 protected:
 	PxRigidActor* _solid = nullptr;

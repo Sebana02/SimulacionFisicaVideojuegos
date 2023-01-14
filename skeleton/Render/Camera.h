@@ -47,12 +47,16 @@ public:
 
 	physx::PxVec3		getEye()	const;
 	physx::PxVec3		getDir()	const;
+	void				setDir(const physx::PxVec3& dir);
+	void				setEye(const physx::PxVec3& eye);
 	physx::PxTransform	getTransform() const;
+	void				setLock(bool set);
 private:
 	physx::PxVec3	mEye;
 	physx::PxVec3	mDir;
 	int				mMouseX;
 	int				mMouseY;
+	bool lock;
 };
 
 

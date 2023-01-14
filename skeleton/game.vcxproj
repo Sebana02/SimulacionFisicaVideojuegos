@@ -264,7 +264,7 @@
     <ClCompile Include="Systems\PaintSystem.cpp" />
     <ClCompile Include="Systems\ParticleGenerator.cpp" />
     <ClCompile Include="Systems\ParticleSystem.cpp" />
-    <ClCompile Include="Systems\RigiBodyGenerator.cpp" />
+    <ClCompile Include="Systems\RigidBodyGenerator.cpp" />
     <ClCompile Include="Systems\RigidBodySystem.cpp" />
   </ItemGroup>
   <ItemGroup>

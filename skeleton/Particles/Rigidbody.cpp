@@ -15,7 +15,7 @@ void Rigidbody::onCollision(type t)
 	_type = t;
 }
 
-Rigidbody::Rigidbody(PxTransform tr, Vector3 vel, Vector3 size, Vector4 color, float mass, int life, double posDes, PxScene* gScene, PxPhysics* gPhysics, bool is_static,bool sphere,type t)
+Rigidbody::Rigidbody(PxTransform tr, Vector3 vel, Vector3 size, Vector4 color, float mass, int life, double posDes, PxScene* gScene, PxPhysics* gPhysics, bool is_static, bool sphere, type t)
 {
 	_duration = life;
 	_posDes = posDes;
@@ -46,12 +46,12 @@ Rigidbody::Rigidbody(PxTransform tr, Vector3 vel, Vector3 size, Vector4 color, f
 
 	//render
 	_size = size;
-	
-	if(sphere)
+
+	if (sphere)
 		_shape = CreateShape(PxSphereGeometry(size.x / 2.0));
 	else
 		_shape = CreateShape(PxBoxGeometry(size / 2.0));
-	
+
 	_renderItem = new RenderItem(_shape, _solid, color);
 	_solid->attachShape(*_shape);
 	_gScene->addActor(*_solid);
@@ -76,15 +76,15 @@ void Rigidbody::integrate(double t)
 		_alive = false;
 
 	if (_type == TO_STOP) { // dejarlo quieto en el canvas
-		
+		_type = STATIC_PAINT;
+
 		PxRigidDynamic* new_solid = static_cast<physx::PxRigidDynamic*>(_solid);
-		new_solid->setLinearVelocity({0.0,0.0,0.0});
-		new_solid->setAngularVelocity({0.0,0.0,0.0});
+		new_solid->setLinearVelocity({ 0.0,0.0,0.0 });
+		new_solid->setAngularVelocity({ 0.0,0.0,0.0 });
 		new_solid->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true); //para que no afecten las colisiones
 		new_solid->setGlobalPose(PxTransform(9.4, new_solid->getGlobalPose().p.y, new_solid->getGlobalPose().p.z));//set the position of the paint in the canvas
 		//new_solid->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);//stops the simulation of the paint
 
-		_type = STATIC_PAINT;
 	}
 }
 

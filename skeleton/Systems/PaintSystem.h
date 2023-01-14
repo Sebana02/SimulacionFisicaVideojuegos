@@ -5,10 +5,13 @@
 #include "../RenderUtils.hpp"
 #include <memory>
 #include <list>
+
 #include "../Particles/Rigidbody.h"
+#include "../Particles/Particle.h"
 #include "../Forces/ForceGenerator.h"
 #include "../Forces/RigidBodyForceRegistry.h"
 #include "RigiBodyGenerator.h"
+#include "ParticleGenerator.h"
 
 #include "../checkML.h"
 
@@ -24,11 +27,18 @@ public:
 	void update(double t);
 	Vector4 randomColor();
 
-	inline void setPaint(int p) noexcept { paint = p; };
-	inline void setEraser(int e) noexcept { eraser = e; };
+	inline void setPaint(int p) noexcept { _paint = p; };
+	inline void setEraser(int e) noexcept { _eraser = e; };
 	void clearCanvas();
 	void setThickness(bool thicker);
 	void changeColor(int n);
+	void deleteBodies();
+
+	//screeshot
+	void prepareScreenshot();
+	void takeScreenshot();
+	void generateFireworksSystem();
+	bool isScreenshooting() noexcept{ return _photoTimer != -1; };
 
 protected:
 	std::list<Rigidbody*> _rigidBodies;
@@ -37,18 +47,26 @@ protected:
 
 	RigidBodyForceRegistry* _registry = nullptr;
 
-	GaussianRBGenerator* pincel = nullptr;
-	GaussianRBGenerator* borrador = nullptr;
-	WindForceGeneratorRB* clear = nullptr;
-	WhirlwindForceGeneratorRB* clear2 = nullptr;
-	Rigidbody* canvas = nullptr;
+	GaussianRBGenerator* _pincel = nullptr;
+	GaussianRBGenerator* _borrador = nullptr;
+	WindForceGeneratorRB* _clear = nullptr;
+	WhirlwindForceGeneratorRB* _clear2 = nullptr;
+	Rigidbody* _canvas = nullptr;
 
-	bool paint = false;
-	bool eraser = false;
+	bool _paint;
+	bool _eraser;
 
 	int _speed;
 	Vector3 _size;
 	double _lifePos;
+
+
+	//screenshot
+	int _photoDelay;
+	int _photoTimer;
+	std::vector<Firework*> _fireworks_pool;
+	ParticleGenerator* _firework_gen = nullptr;
+	std::list<Particle*> _particles; 
 };
 	
 
