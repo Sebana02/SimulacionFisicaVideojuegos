@@ -279,6 +279,7 @@
     <ClInclude Include="Render\Camera.h" />
     <ClInclude Include="Render\Render.h" />
     <ClInclude Include="Particles\Rigidbody.h" />
+    <ClInclude Include="stb_image_write.h" />
     <ClInclude Include="Systems\PaintSystem.h" />
     <ClInclude Include="Systems\ParticleGenerator.h" />
     <ClInclude Include="Systems\ParticleSystem.h" />

@@ -22,13 +22,12 @@ public:
 	~PaintSystem();
 
 	void update(double t);
-	Rigidbody* addRigidBody(PxTransform tr, Vector3 vel, Vector3 size, Vector4 color, float mass, int life, double posDes,bool isStatic,bool sphere, Rigidbody::type t);
 	Vector4 randomColor();
 
 	inline void setPaint(int p) noexcept { paint = p; };
 	inline void setEraser(int e) noexcept { eraser = e; };
 	void clearCanvas();
-	
+	void setThickness(int dir);
 	void changeColor(int n);
 
 protected:
@@ -47,7 +46,7 @@ protected:
 	bool eraser = false;
 
 	int _speed;
-	Vector3 _dispersion;
+	Vector3 _anchura;
 };
 	
 

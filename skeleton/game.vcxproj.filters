@@ -40,6 +40,7 @@
     <ClInclude Include="Forces\RigidBodyForceRegistry.h" />
     <ClInclude Include="Systems\PaintSystem.h" />
     <ClInclude Include="Systems\RigiBodyGenerator.h" />
+    <ClInclude Include="stb_image_write.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

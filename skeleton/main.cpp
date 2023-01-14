@@ -19,6 +19,9 @@
 using namespace physx;
 using namespace std;
 
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+
 PxDefaultAllocator		gAllocator;
 PxDefaultErrorCallback	gErrorCallback;
 
@@ -108,6 +111,36 @@ void cleanupPhysics(bool interactive)
 	delete callback;
 }
 
+
+void takeScreenshot() {
+	int width = glutGet(GLUT_WINDOW_WIDTH);
+	int height = glutGet(GLUT_WINDOW_HEIGHT);
+
+	unsigned char* pixels = (unsigned char*)malloc(width * height * 3);
+
+	// Read the pixels from the framebuffer
+	glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+
+	// Flip the image vertically
+	for (int y = 0; y < height / 2; y++) {
+		for (int x = 0; x < width; x++) {
+			for (int c = 0; c < 3; c++) {
+				int top = (y * width + x) * 3 + c;
+				int bottom = ((height - 1 - y) * width + x) * 3 + c;
+				unsigned char temp = pixels[top];
+				pixels[top] = pixels[bottom];
+				pixels[bottom] = temp;
+			}
+		}
+	}
+
+	// Save the pixels to a file
+	stbi_write_png("screenshot.png", width, height, 3, pixels, width * 3);
+
+	// Free the allocated memory
+	free(pixels);
+}
+
 // Function called when a key is pressed
 void keyPress(unsigned char key, const PxTransform& camera)
 {
@@ -126,6 +159,10 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	case '9':
 	case '0':
 		paintSystem->changeColor((key - '0'));
+		break;
+	case 'F':
+		takeScreenshot();
+		break;
 	default:
 		break;
 	}
@@ -143,7 +180,7 @@ void mousePress(int button, int state)
 		paintSystem->setEraser(!state);
 		break;
 	case GLUT_MIDDLE_BUTTON:
-		paintSystem->clearCanvas();
+		if (state == GLUT_DOWN) paintSystem->clearCanvas();
 		break;
 	default:
 		break;

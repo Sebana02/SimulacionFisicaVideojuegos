@@ -9,7 +9,7 @@ PaintSystem::PaintSystem(PxScene* gScene, PxPhysics* gPhysics)
 	_speed = 10;
 
 	//canvas
-	canvas = addRigidBody(PxTransform({ 10,0,0 }), Vector3(), { 1,5,10 }, { 255,255,255,255 }, 1.0, -1, -1, true, false, Rigidbody::CANVAS);
+	canvas = new Rigidbody(PxTransform({ 10,0,0 }), Vector3(), { 1,5,10 }, { 1,1,1,1 }, 1.0, -1, -1, gScene, gPhysics, true, false, Rigidbody::CANVAS);
 
 	//pincel
 	pincel = new GaussianRBGenerator(GetCamera()->getTransform().p - GetCamera()->getDir(), GetCamera()->getDir() * _speed, { .5,.5,.5 }, Vector3(), 100, 1);
@@ -20,11 +20,12 @@ PaintSystem::PaintSystem(PxScene* gScene, PxPhysics* gPhysics)
 	borrador = new GaussianRBGenerator(GetCamera()->getTransform().p - GetCamera()->getDir(), GetCamera()->getDir() * _speed, { 1,1,1 }, Vector3(), 10, 1);
 	borrador->setParticle(new Rigidbody(GetCamera()->getTransform(), Vector3(), { .1,.1,.1 }, { .5,.5,.5,.2 }, 1.0, -1, 25, gScene, gPhysics, false, true, Rigidbody::ERASING_PAINT));
 
+	
 	//clear
 	clear = new WindForceGeneratorRB(1, 0, { 0.0,-20.0,0.0 }, 50, { 10,0,0 });
 	clear->setActive(true);
 
-	
+
 	_registry = new RigidBodyForceRegistry();
 
 }
@@ -62,7 +63,7 @@ void PaintSystem::update(double t)
 		std::list<Rigidbody*> bodies = borrador->generateParticles();
 		_rigidBodies.insert(_rigidBodies.end(), bodies.begin(), bodies.end());
 	}
-	
+
 	_registry->updateForces(t);
 
 	//update de las particulas
@@ -81,13 +82,6 @@ void PaintSystem::update(double t)
 		}
 	}
 }
-Rigidbody* PaintSystem::addRigidBody(PxTransform tr, Vector3 vel, Vector3 size, Vector4 color, float mass, int life, double posDes, bool isStatic, bool sphere, Rigidbody::type t)
-{
-	Rigidbody* rb = new Rigidbody(tr, vel, size, color, mass, life, posDes, _gScene, _gPhysics, isStatic, sphere, t);
-	_rigidBodies.push_back(rb);
-
-	return rb;
-};
 
 Vector4 PaintSystem::randomColor()
 {
@@ -97,12 +91,16 @@ Vector4 PaintSystem::randomColor()
 void PaintSystem::clearCanvas()
 {
 	for (auto& body : _rigidBodies) {
-		if (body->isAlive() && body->_type != Rigidbody::CANVAS) {
+		if (body->isAlive()) {
 			static_cast<physx::PxRigidDynamic*>(body->getActor())->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);
 			body->_type = Rigidbody::LEAVING_PAINT;
 			_registry->addRegistry(clear, body);
 		}
-	}	
+	}
+}
+
+void PaintSystem::setThickness(int dir)
+{
 }
 
 void PaintSystem::changeColor(int n)
