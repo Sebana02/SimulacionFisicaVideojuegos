@@ -160,7 +160,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	case '0':
 		paintSystem->changeColor((key - '0'));
 		break;
-	case 'F':
+	case 'S':
 		takeScreenshot();
 		break;
 	default:
