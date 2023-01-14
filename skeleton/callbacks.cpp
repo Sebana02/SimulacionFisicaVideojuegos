@@ -41,8 +41,15 @@ void MyCollisionCallback::onContact(const physx::PxContactPairHeader& pairHeader
 	
 	
 	//gestion de todas las colisiones
+	
+
+	//clear
+	if (rb1->_type == Rigidbody::type::LEAVING_PAINT || rb1->_type == Rigidbody::type::LEAVING_PAINT)
+		;
+
+	
 	//canvas con pintura
-	if (rb1->_type == Rigidbody::type::ARRIVING_PAINT && rb2->_type == Rigidbody::type::CANVAS)	
+	else if (rb1->_type == Rigidbody::type::ARRIVING_PAINT && rb2->_type == Rigidbody::type::CANVAS)	
 		rb1->onCollision(Rigidbody::TO_STOP);
 
 	else if (rb1->_type == Rigidbody::type::CANVAS && rb2->_type == Rigidbody::type::ARRIVING_PAINT) 

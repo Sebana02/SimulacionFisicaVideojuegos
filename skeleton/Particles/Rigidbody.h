@@ -23,6 +23,7 @@ public:
 		STATIC_PAINT,
 		TO_DELETE,
 		ERASING_PAINT,
+		LEAVING_PAINT,
 	}_type;
 	
 	Rigidbody(PxTransform tr, Vector3 vel, Vector3 size, Vector4 color, float mass, int life, double posDes, PxScene* gScene, PxPhysics* gPhysics, bool is_static,bool sphere,type t);

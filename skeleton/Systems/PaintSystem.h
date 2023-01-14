@@ -27,6 +27,8 @@ public:
 
 	inline void setPaint(int p) noexcept { paint = p; };
 	inline void setEraser(int e) noexcept { eraser = e; };
+	void clearCanvas();
+	
 	void changeColor(int n);
 
 protected:
@@ -38,11 +40,14 @@ protected:
 
 	GaussianRBGenerator* pincel = nullptr;
 	GaussianRBGenerator* borrador = nullptr;
+	WindForceGeneratorRB* clear = nullptr;
+	Rigidbody* canvas = nullptr;
 
 	bool paint = false;
 	bool eraser = false;
 
-	int _speed;	
+	int _speed;
+	Vector3 _dispersion;
 };
 	
 

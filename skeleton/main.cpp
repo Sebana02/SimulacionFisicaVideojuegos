@@ -143,6 +143,7 @@ void mousePress(int button, int state)
 		paintSystem->setEraser(!state);
 		break;
 	case GLUT_MIDDLE_BUTTON:
+		paintSystem->clearCanvas();
 		break;
 	default:
 		break;

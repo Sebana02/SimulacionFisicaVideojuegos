@@ -56,7 +56,7 @@ WindForceGenerator::WindForceGenerator(double k1, double k2, const Vector3& wind
 }
 
 WindForceGenerator::~WindForceGenerator() {
-	delete _particle;
+	if(_particle != nullptr) delete _particle;
 }
 
 void WindForceGenerator::updateForce(Particle* particle, double duration)
@@ -248,6 +248,8 @@ void BuoyancyForceGenerator::updateForce(Particle* particle, double duration)
 WindForceGeneratorRB::WindForceGeneratorRB(double k1, double k2, const Vector3& wind, double radius, const Vector3& position)
 	: WindForceGenerator(k1,k2,wind,radius,position)
 {
+	delete _particle;
+	_particle = nullptr;
 }
 
 void WindForceGeneratorRB::updateForce(Rigidbody* body, double duration)
