@@ -129,6 +129,7 @@ protected:
 	Particle* _liquid_particle;
 };
 
+
 //rigidbodies
 class WindForceGeneratorRB : public WindForceGenerator {
 public:
@@ -136,11 +137,22 @@ public:
 	virtual ~WindForceGeneratorRB() {};
 	virtual void updateForce(Particle* particle, double duration) override {};
 	virtual void updateForce(Rigidbody* body, double duration) override;
-	void setActive(bool set) noexcept { _active = set; };
+	inline void setActive(bool set) noexcept { _active = set; };
+	inline bool isActive() noexcept { return _active; };
 protected:
 	bool _active;
 	
 };
+class WhirlwindForceGeneratorRB : public WindForceGeneratorRB {
+public:
+	WhirlwindForceGeneratorRB(double k1, double k2, int K, double radius, const Vector3& position);
+	virtual ~WhirlwindForceGeneratorRB() {};
+	virtual void updateForce(Particle* particle, double duration) override {};
+	virtual void updateForce(Rigidbody* body, double duration) override;
+protected:
+	int _K;
+};
+
 #endif // __FORCE_GENERATOR__
 
 

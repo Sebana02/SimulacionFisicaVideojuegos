@@ -40,12 +40,15 @@ protected:
 	GaussianRBGenerator* pincel = nullptr;
 	GaussianRBGenerator* borrador = nullptr;
 	WindForceGeneratorRB* clear = nullptr;
+	WhirlwindForceGeneratorRB* clear2 = nullptr;
 	Rigidbody* canvas = nullptr;
 
 	bool paint = false;
 	bool eraser = false;
 
 	int _speed;
+	Vector3 _size;
+	double _lifePos;
 };
 	
 

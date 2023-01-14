@@ -7,24 +7,28 @@ PaintSystem::PaintSystem(PxScene* gScene, PxPhysics* gPhysics)
 	_gPhysics = gPhysics;
 
 	_speed = 10;
+	_size = { 0.1,0.1,0.1 };
+	_lifePos = 25;
 
 	//canvas
 	canvas = new Rigidbody(PxTransform({ 10,0,0 }), {0.0,0.0,0.0}, { 1,5,10 }, { 1,1,1,1 }, 1.0, -1, -1, gScene, gPhysics, true, false, Rigidbody::CANVAS);
 
 	//pincel
 	pincel = new GaussianRBGenerator(GetCamera()->getTransform().p - GetCamera()->getDir(), GetCamera()->getDir() * _speed, {0.0,0.0,0.0}, {0.0,0.0,0.0}, 1, 1);
-	pincel->setParticle(new Rigidbody(GetCamera()->getTransform(), {0.0,0.0,0.0}, { 0.1,0.1,0.1 }, { 0,0,0,1 }, 1.0, -1, 25, gScene, gPhysics, false, true, Rigidbody::ARRIVING_PAINT));
+	pincel->setParticle(new Rigidbody(GetCamera()->getTransform(), {0.0,0.0,0.0}, _size, { 0,0,0,1 }, 1.0, -1, _lifePos, gScene, gPhysics, false, true, Rigidbody::ARRIVING_PAINT));
 
 
 	//borrador
 	borrador = new GaussianRBGenerator(GetCamera()->getTransform().p - GetCamera()->getDir(), GetCamera()->getDir() * _speed, {0.0,0.0,0.0}, {0.0,0.0,0.0}, 1, 1);
-	borrador->setParticle(new Rigidbody(GetCamera()->getTransform(), {0.0,0.0,0.0}, { 0.1,0.1,0.1 }, { .5,.5,.5,.2 }, 1.0, -1, 25, gScene, gPhysics, false, true, Rigidbody::ERASING_PAINT));
+	borrador->setParticle(new Rigidbody(GetCamera()->getTransform(), {0.0,0.0,0.0}, _size, { .5,.5,.5,.2 }, 1.0, -1, _lifePos, gScene, gPhysics, false, true, Rigidbody::ERASING_PAINT));
 
 
 	//clear
 	clear = new WindForceGeneratorRB(1, 0, { 0.0,0.0,0.0 }, 50, { 0,0,0 });
 	clear->setActive(true);
-
+	clear2 = new WhirlwindForceGeneratorRB(1, 0, 2, 200, { 5,0,0 });
+	clear2->setActive(true);
+	
 
 	_registry = new RigidBodyForceRegistry();
 
@@ -48,22 +52,23 @@ void PaintSystem::update(double t)
 {
 	//cout << _rigidBodies.size() << endl;
 
-
+	; //list of bodies to add to the scene
 	if (paint) { //pintar
 		pincel->setVelocity(GetCamera()->getDir() * _speed);
 		pincel->setOrigin(GetCamera()->getTransform().p - GetCamera()->getDir());
 
-		std::list<Rigidbody*> bodies = pincel->generateParticles();
-		_rigidBodies.insert(_rigidBodies.end(), bodies.begin(), bodies.end());
+		std::list<Rigidbody*> add_bodies = pincel->generateParticles();
+		_rigidBodies.insert(_rigidBodies.end(), add_bodies.begin(), add_bodies.end());
 	}
 	else if (eraser) { //borrar
 		borrador->setVelocity(GetCamera()->getDir() * _speed);
 		borrador->setOrigin(GetCamera()->getTransform().p - GetCamera()->getDir());
 
-		std::list<Rigidbody*> bodies = borrador->generateParticles();
-		_rigidBodies.insert(_rigidBodies.end(), bodies.begin(), bodies.end());
+		std::list<Rigidbody*> add_bodies = borrador->generateParticles();
+		_rigidBodies.insert(_rigidBodies.end(), add_bodies.begin(), add_bodies.end());
 	}
-
+	
+	
 	_registry->updateForces(t);
 
 	//update de las particulas
@@ -90,15 +95,29 @@ Vector4 PaintSystem::randomColor()
 
 void PaintSystem::clearCanvas()
 {
-	clear->setWind(Vector3(0, (rand() % 2 == 0 ? -1 : 1), (rand() % 2 == 0 ? -1 : 1)) * _speed);
+	if (rand() % 2 == 0) { //clear con viento
+		
+		clear->setWind(Vector3(0, (rand() % 2 == 0 ? -1 : 1), (rand() % 2 == 0 ? -1 : 1)) * _speed);
 
-	for (auto& body : _rigidBodies) {
-		if (body->isAlive()) {
-			static_cast<physx::PxRigidDynamic*>(body->getActor())->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);
-			body->_type = Rigidbody::LEAVING_PAINT;
-			_registry->addRegistry(clear, body);
+		for (auto& body : _rigidBodies) {
+			if (body->isAlive()) {
+				static_cast<physx::PxRigidDynamic*>(body->getActor())->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);
+				body->_type = Rigidbody::LEAVING_PAINT;
+				_registry->addRegistry(clear, body);
+			}
 		}
 	}
+	else { //clear con torbellino
+		
+		for (auto& body : _rigidBodies) {
+			if (body->isAlive()) {
+				static_cast<physx::PxRigidDynamic*>(body->getActor())->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);
+				body->_type = Rigidbody::LEAVING_PAINT;
+				_registry->addRegistry(clear2, body);
+			}
+		}
+	}
+	
 }
 
 void PaintSystem::setThickness(bool thicker)
@@ -162,5 +181,5 @@ void PaintSystem::changeColor(int n)
 		break;
 	}
 
-	pincel->setParticle(new Rigidbody(GetCamera()->getTransform(), {0.0,0.0,0.0}, { .1,.1,.1 }, color, 1.0, -1, -1, _gScene, _gPhysics, false, true, Rigidbody::ARRIVING_PAINT));
+	pincel->setParticle(new Rigidbody(GetCamera()->getTransform(), {0.0,0.0,0.0}, _size, color, 1.0, -1, _lifePos, _gScene, _gPhysics, false, true, Rigidbody::ARRIVING_PAINT));
 }

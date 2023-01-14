@@ -80,7 +80,7 @@ void Rigidbody::integrate(double t)
 		PxRigidDynamic* new_solid = static_cast<physx::PxRigidDynamic*>(_solid);
 		new_solid->setLinearVelocity({0.0,0.0,0.0});
 		new_solid->setAngularVelocity({0.0,0.0,0.0});
-		new_solid->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
+		new_solid->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true); //para que no afecten las colisiones
 		new_solid->setGlobalPose(PxTransform(9.4, new_solid->getGlobalPose().p.y, new_solid->getGlobalPose().p.z));//set the position of the paint in the canvas
 		//new_solid->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);//stops the simulation of the paint
 

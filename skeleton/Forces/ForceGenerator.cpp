@@ -279,3 +279,43 @@ void WindForceGeneratorRB::updateForce(Rigidbody* body, double duration)
 		rigidBody->addForce(dragF);
 	}
 }
+
+WhirlwindForceGeneratorRB::WhirlwindForceGeneratorRB(double k1, double k2, int K, double radius, const Vector3& position)
+	:WindForceGeneratorRB(k1, k2, { 0,0,0 }, radius, position)
+{
+	_name = "Whirlwind";
+	_K = K;
+}
+
+void WhirlwindForceGeneratorRB::updateForce(Rigidbody* body, double duration)
+{
+	if (!_active)return;
+
+
+	auto rigidBody = static_cast<PxRigidBody*>(body->getActor());
+	if (fabs(rigidBody->getInvMass() < 1e-10))
+		return;
+
+	Vector3 particleDistance = rigidBody->getGlobalPose().p;
+
+	if ((pow(particleDistance.x, 2) <= pow(_position.x + _action_radius, 2))
+		&& (pow(particleDistance.y, 2) <= pow(_position.y + _action_radius, 2))
+		&& (pow(particleDistance.z, 2) <= pow(_position.z + _action_radius, 2))) {
+
+		//compute drag force
+		_wind = _K * Vector3(-(particleDistance.z - _position.z)
+			, 1 - (particleDistance.y - _position.y)
+			, particleDistance.x - _position.x);
+
+		Vector3 v = rigidBody->getLinearVelocity() - _wind;
+		float velocity_module = v.normalize();
+
+		Vector3 dragF;
+		velocity_module = _k1 * velocity_module + _k2 * velocity_module * velocity_module;
+
+		dragF = -v * velocity_module;
+
+		//apply drag force
+		rigidBody->addForce(dragF);
+	}
+}
