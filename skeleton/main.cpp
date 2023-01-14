@@ -163,6 +163,12 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	case 'S':
 		takeScreenshot();
 		break;
+	case 'Q':
+		paintSystem->setThickness(true);
+		break;
+	case 'W':
+		paintSystem->setThickness(false);
+		break;
 	default:
 		break;
 	}

@@ -21,6 +21,7 @@ public:
 	inline void setVelocity(Vector3 vel) noexcept { _mean_vel = vel; };
 	inline bool isActive() noexcept { return _active; };
 	inline void setActive(bool set) noexcept { _active = set; };
+	inline void setParticlesNum(int num) noexcept { _num_particles = num; };
 
 protected:
 	Vector3 _mean_pos, _mean_vel;
@@ -37,6 +38,8 @@ public:
 		int num_particles = 10, double prob = 1);
 	virtual ~GaussianRBGenerator() {};
 	virtual std::list<Rigidbody*> generateParticles() override;
+	inline void setDevPos(Vector3 dev) noexcept { std_dev_pos = dev; };
+	inline Vector3 getDevPos() { return std_dev_pos; };
 
 protected:
 	Vector3 std_dev_pos, std_dev_vel;

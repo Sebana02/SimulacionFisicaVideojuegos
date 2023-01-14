@@ -9,9 +9,9 @@ RigidBodySystem::RigidBodySystem(PxScene* gScene, PxPhysics* gPhysics)
 
 	//add static objects
 	//suelo
-	addRigidBody(PxTransform({ 0.0f, 0.0f, 0.0f }), Vector3(), { 1000, 0.1, 1000 }, { 0.2,0.8,0.8,1.0 }, 1.0, -1, -1, true);
+	addRigidBody(PxTransform({ 0.0f, 0.0f, 0.0f }), {0.0,0.0,0.0}, { 1000, 0.1, 1000 }, { 0.2,0.8,0.8,1.0 }, 1.0, -1, -1, true);
 	//paredes
-	addRigidBody(PxTransform({ 10,10,-300 }), Vector3(), { 400, 200, 5 }, { 0.8,0.8,0.8,1.0 }, 1.0, -1, -1, true);
+	addRigidBody(PxTransform({ 10,10,-300 }), {0.0,0.0,0.0}, { 400, 200, 5 }, { 0.8,0.8,0.8,1.0 }, 1.0, -1, -1, true);
 
 	_registry = new RigidBodyForceRegistry();
 	_wind = new WindForceGeneratorRB(0.9, 0.1, { 0.0,0.0,-100.0 }, 200, { 0.0,50.0,0.0 });

@@ -27,7 +27,7 @@ public:
 	inline void setPaint(int p) noexcept { paint = p; };
 	inline void setEraser(int e) noexcept { eraser = e; };
 	void clearCanvas();
-	void setThickness(int dir);
+	void setThickness(bool thicker);
 	void changeColor(int n);
 
 protected:
@@ -46,7 +46,6 @@ protected:
 	bool eraser = false;
 
 	int _speed;
-	Vector3 _anchura;
 };
 	
 
