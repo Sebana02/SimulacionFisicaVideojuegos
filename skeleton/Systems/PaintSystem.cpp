@@ -18,7 +18,7 @@ PaintSystem::PaintSystem(PxScene* gScene, PxPhysics* gPhysics)
 
 
 	//canvas
-	_canvas = new Rigidbody(PxTransform({ 10,0,0 }), { 0.0,0.0,0.0 }, { 1,5,10 }, { 1,1,1,.1 }, 1.0, -1, -1, gScene, gPhysics, true, false, Rigidbody::CANVAS);
+	_canvas = new Rigidbody(PxTransform({ 6,0,0 }), { 0.0,0.0,0.0 }, { 1,5,10 }, { 1,1,1,.1 }, 1.0, -1, -1, gScene, gPhysics, true, false, Rigidbody::CANVAS);
 
 	//pincel
 	_pincel = new GaussianRBGenerator(GetCamera()->getTransform().p - GetCamera()->getDir(), GetCamera()->getDir() * _speed, { 0.0,0.0,0.0 }, { 0.0,0.0,0.0 }, 1, 1);
@@ -33,7 +33,7 @@ PaintSystem::PaintSystem(PxScene* gScene, PxPhysics* gPhysics)
 	//clear
 	_clear = new WindForceGeneratorRB(1, 0, { 0.0,0.0,0.0 }, 50, { 0,0,0 });
 	_clear->setActive(true);
-	_clear2 = new WhirlwindForceGeneratorRB(1, 0, 2, 200, { 5,0,0 });
+	_clear2 = new WhirlwindForceGeneratorRB(1, 0, 2, 200, { 1,0,0 });
 	_clear2->setActive(true);
 
 
@@ -167,15 +167,15 @@ void PaintSystem::setThickness(bool thicker)
 	Vector3 _anchura = _pincel->getDevPos();
 
 	if (thicker) {
-		float anch = min(_anchura.x + 0.1, 1.0);
+		float anch = min(_anchura.x + 0.05, 0.5);
 		_anchura = Vector3(anch, anch, anch);
 	}
 	else {
-		float anch = max(_anchura.x - 0.1, 0.0);
+		float anch = max(_anchura.x - 0.05, 0.0);
 		_anchura = Vector3(anch, anch, anch);
 	}
 
-	int numPar = _anchura.x * 10 + 1; // cada 0.1 de anchura son 10 particulas
+	int numPar = _anchura.x * 20 + 1;
 
 	_pincel->setDevPos(_anchura);
 	_borrador->setDevPos(_anchura);
@@ -253,7 +253,7 @@ void PaintSystem::prepareScreenshot() {
 	}
 
 	//posiciona la camara e impide que se mueva
-	GetCamera()->setDir(Vector3(1.0, 0, 0));
+	GetCamera()->setDir(Vector3(1.0, 0.1f, 0));
 	GetCamera()->setLock(true);
 
 	_paint = false;
