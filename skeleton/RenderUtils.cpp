@@ -4,6 +4,7 @@
 
 #include "core.hpp"
 #include "RenderUtils.hpp"
+#include <iostream>
 
 
 using namespace physx;
@@ -12,6 +13,7 @@ extern void initPhysics(bool interactive);
 extern void stepPhysics(bool interactive, double t);
 extern void cleanupPhysics(bool interactive);
 extern void keyPress(unsigned char key, const PxTransform& camera);
+extern void mousePress(int button, int state);
 extern PxPhysics* gPhysics;
 extern PxMaterial* gMaterial;
 
@@ -49,7 +51,7 @@ namespace
 
 	void motionCallback(int x, int y)
 	{
-		sCamera->handleMotion(x, y);
+		sCamera->handleMotion(x * 0.5, y * 0.5);
 	}
 
 	void keyboardCallback(unsigned char key, int x, int y)
@@ -58,17 +60,13 @@ namespace
 			exit(0);
 
 		if (!sCamera->handleKey(key, x, y))
-			keyPress(key, sCamera->getTransform());
+			keyPress(key, sCamera->getTransform());//main.cpp
 	}
 
 	void mouseCallback(int button, int state, int x, int y)
 	{
-		sCamera->handleMouse(button, state, x, y);
-	}
-
-	void mousePassiveCallback(int mx, int my) 
-	{
-		sCamera->handleMotion(mx * 0.5, my * 0.5);
+		mousePress(button, state);//main.cpp
+		//sCamera->handleMouse(button, state, x * 0.5, y * 0.5);
 	}
 
 	void idleCallback()
@@ -151,8 +149,8 @@ void renderLoop()
 	glutIdleFunc(idleCallback);
 	glutDisplayFunc(renderCallback);
 	glutKeyboardFunc(keyboardCallback);
-	//glutMouseFunc(mouseCallback);
-	glutPassiveMotionFunc(mousePassiveCallback);
+	glutMouseFunc(mouseCallback);
+	glutPassiveMotionFunc(motionCallback);
 	glutMotionFunc(motionCallback);
 	motionCallback(0, 0);
 

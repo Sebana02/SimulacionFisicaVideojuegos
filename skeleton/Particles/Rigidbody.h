@@ -5,7 +5,6 @@
 #include "../RenderUtils.hpp"
 #include <memory>
 #include <list>
-#include "../CollisionLayers.h"
 
 #include "../checkML.h"
 
@@ -19,13 +18,14 @@ public:
 	
 	enum type{
 		ARRIVING_PAINT = 0,
-		CANVAS,
 		TO_STOP,
+		CANVAS,
 		STATIC_PAINT,
-		TO_DELETE
+		TO_DELETE,
+		ERASING_PAINT,
 	}_type;
 	
-	Rigidbody(PxTransform tr, Vector3 vel, Vector3 size, Vector4 color, float mass, int life, double posDes, PxScene* gScene, PxPhysics* gPhysics, bool is_static,bool sphere);
+	Rigidbody(PxTransform tr, Vector3 vel, Vector3 size, Vector4 color, float mass, int life, double posDes, PxScene* gScene, PxPhysics* gPhysics, bool is_static,bool sphere,type t);
 	virtual ~Rigidbody();
 
 	void integrate(double t);

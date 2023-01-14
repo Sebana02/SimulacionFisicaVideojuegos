@@ -40,27 +40,56 @@ void MyCollisionCallback::onContact(const physx::PxContactPairHeader& pairHeader
 	Rigidbody* rb2 = (Rigidbody*)actor2->userData;
 	
 	
-	if (rb1->_type == Rigidbody::type::ARRIVING_PAINT && rb2->_type == Rigidbody::type::CANVAS) //canvas con pintura		
+	//gestion de todas las colisiones
+	//canvas con pintura
+	if (rb1->_type == Rigidbody::type::ARRIVING_PAINT && rb2->_type == Rigidbody::type::CANVAS)	
 		rb1->onCollision(Rigidbody::TO_STOP);
 
-	else if (rb1->_type == Rigidbody::type::CANVAS && rb2->_type == Rigidbody::type::ARRIVING_PAINT)
+	else if (rb1->_type == Rigidbody::type::CANVAS && rb2->_type == Rigidbody::type::ARRIVING_PAINT) 
 		rb2->onCollision(Rigidbody::TO_STOP);
 
-	else if (rb1->_type == Rigidbody::type::ARRIVING_PAINT && rb2->_type == Rigidbody::type::STATIC_PAINT) //pintura con pintura estatica
+
+
+	//pintura con pintura estatica
+	else if (rb1->_type == Rigidbody::type::ARRIVING_PAINT && rb2->_type == Rigidbody::type::STATIC_PAINT) 
 	{
 		rb1->onCollision(Rigidbody::TO_STOP);
 		rb2->onCollision(Rigidbody::TO_DELETE);
-
 	}
-	else if (rb1->_type == Rigidbody::type::STATIC_PAINT && rb2->_type == Rigidbody::type::ARRIVING_PAINT)
+	else if (rb1->_type == Rigidbody::type::STATIC_PAINT && rb2->_type == Rigidbody::type::ARRIVING_PAINT) 
 	{
 		rb2->onCollision(Rigidbody::TO_STOP);
 		rb1->onCollision(Rigidbody::TO_DELETE);
-
 	}
+
+	
+	//pintura con pintura
 	else if (rb1->_type == Rigidbody::type::ARRIVING_PAINT && rb2->_type == Rigidbody::type::ARRIVING_PAINT) 
+		rb1->onCollision(Rigidbody::TO_DELETE);
+	
+	
+
+	
+	//borrador con pintura
+	else if (rb1->_type == Rigidbody::type::ERASING_PAINT && (rb2->_type == Rigidbody::type::STATIC_PAINT || rb2->_type == Rigidbody::type::ARRIVING_PAINT) 
+		|| (rb1->_type == Rigidbody::type::STATIC_PAINT || rb1->_type == Rigidbody::type::ARRIVING_PAINT) && rb2->_type == Rigidbody::type::ERASING_PAINT)
 	{
 		rb1->onCollision(Rigidbody::TO_DELETE);
+		rb2->onCollision(Rigidbody::TO_DELETE);
 	}
+
+	
+	//borrador con canvas
+	else if (rb1->_type == Rigidbody::type::ERASING_PAINT && rb2->_type == Rigidbody::type::CANVAS)  
+		rb1->onCollision(Rigidbody::TO_DELETE);
+	
+	else if (rb2->_type == Rigidbody::type::ERASING_PAINT && rb1->_type == Rigidbody::type::CANVAS) 
+		rb2->onCollision(Rigidbody::TO_DELETE);
+	
+	
+	//borrador con borrador
+	else if (rb1->_type == Rigidbody::type::ERASING_PAINT && rb2->_type == Rigidbody::type::ERASING_PAINT)  
+		rb1->onCollision(Rigidbody::TO_DELETE);
+	
 		
 }

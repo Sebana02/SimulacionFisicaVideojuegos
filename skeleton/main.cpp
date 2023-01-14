@@ -33,7 +33,7 @@ PxPvd* gPvd = NULL;
 PxDefaultCpuDispatcher* gDispatcher = NULL;
 PxScene* gScene = NULL;
 ContactReportCallback gContactReportCallback;
-
+MyCollisionCallback* callback = NULL;
 //systems
 PaintSystem* paintSystem = nullptr;
 
@@ -62,7 +62,7 @@ void initPhysics(bool interactive)
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
 
-	MyCollisionCallback* callback = new MyCollisionCallback();
+	callback = new MyCollisionCallback();
 	gScene->setSimulationEventCallback(callback);
 	//create systems
 	paintSystem = new PaintSystem(gScene, gPhysics);
@@ -104,6 +104,8 @@ void cleanupPhysics(bool interactive)
 	transport->release();
 
 	gFoundation->release();
+
+	delete callback;
 }
 
 // Function called when a key is pressed
@@ -113,13 +115,39 @@ void keyPress(unsigned char key, const PxTransform& camera)
 
 	switch (toupper(key))
 	{
-	case 'P':
-		paintSystem->setPaint();
-		break;
-
+	case '1':
+	case '2':
+	case '3':
+	case '4':
+	case '5':
+	case '6':
+	case '7':
+	case '8':
+	case '9':
+	case '0':
+		paintSystem->changeColor((key - '0'));
 	default:
 		break;
 	}
+}
+
+//Function called when a mouse button is clicked
+void mousePress(int button, int state)
+{
+	switch (button)
+	{
+	case GLUT_LEFT_BUTTON:
+		paintSystem->setPaint(!state);
+		break;
+	case GLUT_RIGHT_BUTTON:
+		paintSystem->setEraser(!state);
+		break;
+	case GLUT_MIDDLE_BUTTON:
+		break;
+	default:
+		break;
+	}
+
 }
 
 

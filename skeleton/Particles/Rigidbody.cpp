@@ -6,7 +6,7 @@ Rigidbody* Rigidbody::clone()
 
 	return new Rigidbody(_solid->getGlobalPose(), static_cast<physx::PxRigidDynamic*>(_solid)->getLinearVelocity(),
 		_size, _renderItem->color, static_cast<physx::PxRigidDynamic*>(_solid)->getMass(), _duration, _posDes,
-		_gScene, _gPhysics, _static,_sphere);
+		_gScene, _gPhysics, _static, _sphere, _type);
 
 }
 
@@ -15,7 +15,7 @@ void Rigidbody::onCollision(type t)
 	_type = t;
 }
 
-Rigidbody::Rigidbody(PxTransform tr, Vector3 vel, Vector3 size, Vector4 color, float mass, int life, double posDes, PxScene* gScene, PxPhysics* gPhysics, bool is_static,bool sphere)
+Rigidbody::Rigidbody(PxTransform tr, Vector3 vel, Vector3 size, Vector4 color, float mass, int life, double posDes, PxScene* gScene, PxPhysics* gPhysics, bool is_static,bool sphere,type t)
 {
 	_duration = life;
 	_posDes = posDes;
@@ -30,7 +30,6 @@ Rigidbody::Rigidbody(PxTransform tr, Vector3 vel, Vector3 size, Vector4 color, f
 
 	if (_static) {
 		_solid = _gPhysics->createRigidStatic(PxTransform(tr));
-		_type = CANVAS;
 	}
 	else {
 		_solid = _gPhysics->createRigidDynamic(PxTransform(tr));
@@ -42,8 +41,7 @@ Rigidbody::Rigidbody(PxTransform tr, Vector3 vel, Vector3 size, Vector4 color, f
 						   size.x * size.x + size.z * size.z,
 						   size.y * size.y + size.x * size.x };
 		new_solid->setMass(mass);
-		//new_solid->setMassSpaceInertiaTensor(inertia * new_solid->getMass() / 12.0);
-		_type = ARRIVING_PAINT;
+		new_solid->setMassSpaceInertiaTensor(inertia * new_solid->getMass() / 12.0);
 	}
 
 	//render
@@ -59,7 +57,7 @@ Rigidbody::Rigidbody(PxTransform tr, Vector3 vel, Vector3 size, Vector4 color, f
 	_gScene->addActor(*_solid);
 
 	_alive = true;
-
+	_type = t;
 
 	_solid->userData = this;
 
@@ -77,11 +75,14 @@ void Rigidbody::integrate(double t)
 		(_lifePos > 0 && (abs(_solid->getGlobalPose().p.magnitude()) > _lifePos)))
 		_alive = false;
 
-	if (_type == TO_STOP) {
+	if (_type == TO_STOP) { // dejarlo quieto en el canvas
+		
 		PxRigidDynamic* new_solid = static_cast<physx::PxRigidDynamic*>(_solid);
 		new_solid->setLinearVelocity(Vector3());
 		new_solid->setAngularVelocity(Vector3());
 		new_solid->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
+		new_solid->setGlobalPose(PxTransform(9.4, new_solid->getGlobalPose().p.y, new_solid->getGlobalPose().p.z));//set the position of the paint in the canvas
+		//new_solid->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);//stops the simulation of the paint
 
 		_type = STATIC_PAINT;
 	}

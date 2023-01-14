@@ -22,10 +22,12 @@ public:
 	~PaintSystem();
 
 	void update(double t);
-	Rigidbody* addRigidBody(PxTransform tr, Vector3 vel, Vector3 size, Vector4 color, float mass, int life, double posDes,bool isStatic,bool sphere);
+	Rigidbody* addRigidBody(PxTransform tr, Vector3 vel, Vector3 size, Vector4 color, float mass, int life, double posDes,bool isStatic,bool sphere, Rigidbody::type t);
 	Vector4 randomColor();
 
-	void setPaint() { paint = !paint; };
+	inline void setPaint(int p) noexcept { paint = p; };
+	inline void setEraser(int e) noexcept { eraser = e; };
+	void changeColor(int n);
 
 protected:
 	std::list<Rigidbody*> _rigidBodies;
@@ -35,9 +37,12 @@ protected:
 	RigidBodyForceRegistry* _registry = nullptr;
 
 	GaussianRBGenerator* pincel = nullptr;
+	GaussianRBGenerator* borrador = nullptr;
 
 	bool paint = false;
-	
+	bool eraser = false;
+
+	int _speed;	
 };
 	
 
