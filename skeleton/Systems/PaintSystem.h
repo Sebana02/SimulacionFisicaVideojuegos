@@ -5,6 +5,7 @@
 #include "../RenderUtils.hpp"
 #include <memory>
 #include <list>
+#include <math.h>
 
 #include "../Particles/Rigidbody.h"
 #include "../Particles/Particle.h"
@@ -38,7 +39,11 @@ public:
 	void prepareScreenshot();
 	void takeScreenshot();
 	void generateFireworksSystem();
-	bool isScreenshooting() noexcept{ return _photoTimer != -1; };
+	inline bool isScreenshooting() noexcept{ return _photoTimer != -1; };
+
+	
+	//info en pantalla
+	std::string getInfo() noexcept;
 
 protected:
 	std::list<Rigidbody*> _rigidBodies;
@@ -59,7 +64,8 @@ protected:
 	int _speed;
 	Vector3 _size;
 	double _lifePos;
-
+	float _maxThickness;
+	Vector4 _color;
 
 	//screenshot
 	int _photoDelay;

@@ -19,6 +19,8 @@
 using namespace physx;
 using namespace std;
 
+std::string display_text = "This is a test";
+
 PxDefaultAllocator		gAllocator;
 PxDefaultErrorCallback	gErrorCallback;
 
@@ -81,6 +83,7 @@ void stepPhysics(bool interactive, double t)
 
 	//update systems
 	paintSystem->update(t);
+	display_text = paintSystem->getInfo();
 
 }
 

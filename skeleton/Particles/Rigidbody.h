@@ -33,6 +33,7 @@ public:
 	bool isAlive() noexcept { return _alive; };
 	PxRigidActor* getActor() noexcept{ return _solid; };
 	PxShape* getShape() noexcept { return _shape; };
+	Vector3 getSize() noexcept { return _size; };
 	Rigidbody* clone();
 	
 	
