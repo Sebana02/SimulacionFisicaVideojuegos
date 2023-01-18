@@ -406,7 +406,7 @@ namespace Snippets
 		glLoadMatrixd(matrix);
 		glMatrixMode(GL_MODELVIEW);
 		
-		free(matrix);
+		delete matrix;
 	}
 
 
