@@ -27,6 +27,7 @@ public:
 
 	void update(double t);
 	Vector4 randomColor();
+	float randomMass();
 
 	inline void setPaint(int p) noexcept { _paint = p; };
 	inline void setEraser(int e) noexcept { _eraser = e; };

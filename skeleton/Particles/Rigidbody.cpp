@@ -3,7 +3,6 @@
 
 Rigidbody* Rigidbody::clone()
 {
-
 	return new Rigidbody(_solid->getGlobalPose(), static_cast<physx::PxRigidDynamic*>(_solid)->getLinearVelocity(),
 		_size, _renderItem->color, static_cast<physx::PxRigidDynamic*>(_solid)->getMass(), _duration, _posDes,
 		_gScene, _gPhysics, _static, _sphere, _type);
@@ -28,9 +27,9 @@ Rigidbody::Rigidbody(PxTransform tr, Vector3 vel, Vector3 size, Vector4 color, f
 
 	_static = is_static;
 
-	if (_static) {
+	if (_static) 
 		_solid = _gPhysics->createRigidStatic(PxTransform(tr));
-	}
+	
 	else {
 		_solid = _gPhysics->createRigidDynamic(PxTransform(tr));
 		PxRigidDynamic* new_solid = static_cast<physx::PxRigidDynamic*>(_solid);
@@ -40,6 +39,7 @@ Rigidbody::Rigidbody(PxTransform tr, Vector3 vel, Vector3 size, Vector4 color, f
 		Vector3 inertia = { size.y * size.y + size.z * size.z,
 						   size.x * size.x + size.z * size.z,
 						   size.y * size.y + size.x * size.x };
+		
 		new_solid->setMass(mass);
 		new_solid->setMassSpaceInertiaTensor(inertia * new_solid->getMass() / 12.0);
 	}
@@ -82,7 +82,7 @@ void Rigidbody::integrate(double t)
 		new_solid->setLinearVelocity({ 0.0,0.0,0.0 });
 		new_solid->setAngularVelocity({ 0.0,0.0,0.0 });
 		new_solid->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true); //para que no afecten las colisiones
-		new_solid->setGlobalPose(PxTransform(5.5, new_solid->getGlobalPose().p.y, new_solid->getGlobalPose().p.z));//set the position of the paint in the canvas
+		new_solid->setGlobalPose(PxTransform(5.52, new_solid->getGlobalPose().p.y, new_solid->getGlobalPose().p.z));//set the position of the paint in the canvas
 		//new_solid->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);//stops the simulation of the paint
 
 	}

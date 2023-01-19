@@ -249,7 +249,8 @@ void PaintSystem::prepareScreenshot() {
 				_particles.push_back(p);
 		}
 	}
-
+	
+	
 	//posiciona la camara e impide que se mueva
 	GetCamera()->setLock(true);
 	GetCamera()->setDir(Vector3(1.0, 0.3f, 0));
@@ -288,6 +289,8 @@ void PaintSystem::takeScreenshot()
 	// Free the allocated memory
 	free(pixels);
 
+
+	//desbloquea la camara
 	_photoTimer = -1;
 	GetCamera()->setEye(Vector3(0.0f, 0.0f, 0.0f));
 	GetCamera()->setDir(Vector3(1.0, 0.0f, 0));
@@ -298,26 +301,31 @@ void PaintSystem::generateFireworksSystem() {
 
 	//circulo
 	Vector4 randColor;
+	float mass;
+
 	for (int i = 0; i < 5; i++) {
 		randColor = randomColor();
+		mass = randomMass();
 		shared_ptr<ParticleGenerator> g(new CircleParticleGenerator({ 0.0,0.0,0.0 }, { 0.0,5.0,5.0 }, { 0.0,0.0,0.0 }, { 0.0,0.2,0.2 }, 150, 1.0));
-		g->setParticle(new Particle({ 0.0,-10000.0,0.0 }, { 0,0,0 }, { 0,-9.8,0 }, 0.999, 1.0, randColor, 0.2, 1000, -1));
+		g->setParticle(new Particle({ 0.0,-10000.0,0.0 }, { 0,0,0 }, { 0,-9.8,0 }, 0.999, mass, randColor, mass / 10.0f, 1000, -1));
 		_fireworks_pool.push_back(new Firework({ 0.0,-10000.0,0.0 }, { 0.0, 0.0, 0.0 }, { 0.0,0.0,0.0 }, { g }, 1, randColor, 0.4, 1000));
 	}
 
 	//esfera
 	for (int i = 0; i < 5; i++) {
 		randColor = randomColor();
+		mass = randomMass();
 		shared_ptr<ParticleGenerator> g(new SphereParticleGenerator({ 0.0,0.0,0.0 }, { 5.0,5.0,5.0 }, 150));
-		g->setParticle(new Particle({ 0.0,-10000.0,0.0 }, { 0,0,0 }, { 0,-9.8,0 }, 0.999, 1.0, randColor, 0.2, 1000, -1));
+		g->setParticle(new Particle({ 0.0,-10000.0,0.0 }, { 0,0,0 }, { 0,-9.8,0 }, 0.999, mass, randColor, mass / 10.0f, 1000, -1));
 		_fireworks_pool.push_back(new Firework({ 0.0, -10000.0, 0.0 }, { 0.0, 0.0, 0.0 }, { 0,0,0 }, { g }, 1, randColor, 0.4, 1000));
 	}
 
 	//random
 	for (int i = 0; i < 5; i++) {
 		randColor = randomColor();
+		mass = randomMass();
 		shared_ptr<ParticleGenerator> g(new GaussianParticleGenerator({ 0.0,0.0,0.0 }, { 5.0,5.0,5.0 }, { 0,0,0 }, { 2.0,2.0,2.0 }, 150, 1.0));
-		g->setParticle(new Particle({ 0.0,-10000.0,0.0 }, { 0,0,0 }, { 0,-9.8,0 }, 0.999, 1.0, randColor, 0.2, 1000, -1));
+		g->setParticle(new Particle({ 0.0,-10000.0,0.0 }, { 0,0,0 }, { 0,-9.8,0 }, 0.999, mass, randColor, mass / 10.0f, 1000, -1));
 		_fireworks_pool.push_back(new Firework({ 0.0, -10000.0, 0.0 }, { 0,0,0 }, { 0,0,0 }, { g }, 1, randColor, 0.4, 1000));
 	}
 
@@ -325,10 +333,18 @@ void PaintSystem::generateFireworksSystem() {
 
 }
 
+
+
 Vector4 PaintSystem::randomColor()
 {
 	return Vector4((rand() % 9 + 1) / 10.0, (rand() % 9 + 1) / 10.0, (rand() % 9 + 1) / 10.0, 1.0);
 }
+
+float PaintSystem::randomMass()
+{
+	return rand() % 4 + 1;
+}
+
 
 void PaintSystem::deleteBodies() {
 	for (auto rb : _rigidBodies)
@@ -336,9 +352,9 @@ void PaintSystem::deleteBodies() {
 	_rigidBodies.clear();
 }
 
-std::string PaintSystem::getInfo() noexcept{
+std::string PaintSystem::getInfo() noexcept {
 	std::string display = "Paint System : ";
-	
+
 	display += "Thickness: " + std::to_string(_pincel->getDevPos().x * 10) + "/" + std::to_string(_maxThickness * 10);
 	display += " | Color: (" + std::to_string(_color.x) + " " + std::to_string(_color.y) + " " + std::to_string(_color.z) + ")";
 	display += " | Controls: LMB->brush   RMB->eraser   MMB->clear canvas   A->clear canvas   Q/W->increase/decrease thickness   S->screenshot";
