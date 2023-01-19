@@ -263,16 +263,13 @@
     <ClCompile Include="Particles\Rigidbody.cpp" />
     <ClCompile Include="Systems\PaintSystem.cpp" />
     <ClCompile Include="Systems\ParticleGenerator.cpp" />
-    <ClCompile Include="Systems\ParticleSystem.cpp" />
     <ClCompile Include="Systems\RigidBodyGenerator.cpp" />
-    <ClCompile Include="Systems\RigidBodySystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="callbacks.hpp" />
     <ClInclude Include="checkML.h" />
     <ClInclude Include="core.hpp" />
     <ClInclude Include="Forces\ForceGenerator.h" />
-    <ClInclude Include="Forces\ParticleForceRegistry.h" />
     <ClInclude Include="Forces\RigidBodyForceRegistry.h" />
     <ClInclude Include="Particles\Particle.h" />
     <ClInclude Include="RenderUtils.hpp" />
@@ -282,9 +279,7 @@
     <ClInclude Include="stb_image_write.h" />
     <ClInclude Include="Systems\PaintSystem.h" />
     <ClInclude Include="Systems\ParticleGenerator.h" />
-    <ClInclude Include="Systems\ParticleSystem.h" />
     <ClInclude Include="Systems\RigiBodyGenerator.h" />
-    <ClInclude Include="Systems\RigidBodySystem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
